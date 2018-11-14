@@ -1,0 +1,16 @@
+{
+  "name": "protobuf-spike",
+  "version": "0.1.0",
+  "description": "Proof of concept for serialising complex types with protobuffs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Luke",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "protobufjs": "^6.8.8",
+    "redis": "^2.8.0",
+    "yarn": "^1.12.3"
+  }
+}
