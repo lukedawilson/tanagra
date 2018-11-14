@@ -1,11 +1,16 @@
 const protobuf = require('protobufjs')
-// const util = require('util')
-// const redis = require('redis')
-//
-// redis.getAsync = util.promisify(redis.get)
-// redis.setAsync = util.promisify(redis.set)
-// redis.delAsync = util.promisify(redis.del)
-// redis.keysAsync = util.promisify(redis.keys)
+const util = require('util')
+const redis = require('redis')
+
+const redisClient = redis.createClient({
+  host: 'localhost',
+  port: 6379
+})
+
+redisClient.getAsync = util.promisify(redisClient.get)
+redisClient.setAsync = util.promisify(redisClient.set)
+redisClient.delAsync = util.promisify(redisClient.del)
+redisClient.keysAsync = util.promisify(redisClient.keys)
 
 /************************
  * Test data structures *
@@ -133,12 +138,18 @@ function encodeEntity(value) {
  * Bootstrap *
  *************/
 
-const entity = new Foo()
-console.log('Before:')
-console.log(entity)
+async function main () {
+  const entity = new Foo()
+  console.log('Before:')
+  console.log(entity)
 
-const encoded = encodeEntity(entity)
+  const encoded = encodeEntity(entity)
+  await redisClient.setAsync(`awesome-entity`, JSON.stringify(encoded))
 
-const decoded = decodeEntity(encoded)
-console.log('After:')
-console.log(decoded)
+  const encodedFromRedis = await redisClient.getAsync(`awesome-entity`)
+  const decoded = decodeEntity(JSON.parse(encodedFromRedis))
+  console.log('After:')
+  console.log(decoded)
+}
+
+main().then(() => process.exit())
