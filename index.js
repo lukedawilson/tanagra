@@ -17,10 +17,6 @@ class Foo {
     this.prop2 = 123123
     this.bar = [ new Bar(), new Bar() ]
   }
-
-  get serializable() {
-    return true
-  }
 }
 
 class Bar {
@@ -29,20 +25,12 @@ class Bar {
     this.prop2 = new Date()
     this.baz = new Baz()
   }
-
-  get serializable() {
-    return true
-  }
 }
 
 class Baz {
   constructor() {
     this.prop1 = 'simple class'
     this.prop2 = 789789
-  }
-
-  get serializable() {
-    return true
   }
 }
 
@@ -58,6 +46,10 @@ const typeMap = {
 
 function getType(entity) {
   return typeMap[entity.constructor.name] || entity.constructor.name
+}
+
+function serializable(value) {
+  return !typeMap[value.constructor.name]
 }
 
 function decodeEntity(tuple) {
@@ -111,7 +103,14 @@ function encodeEntity(value) {
     const kvp = { key: entry[0], value: entry[1] }
     if (!kvp.value) return
 
-    if (kvp.value.serializable) {
+    if (kvp.value.constructor.name === 'Array') {
+      MyType.add(new protobuf.Field(`${kvp.key}_array`, i++, 'string'))
+      const array = kvp.value.map(encodeEntity)
+      value[`${kvp.key}_array`] = JSON.stringify(array)
+    } else if (kvp.value.constructor.name === 'Date') {
+      MyType.add(new protobuf.Field(`${kvp.key}_date`, i++, 'int32'))
+      value[`${kvp.key}_date`] = kvp.value.getTime() / 1000
+    } else if (serializable(kvp.value)) {
       MyType.add(new protobuf.Field(`${kvp.key}_encoded`, i++, 'bytes'))
       MyType.add(new protobuf.Field(`${kvp.key}_type`, i++, 'string'))
       MyType.add(new protobuf.Field(`${kvp.key}_fields`, i++, 'string'))
@@ -120,14 +119,6 @@ function encodeEntity(value) {
       value[`${kvp.key}_encoded`] = tuple.encoded
       value[`${kvp.key}_type`] = tuple.type
       value[`${kvp.key}_fields`] = JSON.stringify(tuple.fields)
-    } else if (kvp.value.constructor.name === 'Array') {
-      MyType.add(new protobuf.Field(`${kvp.key}_array`, i++, 'string'))
-
-      const array = kvp.value.map(encodeEntity)
-      value[`${kvp.key}_array`] = JSON.stringify(array)
-    } else if (kvp.value.constructor.name === 'Date') {
-      MyType.add(new protobuf.Field(`${kvp.key}_date`, i++, 'int32'))
-      value[`${kvp.key}_date`] = kvp.value.getTime() / 1000
     } else {
       MyType.add(new protobuf.Field(kvp.key, i++, getType(kvp.value)))
     }
@@ -147,7 +138,6 @@ console.log('Before:')
 console.log(entity)
 
 const encoded = encodeEntity(entity)
-//console.log(encoded)
 
 const decoded = decodeEntity(encoded)
 console.log('After:')
