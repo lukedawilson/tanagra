@@ -15,7 +15,7 @@ class Foo {
   constructor() {
     this.prop1 = 'hello world'
     this.prop2 = 123123
-    this.bar = new Bar()
+    this.bar = [ new Bar(), new Bar() ]
   }
 
   get serializable() {
@@ -26,7 +26,7 @@ class Foo {
 class Bar {
   constructor() {
     this.prop1 = 'goodbye cruel world'
-    this.prop2 = 456456
+    this.prop2 = new Date()
     this.baz = new Baz()
   }
 
@@ -84,6 +84,19 @@ function decodeEntity(tuple) {
       delete decoded[kvp.key]
       delete decoded[`${key}_type`]
       delete decoded[`${key}_fields`]
+    } else if (kvp.key.indexOf('_array') !== -1) {
+      const key = kvp.key.replace('_array', '')
+      const array = JSON.parse(kvp.value)
+
+      decoded[key] = array.map(decodeEntity)
+
+      delete decoded[kvp.key]
+    } else if (kvp.key.indexOf('_date') !== -1) {
+      const key = kvp.key.replace('_date', '')
+
+      decoded[key] = new Date(kvp.value * 1000)
+
+      delete decoded[kvp.key]
     }
   })
 
@@ -107,6 +120,14 @@ function encodeEntity(value) {
       value[`${kvp.key}_encoded`] = tuple.encoded
       value[`${kvp.key}_type`] = tuple.type
       value[`${kvp.key}_fields`] = JSON.stringify(tuple.fields)
+    } else if (kvp.value.constructor.name === 'Array') {
+      MyType.add(new protobuf.Field(`${kvp.key}_array`, i++, 'string'))
+
+      const array = kvp.value.map(encodeEntity)
+      value[`${kvp.key}_array`] = JSON.stringify(array)
+    } else if (kvp.value.constructor.name === 'Date') {
+      MyType.add(new protobuf.Field(`${kvp.key}_date`, i++, 'int32'))
+      value[`${kvp.key}_date`] = kvp.value.getTime() / 1000
     } else {
       MyType.add(new protobuf.Field(kvp.key, i++, getType(kvp.value)))
     }
@@ -126,6 +147,7 @@ console.log('Before:')
 console.log(entity)
 
 const encoded = encodeEntity(entity)
+//console.log(encoded)
 
 const decoded = decodeEntity(encoded)
 console.log('After:')
