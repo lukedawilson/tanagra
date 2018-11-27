@@ -11,16 +11,30 @@ const redisClient = redis.createClient({
   port: 6379
 })
 
+redisClient.lpushAsync = util.promisify(redisClient.lpush)
+redisClient.lrangeAsync = util.promisify(redisClient.lrange)
 redisClient.getAsync = util.promisify(redisClient.get)
 redisClient.setAsync = util.promisify(redisClient.set)
 redisClient.delAsync = util.promisify(redisClient.del)
 redisClient.keysAsync = util.promisify(redisClient.keys)
 
-function profile(fn, description) {
+async function profile(fn, description) {
   const start = new Date().getTime()
-  const res = fn()
-  console.log(`${description} - time taken (ms): ${new Date().getTime() - start}`)
+  const res = await fn()
+  console.log(`${description} (ms): ${new Date().getTime() - start}`)
   return res
+}
+
+function bufferToString(buffer) {
+  return String.fromCharCode.apply(null, buffer)
+}
+
+function stringToBuffer(bufferString) {
+  const buffer = new Uint8Array(bufferString.length)
+  for (let i = 0; i < bufferString.length; i++) {
+    buffer[i] = bufferString.charCodeAt(i)
+  }
+  return buffer
 }
 
 async function main () {
@@ -36,11 +50,27 @@ async function main () {
   console.log('During')
   console.log('======')
 
-  const encoded = profile(() => encodeEntity(entity), 'encode')
-  await redisClient.setAsync(`awesome-entity`, JSON.stringify(encoded))
+  const encodedTuple = await profile(() => encodeEntity(entity), 'encode')
 
-  const encodedFromRedis = await redisClient.getAsync(`awesome-entity`)
-  const decoded = profile(() => decodeEntity(JSON.parse(encodedFromRedis)), 'decode')
+  await profile(async () => {
+    await redisClient.setAsync(`foo-encoded`, bufferToString(encodedTuple.encoded))
+    await redisClient.setAsync(`foo-special-fields-encoded`, bufferToString(encodedTuple.specialFieldsEncoded))
+    await redisClient.setAsync(`foo-type`, encodedTuple.type)
+    await redisClient.setAsync(`foo-file-path`, encodedTuple.filePath)
+    await redisClient.delAsync(`foo-fields`)
+    await redisClient.lpushAsync(`foo-fields`, ...encodedTuple.fields.map(JSON.stringify))
+  }, 'save to redis')
+
+  const encodedFromRedis = await profile(async () => {
+    const encoded = stringToBuffer(await redisClient.getAsync(`foo-encoded`))
+    const specialFieldsEncoded = stringToBuffer(await redisClient.getAsync(`foo-special-fields-encoded`))
+    const type = await redisClient.getAsync(`foo-type`)
+    const filePath = await redisClient.getAsync(`foo-file-path`)
+    const fields = (await redisClient.lrangeAsync(`foo-fields`, 0, -1)).map(JSON.parse)
+    return { encoded, specialFieldsEncoded, type, filePath, fields }
+  }, 'retrieve from redis')
+
+  const decoded = await profile(() => decodeEntity(encodedFromRedis), 'decode')
 
   console.log()
   console.log('After')
