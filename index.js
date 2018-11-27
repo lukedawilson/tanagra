@@ -29,7 +29,8 @@ async function main () {
   console.log('Before')
   console.log('======')
   console.log(entity)
-  console.log(entity.func1)
+  console.log(`func1: ${entity.func1}`)
+  console.log(`func1(): ${entity.func1()}`)
   console.log()
 
   console.log('During')
@@ -45,7 +46,8 @@ async function main () {
   console.log('After')
   console.log('=====')
   console.log(decoded)
-  console.log(decoded.func1)
+  console.log(`func1: ${decoded.func1}`)
+  console.log(`func1(): ${decoded.func1()}`)
 }
 
 main().then(() => process.exit())

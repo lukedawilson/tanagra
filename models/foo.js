@@ -7,10 +7,10 @@ class Foo {
     this.bar = [ new Bar(), new Bar() ]
 
     // serialization properties
-    this.uniqueIdentifier = module.id
+    this.filePath = module.filename
   }
 
-  get func1() {
+  func1() {
     return `${this.prop1}, ${this.prop2}`
   }
 }
