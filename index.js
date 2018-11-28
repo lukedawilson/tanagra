@@ -56,15 +56,15 @@ async function main () {
     await redisClient.setAsync(`foo-encoded`, bufferToString(encodedTuple.encoded))
     await redisClient.setAsync(`foo-type`, encodedTuple.type)
     await redisClient.setAsync(`foo-file-path`, encodedTuple.filePath)
-    await redisClient.setAsync(`foo-type-map`, encodedTuple.typeMap)
+    await redisClient.setAsync(`foo-type-map`, encodedTuple.message)
   }, 'save to redis')
 
   const encodedFromRedis = await profile(async () => {
     const encoded = stringToBuffer(await redisClient.getAsync(`foo-encoded`))
     const type = await redisClient.getAsync(`foo-type`)
     const filePath = await redisClient.getAsync(`foo-file-path`)
-    const typeMap = await redisClient.getAsync(`foo-type-map`)
-    return { encoded, type, filePath, typeMap }
+    const message = await redisClient.getAsync(`foo-type-map`)
+    return { encoded, type, filePath, message }
   }, 'retrieve from redis')
 
   const decoded = await profile(() => decodeEntity(encodedFromRedis), 'decode')
