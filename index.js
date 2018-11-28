@@ -75,7 +75,6 @@ async function main () {
   console.log(decoded)
   console.log(`func1: ${decoded.func1}`)
   console.log(`func1(): ${decoded.func1()}`)
-  console.log(new Date(decoded.bar[0].prop2))
 }
 
 main().then(() => process.exit())
