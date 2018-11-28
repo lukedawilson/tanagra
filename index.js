@@ -54,7 +54,6 @@ async function main () {
 
   await profile(async () => {
     await redisClient.setAsync(`foo-encoded`, bufferToString(encodedTuple.encoded))
-    await redisClient.setAsync(`foo-special-fields-encoded`, bufferToString(encodedTuple.specialFieldsEncoded))
     await redisClient.setAsync(`foo-type`, encodedTuple.type)
     await redisClient.setAsync(`foo-file-path`, encodedTuple.filePath)
     await redisClient.setAsync(`foo-type-map`, encodedTuple.typeMap)
@@ -62,11 +61,10 @@ async function main () {
 
   const encodedFromRedis = await profile(async () => {
     const encoded = stringToBuffer(await redisClient.getAsync(`foo-encoded`))
-    const specialFieldsEncoded = stringToBuffer(await redisClient.getAsync(`foo-special-fields-encoded`))
     const type = await redisClient.getAsync(`foo-type`)
     const filePath = await redisClient.getAsync(`foo-file-path`)
     const typeMap = await redisClient.getAsync(`foo-type-map`)
-    return { encoded, specialFieldsEncoded, type, filePath, typeMap }
+    return { encoded, type, filePath, typeMap }
   }, 'retrieve from redis')
 
   const decoded = await profile(() => decodeEntity(encodedFromRedis), 'decode')
@@ -77,6 +75,7 @@ async function main () {
   console.log(decoded)
   console.log(`func1: ${decoded.func1}`)
   console.log(`func1(): ${decoded.func1()}`)
+  console.log(new Date(decoded.bar[0].prop2))
 }
 
 main().then(() => process.exit())
