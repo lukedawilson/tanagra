@@ -60,7 +60,7 @@ async function main () {
   console.log(`func1(): ${foo.func1()}`)
   console.log()
 
-  // Encode, save and retrieve from Redis, decode
+  // Test protobuf/redis
   console.log('Performance')
   console.log('===========')
 
@@ -89,10 +89,17 @@ async function main () {
 
   console.log()
 
-  // Database
+  // Test db
   const fooId = await profile(async () => await connection.writeFoo(foo), 'write to db')
   const fooFromDb = await profile(async () => await connection.readFoo(fooId), 'read from db')
 
+  console.log()
+
+  // Test JSON.parse
+  const json = await profile(() => JSON.stringify(foo), 'JSON.stringify')
+  const fromJson = await profile(() => JSON.parse(json), 'JSON.parse')
+
+  // Show results
   console.log()
   console.log('Results')
   console.log('=======')
@@ -105,6 +112,10 @@ async function main () {
   console.log('Database:')
   console.log()
   console.log(fooFromDb)
+  console.log()
+  console.log('JSON.stringify/parse:')
+  console.log()
+  console.log(fromJson)
 }
 
 main().then(() => process.exit())
