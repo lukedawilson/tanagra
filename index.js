@@ -43,15 +43,34 @@ function stringToBuffer(bufferString) {
   return buffer
 }
 
+async function writeToRedis(key, tuple) {
+  await redisClient.setAsync(`${key}-encoded`, bufferToString(tuple.encoded))
+  await redisClient.setAsync(`${key}-type`, tuple.type)
+  await redisClient.setAsync(`${key}-file-path`, tuple.filePath)
+  await redisClient.setAsync(`${key}-schema`, bufferToString(tuple.schema))
+}
+
+async function fetchFromRedis(key) {
+  const encoded = stringToBuffer(await redisClient.getAsync(`${key}-encoded`))
+  const type = await redisClient.getAsync(`${key}-type`)
+  const filePath = await redisClient.getAsync(`${key}-file-path`)
+  const schema = stringToBuffer(await redisClient.getAsync(`${key}-schema`))
+  return {encoded, type, filePath, schema}
+}
+
+function generateTestFoo() {
+  const baz = new Baz('Simple Baz', 456456)
+  const bar1 = new Bar('Complex Bar 1', new Date(), baz)
+  const bar2 = new Bar('Complex Bar 2', new Date(), baz)
+  return new Foo('Hello foo', 123123, [bar1, bar2])
+}
+
 async function main () {
   // Load protodefs for serialising protobuf schemas
   global.protobuf = await loadAsync('./proto/descriptor.proto')
 
   // Set up test data
-  const baz = new Baz('Simple Baz', 456456)
-  const bar1 = new Bar('Complex Bar 1', new Date(), baz)
-  const bar2 = new Bar('Complex Bar 2', new Date(), baz)
-  const foo = new Foo('Hello foo', 123123, [bar1, bar2])
+  const foo = generateTestFoo()
 
   console.log('Test data')
   console.log('=========')
@@ -65,26 +84,13 @@ async function main () {
   console.log('===========')
 
   await profile(async () => {
-    const encodedTuple = await profile(() => encodeEntity(foo), 'encode')
-
-    await profile(async () => {
-      await redisClient.setAsync(`foo-encoded`, bufferToString(encodedTuple.encoded))
-      await redisClient.setAsync(`foo-type`, encodedTuple.type)
-      await redisClient.setAsync(`foo-file-path`, encodedTuple.filePath)
-      await redisClient.setAsync(`foo-schema`, bufferToString(encodedTuple.schema))
-    }, 'save to redis')
+    const tuple = await profile(() => encodeEntity(foo), 'encode')
+    await profile(async () => await writeToRedis('foo', tuple), 'save to redis')
   }, 'total - encode, save to redis')
 
   const decoded = await profile(async () => {
-    const encodedFromRedis = await profile(async () => {
-      const encoded = stringToBuffer(await redisClient.getAsync(`foo-encoded`))
-      const type = await redisClient.getAsync(`foo-type`)
-      const filePath = await redisClient.getAsync(`foo-file-path`)
-      const schema = stringToBuffer(await redisClient.getAsync(`foo-schema`))
-      return {encoded, type, filePath, schema}
-    }, 'retrieve from redis')
-
-    return profile(() => decodeEntity(encodedFromRedis), 'decode')
+    const tuple = await profile(async () => fetchFromRedis('foo'), 'retrieve from redis')
+    return profile(() => decodeEntity(tuple), 'decode')
   }, 'total - retrieve from redis, decode')
 
   console.log()
