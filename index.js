@@ -1,8 +1,11 @@
 const util = require('util')
 const redis = require('redis')
+const protobuf = require('protobufjs')
 
 const decodeEntity = require('./lib/decode-entity')
 const encodeEntity = require('./lib/encode-entity')
+
+const loadAsync = util.promisify(protobuf.load)
 
 const Foo = require('./models/foo')
 
@@ -38,6 +41,8 @@ function stringToBuffer(bufferString) {
 }
 
 async function main () {
+  global.protobuf = await loadAsync('./proto/descriptor.proto')
+
   const entity = new Foo()
 
   console.log('Before')
@@ -56,15 +61,15 @@ async function main () {
     await redisClient.setAsync(`foo-encoded`, bufferToString(encodedTuple.encoded))
     await redisClient.setAsync(`foo-type`, encodedTuple.type)
     await redisClient.setAsync(`foo-file-path`, encodedTuple.filePath)
-    await redisClient.setAsync(`foo-type-map`, encodedTuple.message)
+    await redisClient.setAsync(`foo-schema`, bufferToString(encodedTuple.schema))
   }, 'save to redis')
 
   const encodedFromRedis = await profile(async () => {
     const encoded = stringToBuffer(await redisClient.getAsync(`foo-encoded`))
     const type = await redisClient.getAsync(`foo-type`)
     const filePath = await redisClient.getAsync(`foo-file-path`)
-    const message = await redisClient.getAsync(`foo-type-map`)
-    return { encoded, type, filePath, message }
+    const schema = stringToBuffer(await redisClient.getAsync(`foo-schema`))
+    return { encoded, type, filePath, schema }
   }, 'retrieve from redis')
 
   const decoded = await profile(() => decodeEntity(encodedFromRedis), 'decode')

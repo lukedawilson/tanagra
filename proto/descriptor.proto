@@ -1,0 +1,17 @@
+// Original can be found here:
+//   https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/descriptor.proto
+
+message Field {
+  optional string name = 1;
+  optional string type = 2;
+  optional int32 id = 3;
+}
+
+message Type {
+  optional string name = 1;
+  optional string filename = 2;
+  optional Type parent = 3;
+
+  map<string, Field> fields = 4;
+  map<string, Type> nested = 5;
+}
