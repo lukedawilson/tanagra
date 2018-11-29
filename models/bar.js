@@ -1,10 +1,10 @@
 const Baz = require('./baz')
 
 class Bar {
-  constructor() {
-    this.prop1 = 'goodbye cruel world'
-    this.prop2 = new Date()
-    this.baz = new Baz()
+  constructor(string = null, date = null, baz = null) {
+    this.string = string
+    this.date = date
+    this.baz = baz
   }
 }
 

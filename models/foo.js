@@ -1,17 +1,17 @@
 const Bar = require('./bar')
 
 class Foo {
-  constructor() {
-    this.prop1 = 'hello world'
-    this.prop2 = 123123
-    this.bar = [ new Bar(), new Bar() ]
+  constructor(string = null, number = null, bars = []) {
+    this.string = string
+    this.number = number
+    this.bars = bars
 
     // serialization properties
     this.filePath = module.filename
   }
 
   func1() {
-    return `${this.prop1}, ${this.prop2}`
+    return `${this.string}, ${this.number}`
   }
 }
 

@@ -8,6 +8,8 @@ const encodeEntity = require('./lib/encode-entity')
 const loadAsync = util.promisify(protobuf.load)
 
 const Foo = require('./models/foo')
+const Bar = require('./models/bar')
+const Baz = require('./models/baz')
 
 const redisClient = redis.createClient({
   host: 'localhost',
@@ -41,21 +43,27 @@ function stringToBuffer(bufferString) {
 }
 
 async function main () {
+  // Load protodefs for serialising protobuf schemas
   global.protobuf = await loadAsync('./proto/descriptor.proto')
 
-  const entity = new Foo()
+  // Set up test data
+  const baz = new Baz('Simple Baz', 456456)
+  const bar1 = new Bar('Complex Bar 1', new Date(), baz)
+  const bar2 = new Bar('Complex Bar 2', new Date(), baz)
+  const foo = new Foo('Hello foo', 123123, [bar1, bar2])
 
   console.log('Before')
   console.log('======')
-  console.log(entity)
-  console.log(`func1: ${entity.func1}`)
-  console.log(`func1(): ${entity.func1()}`)
+  console.log(foo)
+  console.log(`func1: ${foo.func1}`)
+  console.log(`func1(): ${foo.func1()}`)
   console.log()
 
+  // Encode, save and retrieve from Redis
   console.log('During')
   console.log('======')
 
-  const encodedTuple = await profile(() => encodeEntity(entity), 'encode')
+  const encodedTuple = await profile(() => encodeEntity(foo), 'encode')
 
   await profile(async () => {
     await redisClient.setAsync(`foo-encoded`, bufferToString(encodedTuple.encoded))
@@ -72,6 +80,7 @@ async function main () {
     return { encoded, type, filePath, schema }
   }, 'retrieve from redis')
 
+  // Decode
   const decoded = await profile(() => decodeEntity(encodedFromRedis), 'decode')
 
   console.log()

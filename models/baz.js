@@ -1,7 +1,7 @@
 class Baz {
-  constructor() {
-    this.prop1 = 'simple primitive'
-    this.prop2 = 789789
+  constructor(string = null, number = null) {
+    this.string = string
+    this.number = number
   }
 }
 
