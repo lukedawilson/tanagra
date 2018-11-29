@@ -65,63 +65,88 @@ function generateTestFoo() {
   return new Foo('Hello foo', 123123, [bar1, bar2])
 }
 
-async function main () {
-  // Load protodefs for serialising protobuf schemas
+async function main() {
   global.protobuf = await loadAsync('./proto/descriptor.proto')
+  const trials = 10
 
-  // Set up test data
-  const foo = generateTestFoo()
+  const ids = []
+  for (let i = 0; i < trials; i++) {
+    const foo = generateTestFoo()
+    ids.push(await profile(async () => await connection.writeFoo(foo), 'db-write'))
+  }
 
-  console.log('Test data')
-  console.log('=========')
-  console.log(foo)
-  console.log(`func1: ${foo.func1}`)
-  console.log(`func1(): ${foo.func1()}`)
-  console.log()
+  for (let i = 0; i < trials; i++) {
+    const foo = generateTestFoo()
+    await profile(async () => await writeToRedis(`foo-${i}`, await encodeEntity(foo)), 'protobuf-redis-write')
+  }
 
-  // Test protobuf/redis
-  console.log('Performance')
-  console.log('===========')
+  for (let i = 0; i < trials; i++) {
+    const id = ids[i]
+    await profile(async () => await connection.readFoo(id), 'db-read')
+  }
 
-  await profile(async () => {
-    const tuple = await profile(() => encodeEntity(foo), 'encode')
-    await profile(async () => await writeToRedis('foo', tuple), 'save to redis')
-  }, 'total - encode, save to redis')
-
-  const decoded = await profile(async () => {
-    const tuple = await profile(async () => fetchFromRedis('foo'), 'retrieve from redis')
-    return profile(() => decodeEntity(tuple), 'decode')
-  }, 'total - retrieve from redis, decode')
-
-  console.log()
-
-  // Test db
-  const fooId = await profile(async () => await connection.writeFoo(foo), 'write to db')
-  const fooFromDb = await profile(async () => await connection.readFoo(fooId), 'read from db')
-
-  console.log()
-
-  // Test JSON.parse
-  const json = await profile(() => JSON.stringify(foo), 'JSON.stringify')
-  const fromJson = await profile(() => JSON.parse(json), 'JSON.parse')
-
-  // Show results
-  console.log()
-  console.log('Results')
-  console.log('=======')
-  console.log('Redis/protobufs:')
-  console.log()
-  console.log(decoded)
-  console.log(`func1: ${decoded.func1}`)
-  console.log(`func1(): ${decoded.func1()}`)
-  console.log()
-  console.log('Database:')
-  console.log()
-  console.log(fooFromDb)
-  console.log()
-  console.log('JSON.stringify/parse:')
-  console.log()
-  console.log(fromJson)
+  for (let i = 0; i < trials; i++) {
+    const tuple = await fetchFromRedis(`foo-${i}`)
+    await profile(async () => decodeEntity(tuple), 'protobuf-read')
+  }
 }
+
+// async function main() {
+//   // Load protodefs for serialising protobuf schemas
+//   global.protobuf = await loadAsync('./proto/descriptor.proto')
+//
+//   const foo = generateTestFoo()
+//
+//   console.log('Test data')
+//   console.log('=========')
+//   console.log(foo)
+//   console.log(`func1: ${foo.func1}`)
+//   console.log(`func1(): ${foo.func1()}`)
+//   console.log()
+//
+//   // Test protobuf/redis
+//   console.log('Performance')
+//   console.log('===========')
+//
+//   await profile(async () => {
+//     const tuple = await profile(() => encodeEntity(foo), 'encode')
+//     await profile(async () => await writeToRedis('foo', tuple), 'save to redis')
+//   }, 'total - encode, save to redis')
+//
+//   const decoded = await profile(async () => {
+//     const tuple = await profile(async () => fetchFromRedis('foo'), 'retrieve from redis')
+//     return profile(() => decodeEntity(tuple), 'decode')
+//   }, 'total - retrieve from redis, decode')
+//
+//   console.log()
+//
+//   // Test db
+//   const fooId = await profile(async () => await connection.writeFoo(foo), 'write to db')
+//   const fooFromDb = await profile(async () => await connection.readFoo(fooId), 'read from db')
+//
+//   console.log()
+//
+//   // Test JSON.parse
+//   const json = await profile(() => JSON.stringify(foo), 'JSON.stringify')
+//   const fromJson = await profile(() => JSON.parse(json), 'JSON.parse')
+//
+//   // Show results
+//   console.log()
+//   console.log('Results')
+//   console.log('=======')
+//   console.log('Redis/protobufs:')
+//   console.log()
+//   console.log(decoded)
+//   console.log(`func1: ${decoded.func1}`)
+//   console.log(`func1(): ${decoded.func1()}`)
+//   console.log()
+//   console.log('Database:')
+//   console.log()
+//   console.log(fooFromDb)
+//   console.log()
+//   console.log('JSON.stringify/parse:')
+//   console.log()
+//   console.log(fromJson)
+// }
 
 main().then(() => process.exit())
