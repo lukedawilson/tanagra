@@ -9,6 +9,7 @@
   "author": "Luke",
   "license": "UNLICENSED",
   "dependencies": {
+    "memory-cache": "^0.2.0",
     "protobufjs": "^6.8.8",
     "redis": "^2.8.0",
     "yarn": "^1.12.3"

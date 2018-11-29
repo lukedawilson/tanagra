@@ -5,6 +5,7 @@ message Field {
   optional string name = 1;
   optional string type = 2;
   optional int32 id = 3;
+  optional string rule = 4 [default = 'optional'];
 }
 
 message Type {
