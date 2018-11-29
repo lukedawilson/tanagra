@@ -1,5 +1,3 @@
-const Baz = require('./baz')
-
 class Bar {
   constructor(string = null, date = null, baz = null) {
     this.string = string

@@ -1,5 +1,3 @@
-const Bar = require('./bar')
-
 class Foo {
   constructor(string = null, number = null, bars = []) {
     this.string = string
