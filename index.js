@@ -59,16 +59,14 @@ function stringToBuffer(bufferString) {
 async function writeToRedis(key, tuple) {
   await redisClient.setAsync(`${key}-encoded`, bufferToString(tuple.encoded))
   await redisClient.setAsync(`${key}-type`, tuple.type)
-  await redisClient.setAsync(`${key}-file-path`, tuple.filePath)
   await redisClient.setAsync(`${key}-schema`, bufferToString(tuple.schema))
 }
 
 async function fetchFromRedis(key) {
   const encoded = stringToBuffer(await redisClient.getAsync(`${key}-encoded`))
   const type = await redisClient.getAsync(`${key}-type`)
-  const filePath = await redisClient.getAsync(`${key}-file-path`)
   const schema = stringToBuffer(await redisClient.getAsync(`${key}-schema`))
-  return {encoded, type, filePath, schema}
+  return {encoded, type, schema}
 }
 
 function generateTestFoo() {
