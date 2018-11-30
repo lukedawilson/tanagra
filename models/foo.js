@@ -1,11 +1,10 @@
 class Foo {
   constructor(string = null, number = null, bars = []) {
+    this.serializable()
+
     this.string = string
     this.number = number
     this.bars = bars
-
-    // serialization properties
-    this._serializationUniqueId = this.serializationUniqueId
   }
 
   func1() {
@@ -24,8 +23,8 @@ class Foo {
     return 'more static'
   }
 
-  get serializationUniqueId() {
-    return module.filename
+  serializable() {
+    this._serializationKey =  module.filename
   }
 }
 
