@@ -1,11 +1,16 @@
-const util = require('util')
 const redis = require('redis')
+
 const { performance } = require('perf_hooks')
 
+const initProtobufs = require('./lib/init')
 const decodeEntity = require('./lib/decode-entity')
 const encodeEntity = require('./lib/encode-entity')
+
+const initRedis = require('./redis-cache/init')
+const writeToRedis = require('./redis-cache/write-to-redis')
+const fetchFromRedis = require('./redis-cache/fetch-from-redis')
+
 const connection = require('./db/connection')
-const initProtobufs = require('./lib/init')
 
 const Foo = require('./models/foo')
 const Bar = require('./models/bar')
@@ -15,13 +20,6 @@ const redisClient = redis.createClient({
   host: 'localhost',
   port: 6379
 })
-
-redisClient.lpushAsync = util.promisify(redisClient.lpush)
-redisClient.lrangeAsync = util.promisify(redisClient.lrange)
-redisClient.getAsync = util.promisify(redisClient.get)
-redisClient.setAsync = util.promisify(redisClient.set)
-redisClient.delAsync = util.promisify(redisClient.del)
-redisClient.keysAsync = util.promisify(redisClient.keys)
 
 async function profile(fn, array) {
   const start = performance.now()
@@ -42,31 +40,6 @@ function showPerfResults(description, array) {
   console.log()
 
   return { aveInc1st, aveExc1st }
-}
-
-function bufferToString(buffer) {
-  return String.fromCharCode.apply(null, buffer)
-}
-
-function stringToBuffer(bufferString) {
-  const buffer = new Uint8Array(bufferString.length)
-  for (let i = 0; i < bufferString.length; i++) {
-    buffer[i] = bufferString.charCodeAt(i)
-  }
-  return buffer
-}
-
-async function writeToRedis(key, tuple) {
-  await redisClient.setAsync(`${key}-encoded`, bufferToString(tuple.encoded))
-  await redisClient.setAsync(`${key}-type`, tuple.type)
-  await redisClient.setAsync(`${key}-schema`, bufferToString(tuple.schema))
-}
-
-async function fetchFromRedis(key) {
-  const encoded = stringToBuffer(await redisClient.getAsync(`${key}-encoded`))
-  const type = await redisClient.getAsync(`${key}-type`)
-  const schema = stringToBuffer(await redisClient.getAsync(`${key}-schema`))
-  return {encoded, type, schema}
 }
 
 function generateTestFoo() {
@@ -95,7 +68,7 @@ async function perfTest() {
   for (let i = 0; i < trials; i++) {
     const foo = generateTestFoo()
     const encodedEntity = await profile(async () => await encodeEntity(foo), protobufWriteTimes)
-    await profile(async () => await writeToRedis(`foo-${i}`, encodedEntity), redisWriteTimes)
+    await profile(async () => await writeToRedis(redisClient, `foo-${i}`, encodedEntity), redisWriteTimes)
   }
 
   for (let i = 0; i < trials; i++) {
@@ -104,7 +77,7 @@ async function perfTest() {
   }
 
   for (let i = 0; i < trials; i++) {
-    const tuple = await profile(async () => await fetchFromRedis(`foo-${i}`), redisReadTimes)
+    const tuple = await profile(async () => await fetchFromRedis(redisClient, `foo-${i}`), redisReadTimes)
     await profile(async () => decodeEntity(tuple), protobufReadTimes)
   }
 
@@ -150,9 +123,9 @@ async function functionalTest() {
   console.log()
 
   const encodedTuple = encodeEntity(foo)
-  await writeToRedis('foo', encodedTuple)
+  await writeToRedis(redisClient, 'foo', encodedTuple)
 
-  const decodedTuple = await fetchFromRedis('foo')
+  const decodedTuple = await fetchFromRedis(redisClient, 'foo')
   const decoded =  decodeEntity(decodedTuple)
 
   console.log('Test output')
@@ -169,4 +142,9 @@ async function functionalTest() {
   console.log()
 }
 
-initProtobufs('./proto/descriptor.proto', module).then(perfTest).then(functionalTest).catch(console.log).then(() => process.exit())
+initProtobufs('./proto/descriptor.proto', module)
+  .then(() => initRedis(redisClient))
+  .then(perfTest)
+  .then(functionalTest)
+  .catch(console.log)
+  .then(() => process.exit())
