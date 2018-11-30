@@ -1,13 +1,11 @@
 const util = require('util')
 const redis = require('redis')
-const protobuf = require('protobufjs')
 const { performance } = require('perf_hooks')
 
 const decodeEntity = require('./lib/decode-entity')
 const encodeEntity = require('./lib/encode-entity')
 const connection = require('./db/connection')
-
-const loadAsync = util.promisify(protobuf.load)
+const initProtobufs = require('./lib/init')
 
 const Foo = require('./models/foo')
 const Bar = require('./models/bar')
@@ -81,7 +79,6 @@ function generateTestFoo() {
 }
 
 async function perfTest() {
-  global.protobuf = await loadAsync('./proto/descriptor.proto')
   const trials = 10
 
   const dbWriteTimes = []
@@ -139,21 +136,20 @@ async function perfTest() {
 }
 
 async function functionalTest() {
-  // Load protodefs for serialising protobuf schemas
-  global.protobuf = await loadAsync('./proto/descriptor.proto')
-
   const foo = generateTestFoo()
 
-  console.log('Test input')
-  console.log('==========')
-  console.log(`foo: ${JSON.stringify(foo, null, 2)}`)
-  console.log()
-  console.log(`foo.func1(): ${foo.func1()}`)
-  console.log(`foo.get1: ${foo.get1}`)
-  console.log(`Foo.staticFunc1(): ${Foo.staticFunc1()}`)
-  console.log(`Foo.staticGet1: ${Foo.staticGet1}`)
-  console.log()
-  console.log()
+  // console.log('Test input')
+  // console.log('==========')
+  // console.log(`foo: ${JSON.stringify(foo, null, 2)}`)
+  // console.log()
+  // console.log(`foo.func1(): ${foo.func1()}`)
+  // console.log(`foo.get1: ${foo.get1}`)
+  // console.log(`Foo.staticFunc1(): ${Foo.staticFunc1()}`)
+  // console.log(`Foo.staticGet1: ${Foo.staticGet1}`)
+  // console.log()
+  // console.log(`bar.someFunc(): ${foo.bars[0].someFunc()}`)
+  // console.log()
+  // console.log()
 
   const encodedTuple = encodeEntity(foo)
   await writeToRedis('foo', encodedTuple)
@@ -170,7 +166,9 @@ async function functionalTest() {
   console.log(`Foo.staticFunc1(): ${decoded.constructor.staticFunc1()}`)
   console.log(`Foo.staticGet1: ${decoded.constructor.staticGet1}`)
   console.log()
+  console.log(`bar.someFunc(): ${decoded.bars[0].someFunc()}`)
+  console.log()
   console.log()
 }
 
-perfTest().then(functionalTest).then(() => process.exit())
+initProtobufs('./proto/descriptor.proto')/*.then(perfTest)*/.then(functionalTest).catch(console.log).then(() => process.exit())

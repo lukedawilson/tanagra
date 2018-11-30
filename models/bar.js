@@ -3,6 +3,13 @@ class Bar {
     this.string = string
     this.date = date
     this.baz = baz
+
+    // serialization properties
+    this.filePath = module.filename
+  }
+
+  someFunc() {
+    return `Funky ${this.string}`
   }
 }
 
