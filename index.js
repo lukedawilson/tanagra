@@ -1,6 +1,7 @@
 const util = require('util')
 const redis = require('redis')
 const protobuf = require('protobufjs')
+const { performance } = require('perf_hooks')
 
 const decodeEntity = require('./lib/decode-entity')
 const encodeEntity = require('./lib/encode-entity')
@@ -24,11 +25,25 @@ redisClient.setAsync = util.promisify(redisClient.set)
 redisClient.delAsync = util.promisify(redisClient.del)
 redisClient.keysAsync = util.promisify(redisClient.keys)
 
-async function profile(fn, description) {
-  const start = new Date().getTime()
+async function profile(fn, array) {
+  const start = performance.now()
   const res = await fn()
-  console.log(`${description} (ms): ${new Date().getTime() - start}`)
+  const end = performance.now()
+  array.push((end - start))
   return res
+}
+
+function showPerfResults(description, array) {
+  const aveInc1st = array.reduce((a, b) => a + b, 0) / array.length
+  const aveExc1st = array.slice(1).reduce((a, b) => a + b, 0) / (array.length - 1)
+
+  console.log(description)
+  array.forEach(t => console.log(t.toPrecision(3)))
+  console.log(`Ave (inc. 1st): ${aveInc1st.toPrecision(3)}`)
+  console.log(`Ave (exc. 1st): ${aveExc1st.toPrecision(3)}`)
+  console.log()
+
+  return { aveInc1st, aveExc1st }
 }
 
 function bufferToString(buffer) {
@@ -65,88 +80,91 @@ function generateTestFoo() {
   return new Foo('Hello foo', 123123, [bar1, bar2])
 }
 
-async function main() {
+async function perfTest() {
   global.protobuf = await loadAsync('./proto/descriptor.proto')
   const trials = 10
+
+  const dbWriteTimes = []
+  const protobufWriteTimes = []
+  const redisWriteTimes = []
+  const dbReadTimes = []
+  const redisReadTimes = []
+  const protobufReadTimes = []
 
   const ids = []
   for (let i = 0; i < trials; i++) {
     const foo = generateTestFoo()
-    ids.push(await profile(async () => await connection.writeFoo(foo), 'db-write'))
+    ids.push(await profile(async () => await connection.writeFoo(foo), dbWriteTimes))
   }
 
   for (let i = 0; i < trials; i++) {
     const foo = generateTestFoo()
-    await profile(async () => await writeToRedis(`foo-${i}`, await encodeEntity(foo)), 'protobuf-redis-write')
+    const encodedEntity = await profile(async () => await encodeEntity(foo), protobufWriteTimes)
+    await profile(async () => await writeToRedis(`foo-${i}`, encodedEntity), redisWriteTimes)
   }
 
   for (let i = 0; i < trials; i++) {
     const id = ids[i]
-    await profile(async () => await connection.readFoo(id), 'db-read')
+    await profile(async () => await connection.readFoo(id), dbReadTimes)
   }
 
   for (let i = 0; i < trials; i++) {
-    const tuple = await fetchFromRedis(`foo-${i}`)
-    await profile(async () => decodeEntity(tuple), 'protobuf-read')
+    const tuple = await profile(async () => await fetchFromRedis(`foo-${i}`), redisReadTimes)
+    await profile(async () => decodeEntity(tuple), protobufReadTimes)
   }
+
+  console.log('Performance')
+  console.log('===========')
+
+  showPerfResults('db-write (ms):', dbWriteTimes)
+
+  const protobufWritePerf = showPerfResults('protobuf-write (ms):', protobufWriteTimes)
+  const redisWritePerf = showPerfResults('redis-write (ms):', redisWriteTimes)
+
+  console.log('protobuf-redis-write (ms):')
+  console.log(`Ave (inc. 1st): ${(protobufWritePerf.aveInc1st + redisWritePerf.aveInc1st).toPrecision(3)}`)
+  console.log(`Ave (exc. 1st): : ${(protobufWritePerf.aveExc1st + redisWritePerf.aveExc1st).toPrecision(3)}`)
+  console.log()
+
+  showPerfResults('db-read (ms):', dbReadTimes)
+
+  const redisReadPerf = showPerfResults('redis-read (ms):', redisReadTimes)
+  const protobufReadPerf = showPerfResults('protobuf-read (ms):', protobufReadTimes)
+
+  console.log('protobuf-redis-read (ms):')
+  console.log(`Ave (inc. 1st): ${(protobufReadPerf.aveInc1st + redisReadPerf.aveInc1st).toPrecision(3)}`)
+  console.log(`Ave (exc. 1st): : ${(protobufReadPerf.aveExc1st + redisReadPerf.aveExc1st).toPrecision(3)}`)
+  console.log()
+  console.log()
 }
 
-// async function main() {
-//   // Load protodefs for serialising protobuf schemas
-//   global.protobuf = await loadAsync('./proto/descriptor.proto')
-//
-//   const foo = generateTestFoo()
-//
-//   console.log('Test data')
-//   console.log('=========')
-//   console.log(foo)
-//   console.log(`func1: ${foo.func1}`)
-//   console.log(`func1(): ${foo.func1()}`)
-//   console.log()
-//
-//   // Test protobuf/redis
-//   console.log('Performance')
-//   console.log('===========')
-//
-//   await profile(async () => {
-//     const tuple = await profile(() => encodeEntity(foo), 'encode')
-//     await profile(async () => await writeToRedis('foo', tuple), 'save to redis')
-//   }, 'total - encode, save to redis')
-//
-//   const decoded = await profile(async () => {
-//     const tuple = await profile(async () => fetchFromRedis('foo'), 'retrieve from redis')
-//     return profile(() => decodeEntity(tuple), 'decode')
-//   }, 'total - retrieve from redis, decode')
-//
-//   console.log()
-//
-//   // Test db
-//   const fooId = await profile(async () => await connection.writeFoo(foo), 'write to db')
-//   const fooFromDb = await profile(async () => await connection.readFoo(fooId), 'read from db')
-//
-//   console.log()
-//
-//   // Test JSON.parse
-//   const json = await profile(() => JSON.stringify(foo), 'JSON.stringify')
-//   const fromJson = await profile(() => JSON.parse(json), 'JSON.parse')
-//
-//   // Show results
-//   console.log()
-//   console.log('Results')
-//   console.log('=======')
-//   console.log('Redis/protobufs:')
-//   console.log()
-//   console.log(decoded)
-//   console.log(`func1: ${decoded.func1}`)
-//   console.log(`func1(): ${decoded.func1()}`)
-//   console.log()
-//   console.log('Database:')
-//   console.log()
-//   console.log(fooFromDb)
-//   console.log()
-//   console.log('JSON.stringify/parse:')
-//   console.log()
-//   console.log(fromJson)
-// }
+async function functionalTest() {
+  // Load protodefs for serialising protobuf schemas
+  global.protobuf = await loadAsync('./proto/descriptor.proto')
 
-main().then(() => process.exit())
+  const foo = generateTestFoo()
+
+  console.log('Test input')
+  console.log('==========')
+  console.log(`foo: ${JSON.stringify(foo, null, 2)}`)
+  console.log()
+  console.log(`foo.func1(): ${foo.func1()}`)
+  console.log()
+  console.log()
+
+  const encodedTuple = encodeEntity(foo)
+  await writeToRedis('foo', encodedTuple)
+
+  const decodedTuple = await fetchFromRedis('foo')
+  const decoded =  decodeEntity(decodedTuple)
+
+  console.log('Test output')
+  console.log('===========')
+  console.log(`foo: ${JSON.stringify(decoded, null, 2)}`)
+  console.log()
+  console.log(`foo.func1(): ${decoded.func1()}`)
+  console.log()
+  console.log()
+}
+
+perfTest().then(functionalTest).then(() => process.exit())
