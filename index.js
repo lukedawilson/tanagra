@@ -169,4 +169,4 @@ async function functionalTest() {
   console.log()
 }
 
-initProtobufs('./proto/descriptor.proto').then(perfTest).then(functionalTest).catch(console.log).then(() => process.exit())
+initProtobufs('./proto/descriptor.proto', module)/*.then(perfTest)*/.then(functionalTest).catch(console.log).then(() => process.exit())

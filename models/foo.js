@@ -5,7 +5,7 @@ class Foo {
     this.bars = bars
 
     // serialization properties
-    this.filePath = module.filename
+    this._serializationUniqueId = this.serializationUniqueId
   }
 
   func1() {
@@ -22,6 +22,10 @@ class Foo {
 
   static get staticGet1() {
     return 'more static'
+  }
+
+  get serializationUniqueId() {
+    return module.filename
   }
 }
 

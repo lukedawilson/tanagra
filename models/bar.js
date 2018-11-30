@@ -5,11 +5,15 @@ class Bar {
     this.baz = baz
 
     // serialization properties
-    this.filePath = module.filename
+    this._serializationUniqueId = this.serializationUniqueId
   }
 
   someFunc() {
     return `Funky ${this.string}`
+  }
+
+  get serializationUniqueId() {
+    return module.filename
   }
 }
 
