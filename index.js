@@ -149,6 +149,9 @@ async function functionalTest() {
   console.log(`foo: ${JSON.stringify(foo, null, 2)}`)
   console.log()
   console.log(`foo.func1(): ${foo.func1()}`)
+  console.log(`foo.get1: ${foo.get1}`)
+  console.log(`Foo.staticFunc1(): ${Foo.staticFunc1()}`)
+  console.log(`Foo.staticGet1: ${Foo.staticGet1}`)
   console.log()
   console.log()
 
@@ -163,6 +166,9 @@ async function functionalTest() {
   console.log(`foo: ${JSON.stringify(decoded, null, 2)}`)
   console.log()
   console.log(`foo.func1(): ${decoded.func1()}`)
+  console.log(`foo.get1: ${decoded.get1}`)
+  console.log(`Foo.staticFunc1(): ${decoded.constructor.staticFunc1()}`)
+  console.log(`Foo.staticGet1: ${decoded.constructor.staticGet1}`)
   console.log()
   console.log()
 }

@@ -11,6 +11,18 @@ class Foo {
   func1() {
     return `${this.string}, ${this.number}`
   }
+
+  get get1() {
+    return this.bars.length
+  }
+
+  static staticFunc1() {
+    return 'static'
+  }
+
+  static get staticGet1() {
+    return 'more static'
+  }
 }
 
 module.exports = Foo
