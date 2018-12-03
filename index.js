@@ -44,9 +44,19 @@ function showPerfResults(description, array) {
 
 function generateTestFoo() {
   const baz = new Baz('Simple Baz', 456456)
+
   const bar1 = new Bar('Complex Bar 1', new Date(), baz)
   const bar2 = new Bar('Complex Bar 2', new Date(), baz)
-  return new Foo('Hello foo', 123123, [bar1, bar2])
+
+  const baz1 = new Baz('baz1', 111)
+  const baz2 = new Baz('baz2', 222)
+  const baz3 = new Baz('baz3', 333)
+  const bazs = new Map()
+  bazs.set(baz1.string, baz1)
+  bazs.set(baz2.string, baz2)
+  bazs.set(baz3.string, baz3)
+
+  return new Foo('Hello foo', 123123, [bar1, bar2], bazs)
 }
 
 async function perfTest() {
@@ -113,6 +123,10 @@ async function functionalTest() {
   console.log('==========')
   console.log(`foo: ${JSON.stringify(foo, null, 2)}`)
   console.log()
+  console.log(`foo.bazs:`)
+  console.log(foo.bazs)
+  console.log(foo.bazs.get('baz1'))
+  console.log()
   console.log(`foo.func1(): ${foo.func1()}`)
   console.log(`foo.get1: ${foo.get1}`)
   console.log(`Foo.staticFunc1(): ${Foo.staticFunc1()}`)
@@ -132,6 +146,10 @@ async function functionalTest() {
   console.log('===========')
   console.log(`foo: ${JSON.stringify(decoded, null, 2)}`)
   console.log()
+  console.log(`foo.bazs:`)
+  console.log(decoded.bazs)
+  console.log(decoded.bazs.get('baz1'))
+  console.log()
   console.log(`foo.func1(): ${decoded.func1()}`)
   console.log(`foo.get1: ${decoded.get1}`)
   console.log(`Foo.staticFunc1(): ${decoded.constructor.staticFunc1()}`)
@@ -144,7 +162,7 @@ async function functionalTest() {
 
 initProtobufs('./proto/descriptor.proto', module)
   .then(() => initRedis(redisClient))
-  .then(perfTest)
+  //.then(perfTest)
   .then(functionalTest)
   .catch(console.log)
   .then(() => process.exit())

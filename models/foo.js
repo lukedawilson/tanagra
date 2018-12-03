@@ -1,10 +1,11 @@
 class Foo {
-  constructor(string = null, number = null, bars = []) {
+  constructor(string = null, number = null, bars = [], bazs = null) {
     this.serializable()
 
     this.string = string
     this.number = number
     this.bars = bars
+    this.bazs = bazs || new Map()
   }
 
   func1() {
@@ -24,7 +25,7 @@ class Foo {
   }
 
   serializable() {
-    this._serializationKey =  module.filename
+    this._serializationKey = module.filename
   }
 }
 
