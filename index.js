@@ -4,9 +4,13 @@ const { performance } = require('perf_hooks')
 
 const generateTypeMap = require('./auto-mapper/generate-type-map')
 
-const initProtobufs = require('./core/init')
-const decodeEntity = require('./core/decode-entity')
-const encodeEntity = require('./core/encode-entity')
+const initProtobufs = require('./protobuf/init')
+const decodeEntity = require('./protobuf/decode-entity')
+const encodeEntity = require('./protobuf/encode-entity')
+
+const initJson = require('./json/init')
+const decodeJsonEntity = require('./json/decode-entity')
+const encodeJsonEntity = require('./json/encode-entity')
 
 const initRedis = require('./redis-cache/init')
 const writeToRedis = require('./redis-cache/write-to-redis')
@@ -66,12 +70,12 @@ async function perfTest() {
   const jsonReadTimes = []
 
   for (let i = 0; i < trials; i++) {
-    const foo = generateTestFoo()
-
+    let foo = generateTestFoo()
     const encodedEntity = await profile(async () => await encodeEntity(foo), protobufWriteTimes)
     await writeToRedis(redisClient, `foo-${i}`, encodedEntity)
 
-    const stringifiedEntity = await profile(() => JSON.stringify(foo), jsonWriteTimes)
+    foo = generateTestFoo()
+    const stringifiedEntity = await profile(() => encodeJsonEntity(foo), jsonWriteTimes)
     await redisClient.setAsync(`foo-${i}-json`, stringifiedEntity)
   }
 
@@ -80,7 +84,7 @@ async function perfTest() {
     await profile(async () => decodeEntity(tuple, Foo), protobufReadTimes)
 
     const string = await redisClient.getAsync(`foo-${i}-json`)
-    await profile(() => JSON.parse(string), jsonReadTimes)
+    await profile(() => decodeJsonEntity(string), jsonReadTimes)
   }
 
   console.log('Performance')
@@ -92,34 +96,33 @@ async function perfTest() {
   console.log()
 }
 
-async function functionalTest() {
+async function functionalTest(fn, title, showInputData) {
   const foo = generateTestFoo()
 
-  console.log('Test input')
-  console.log('==========')
-  console.log(`foo: ${JSON.stringify(foo, null, 2)}`)
-  console.log()
-  console.log(`foo.bazs:`)
-  console.log(foo.bazs)
-  console.log(foo.bazs.get('baz1'))
-  console.log()
-  console.log(`foo.func1(): ${foo.func1()}`)
-  console.log(`foo.get1: ${foo.get1}`)
-  console.log(`Foo.staticFunc1(): ${Foo.staticFunc1()}`)
-  console.log(`Foo.staticGet1: ${Foo.staticGet1}`)
-  console.log()
-  console.log(`bar.someFunc(): ${foo.bars[0].someFunc()}`)
-  console.log()
-  console.log()
+  if (showInputData) {
+    console.log('Test data')
+    console.log('=========')
+    console.log(`foo: ${JSON.stringify(foo, null, 2)}`)
+    console.log()
+    console.log(`foo.bazs:`)
+    console.log(foo.bazs)
+    console.log(foo.bazs.get('baz1'))
+    console.log()
+    console.log(`foo.func1(): ${foo.func1()}`)
+    console.log(`foo.get1: ${foo.get1}`)
+    console.log(`Foo.staticFunc1(): ${Foo.staticFunc1()}`)
+    console.log(`Foo.staticGet1: ${Foo.staticGet1}`)
+    console.log()
+    console.log(`bar.someFunc(): ${foo.bars[0].someFunc()}`)
+    console.log()
+    console.log()
+  }
 
-  const encodedTuple = encodeEntity(foo)
-  await writeToRedis(redisClient, 'foo', encodedTuple)
+  const decoded = await fn(foo)
 
-  const decodedTuple = await fetchFromRedis(redisClient, 'foo')
-  const decoded =  decodeEntity(decodedTuple, Foo)
-
-  console.log('Test output')
-  console.log('===========')
+  title = `Test results (${title})`
+  console.log(title)
+  console.log(title.split('').map(_ => '=').join(''))
   console.log(`foo: ${JSON.stringify(decoded, null, 2)}`)
   console.log()
   console.log(`foo.bazs:`)
@@ -139,8 +142,18 @@ async function functionalTest() {
 }
 
 initProtobufs('./proto/descriptor.proto', null) // generateTypeMap(module)
+  .then(() => initJson(generateTypeMap(module)))
   .then(() => initRedis(redisClient))
   .then(perfTest)
-  .then(functionalTest)
+  .then(() => functionalTest(async (foo) => {
+    const encoded = encodeJsonEntity(foo)
+    await redisClient.setAsync(`foo-json`, encoded)
+    return decodeJsonEntity(await redisClient.getAsync(`foo-json`))
+  }, 'json', true))
+  .then(() => functionalTest(async (foo) => {
+    const encodedTuple = encodeEntity(foo)
+    await writeToRedis(redisClient, 'foo', encodedTuple)
+    return decodeEntity(await fetchFromRedis(redisClient, 'foo'), Foo)
+  }, 'protobuf', false))
   .catch(console.log)
   .then(() => process.exit())

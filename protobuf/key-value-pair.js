@@ -1,4 +1,4 @@
-const serializable = require('./decorate-class')
+const serializable = require('../core/decorate-class')
 
 class KeyValuePair {
   constructor(key, value, keySerializationKey, valueSerializationKey) {
