@@ -25,21 +25,21 @@ function generateMessage(instance, message) {
       }
     } else if (kvp.value.constructor.name === 'Map') {
       const firstKey = kvp.value.keys().next().value
-      if (firstKey) {
-        const firstValue = kvp.value.get(firstKey)
-        if (firstValue) {
-          if (alreadyMappedFields.indexOf(`${kvp.key}_map`) === -1) {
-            const childValue = new KeyValuePair(firstKey, firstValue, firstKey._serializationKey, firstValue._serializationKey)
-            const childMessage = getSet(childValue)
-            message.add(childMessage)
-            message.add(new protobuf.Field(`${kvp.key}_map`, i++, childMessage.name, 'repeated'))
-          }
-
-          instance[`${kvp.key}_map`] = Array.from(kvp.value.keys()).map(key => {
-            const value = kvp.value.get(key)
-            return new KeyValuePair(key, value, key._serializationKey, value._serializationKey)
-          })
+      const firstValue = firstKey && kvp.value.get(firstKey)
+      if (firstValue) {
+        // If KeyValuePair repeated field not already added, add it
+        if (alreadyMappedFields.indexOf(`${kvp.key}_map`) === -1) {
+          const childValue = new KeyValuePair(firstKey, firstValue, firstKey._serializationKey, firstValue._serializationKey)
+          const childMessage = getSet(childValue)
+          message.add(childMessage)
+          message.add(new protobuf.Field(`${kvp.key}_map`, i++, childMessage.name, 'repeated'))
         }
+
+        // Add internal representation of map to instance being serialized
+        instance[`${kvp.key}_map`] = Array.from(kvp.value.keys()).map(key => {
+          const value = kvp.value.get(key)
+          return new KeyValuePair(key, value, key._serializationKey, value._serializationKey)
+        })
       }
     } else if (!primitiveTypes[kvp.value.constructor.name]) {
       const subMessage = getSet(kvp.value)
@@ -54,7 +54,7 @@ function generateMessage(instance, message) {
 }
 
 function getTypeId(value) {
-  return value.serializable ? value._serializationKey : value.constructor.name
+  return value._serializationKey || value.constructor.name
 }
 
 function getSet(value) {

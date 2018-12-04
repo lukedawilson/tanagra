@@ -3,14 +3,32 @@ const util = require('util')
 
 const loadAsync = util.promisify(protobuf.load)
 
-function deserializeMap(kvp, result) {
+function deserializeMap(mapFieldName, result, serializable) {
   const map = new Map()
-  result[kvp.key].forEach(kvp2 => map.set(kvp2.key, kvp2.value))
+  result[mapFieldName].forEach(kvp => {
+    // Set prototypes on kvp's key and value
+    if (kvp._keySerializationKey) {
+      const proto = serializable.get(kvp._keySerializationKey)
+      if (proto) {
+        Object.setPrototypeOf(kvp.key, proto)
+      }
+    }
 
-  const originalKey = kvp.key.replace('_map', '')
+    if (kvp._valueSerializationKey) {
+      const proto = serializable.get(kvp._valueSerializationKey)
+      if (proto) {
+        Object.setPrototypeOf(kvp.value, proto)
+      }
+    }
+
+    // Add entry to map
+    map.set(kvp.key, kvp.value)
+  })
+
+  const originalKey = mapFieldName.replace('_map', '')
   result[originalKey] = map
 
-  delete result[kvp.key]
+  delete result[mapFieldName]
 }
 
 function setClazz(serializable) {
@@ -49,33 +67,16 @@ function decode(serializable) {
 
     // Set prototype, which contains fields, getters, static members
     if (result._serializationKey) {
-      if (result.constructor.name === 'KeyValuePair') {
-        if (result._keySerializationKey) {
-          const proto = serializable.get(result._keySerializationKey)
-          if (proto) {
-            Object.setPrototypeOf(result.key, proto)
-          }
-        }
-
-        if (result._valueSerializationKey) {
-          const proto = serializable.get(result._valueSerializationKey)
-          if (proto) {
-            Object.setPrototypeOf(result.value, proto)
-          }
-        }
-      } else {
-        const proto = serializable.get(result._serializationKey)
-        if (proto) {
-          Object.setPrototypeOf(result, proto)
-        }
+      const proto = serializable.get(result._serializationKey)
+      if (proto) {
+        Object.setPrototypeOf(result, proto)
       }
     }
 
     // Handle maps as a special case
-    Object.entries(result)
-      .map(entry => ({ key: entry[0], value: entry[1]}))
-      .filter(kvp => kvp.key.indexOf('_map') !== -1)
-      .forEach(kvp => deserializeMap(kvp, result))
+    Object.getOwnPropertyNames(result)
+      .filter(property => property.indexOf('_map') !== -1)
+      .forEach(property => deserializeMap(property, result, serializable))
 
     return result
   }
