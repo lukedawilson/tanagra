@@ -28,12 +28,15 @@ function generateMessage(instance, message) {
       if (firstKey) {
         const firstValue = kvp.value.get(firstKey)
         if (firstValue) {
-          const childValue = new KeyValuePair(firstKey, firstValue)
+          const childValue = new KeyValuePair(firstKey, firstValue, firstKey._serializationKey, firstValue._serializationKey)
           const childMessage = getSet(childValue)
           message.add(childMessage)
           message.add(new protobuf.Field(`${kvp.key}_map`, i++, childMessage.name, 'repeated'))
 
-          instance[`${kvp.key}_map`] = Array.from(kvp.value.keys()).map(key => new KeyValuePair(key, kvp.value.get(key)))
+          instance[`${kvp.key}_map`] = Array.from(kvp.value.keys()).map(key => {
+            const value = kvp.value.get(key)
+            return new KeyValuePair(key, value, key._serializationKey, value._serializationKey)
+          })
         }
       }
     } else if (!primitiveTypes[kvp.value.constructor.name]) {

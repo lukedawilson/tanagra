@@ -2,9 +2,11 @@ const redis = require('redis')
 
 const { performance } = require('perf_hooks')
 
-const initProtobufs = require('./lib/init')
-const decodeEntity = require('./lib/decode-entity')
-const encodeEntity = require('./lib/encode-entity')
+const generateTypeMap = require('./auto-mapper/generate-type-map')
+
+const initProtobufs = require('./core/init')
+const decodeEntity = require('./core/decode-entity')
+const encodeEntity = require('./core/encode-entity')
 
 const initRedis = require('./redis-cache/init')
 const writeToRedis = require('./redis-cache/write-to-redis')
@@ -140,7 +142,7 @@ async function functionalTest() {
   await writeToRedis(redisClient, 'foo', encodedTuple)
 
   const decodedTuple = await fetchFromRedis(redisClient, 'foo')
-  const decoded =  decodeEntity(decodedTuple)
+  const decoded =  decodeEntity(decodedTuple, Foo)
 
   console.log('Test output')
   console.log('===========')
@@ -156,11 +158,13 @@ async function functionalTest() {
   console.log(`Foo.staticGet1: ${decoded.constructor.staticGet1}`)
   console.log()
   console.log(`bar.someFunc(): ${decoded.bars[0].someFunc()}`)
+  console.log(`baz.someBazFunc(): ${decoded.bars[0].baz.someBazFunc()}`)
+  console.log(`baz1.someBazFunc(): ${decoded.bazs.get('baz1').someBazFunc()}`)
   console.log()
   console.log()
 }
 
-initProtobufs('./proto/descriptor.proto', module)
+initProtobufs('./proto/descriptor.proto', null) // generateTypeMap(module)
   .then(() => initRedis(redisClient))
   //.then(perfTest)
   .then(functionalTest)

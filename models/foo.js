@@ -1,3 +1,6 @@
+const Bar = require('./bar')
+const Baz = require('./baz')
+
 class Foo {
   constructor(string = null, number = null, bars = [], bazs = null) {
     this.serializable()
@@ -28,5 +31,10 @@ class Foo {
     this._serializationKey = module.filename
   }
 }
+
+Foo._fieldTypes = new Map([
+  [new Bar()._serializationKey, Bar],
+  [new Baz()._serializationKey, Baz]
+])
 
 module.exports = Foo
