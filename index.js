@@ -90,7 +90,7 @@ async function perfTest() {
 
   for (let i = 0; i < trials; i++) {
     const tuple = await profile(async () => await fetchFromRedis(redisClient, `foo-${i}`), redisReadTimes)
-    await profile(async () => decodeEntity(tuple), protobufReadTimes)
+    await profile(async () => decodeEntity(tuple, Foo), protobufReadTimes)
   }
 
   console.log('Performance')
@@ -166,7 +166,7 @@ async function functionalTest() {
 
 initProtobufs('./proto/descriptor.proto', null) // generateTypeMap(module)
   .then(() => initRedis(redisClient))
-  //.then(perfTest)
+  .then(perfTest)
   .then(functionalTest)
   .catch(console.log)
   .then(() => process.exit())
