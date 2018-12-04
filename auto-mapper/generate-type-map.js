@@ -1,6 +1,6 @@
 function serializableClasses(baseModule, map) {
   if (baseModule.exports.prototype && baseModule.exports.prototype.serializable) {
-    map.set(new baseModule.exports()._serializationKey, baseModule.exports.prototype)
+    map.set(baseModule.exports._serializationKey, baseModule.exports.prototype)
   }
 
   baseModule.children

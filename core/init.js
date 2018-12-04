@@ -17,7 +17,7 @@ function setClazz(serializable) {
   return function(clazz) {
     if (clazz) {
       this.clazz = clazz
-      serializable.set(new clazz()._serializationKey, clazz.prototype)
+      serializable.set(clazz._serializationKey, clazz.prototype)
     }
   }
 }

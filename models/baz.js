@@ -1,7 +1,7 @@
+const serializable = require('../core/decorate-class')
+
 class Baz {
   constructor(string = null, number = null) {
-    this.serializable()
-
     this.string = string
     this.number = number
   }
@@ -9,10 +9,6 @@ class Baz {
   someBazFunc() {
     return `bazbaz ${this.string}`
   }
-
-  serializable() {
-    this._serializationKey =  module.filename
-  }
 }
 
-module.exports = Baz
+module.exports = serializable(Baz, module.filename)
