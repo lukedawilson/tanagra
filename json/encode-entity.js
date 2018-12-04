@@ -8,7 +8,7 @@ function normalizeJsonObject(instance) {
   })
 }
 
-module.exports = function(entity) {
-  normalizeJsonObject(entity)
-  return JSON.stringify(entity)
+module.exports = function(instance) {
+  normalizeJsonObject(instance)
+  return JSON.stringify(instance)
 }

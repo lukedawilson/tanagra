@@ -1,7 +1,9 @@
 function denormalizeJsonObject(instance) {
   if (instance._serializationKey) {
     const proto = global.serializable.get(instance._serializationKey)
-    Object.setPrototypeOf(instance, proto)
+    if (proto) {
+      Object.setPrototypeOf(instance, proto)
+    }
   }
 
   Object.entries(instance).map(entry => ({ key: entry[0], value: entry[1] })).forEach(kvp => {
@@ -17,8 +19,23 @@ function denormalizeJsonObject(instance) {
   })
 }
 
-module.exports = function(encoded) {
+function addSerializableClasses(clazz, map) {
+  if (clazz._serializationKey) {
+    map.set(clazz._serializationKey, clazz.prototype)
+  }
+
+  if (clazz._fieldTypes) {
+    clazz._fieldTypes.forEach(klass => addSerializableClasses(klass, map))
+  }
+}
+
+module.exports = function(encoded, clazz) {
   const decoded = JSON.parse(encoded)
+
+  if (clazz) {
+    addSerializableClasses(clazz, global.serializable)
+  }
+
   denormalizeJsonObject(decoded)
   return decoded
 }
