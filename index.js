@@ -62,22 +62,33 @@ async function perfTest() {
 
   const protobufWriteTimes = []
   const protobufReadTimes = []
+  const jsonWriteTimes = []
+  const jsonReadTimes = []
 
   for (let i = 0; i < trials; i++) {
     const foo = generateTestFoo()
+
     const encodedEntity = await profile(async () => await encodeEntity(foo), protobufWriteTimes)
     await writeToRedis(redisClient, `foo-${i}`, encodedEntity)
+
+    const stringifiedEntity = await profile(() => JSON.stringify(foo), jsonWriteTimes)
+    await redisClient.setAsync(`foo-${i}-json`, stringifiedEntity)
   }
 
   for (let i = 0; i < trials; i++) {
     const tuple = await fetchFromRedis(redisClient, `foo-${i}`)
     await profile(async () => decodeEntity(tuple, Foo), protobufReadTimes)
+
+    const string = await redisClient.getAsync(`foo-${i}-json`)
+    await profile(() => JSON.parse(string), jsonReadTimes)
   }
 
   console.log('Performance')
   console.log('===========')
   showPerfResults('protobuf-write (ms):', protobufWriteTimes)
   showPerfResults('protobuf-read (ms):', protobufReadTimes)
+  showPerfResults('json-write (ms):', jsonWriteTimes)
+  showPerfResults('json-read (ms):', jsonReadTimes)
   console.log()
 }
 
