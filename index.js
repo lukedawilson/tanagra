@@ -1,4 +1,5 @@
 const redis = require('redis')
+const memcache = require('memory-cache')
 
 const { performance } = require('perf_hooks')
 
@@ -73,18 +74,26 @@ async function perfTest() {
     let foo = generateTestFoo()
     const encodedEntity = await profile(async () => await encodeEntity(foo), protobufWriteTimes)
     await writeToRedis(redisClient, `foo-${i}`, encodedEntity)
+    await initProtobufs('./proto/descriptor.proto', null)
+    memcache.clear()
 
     foo = generateTestFoo()
     const stringifiedEntity = await profile(() => encodeJsonEntity(foo), jsonWriteTimes)
     await redisClient.setAsync(`foo-${i}-json`, stringifiedEntity)
+    await initJson(null)
+    memcache.clear()
   }
 
   for (let i = 0; i < trials; i++) {
     const tuple = await fetchFromRedis(redisClient, `foo-${i}`)
     await profile(async () => decodeEntity(tuple, Foo), protobufReadTimes)
+    await initProtobufs('./proto/descriptor.proto', null)
+    memcache.clear()
 
     const string = await redisClient.getAsync(`foo-${i}-json`)
     await profile(() => decodeJsonEntity(string, Foo), jsonReadTimes)
+    await initJson(null)
+    memcache.clear()
   }
 
   console.log('Performance')
