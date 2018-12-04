@@ -12,8 +12,6 @@ const initRedis = require('./redis-cache/init')
 const writeToRedis = require('./redis-cache/write-to-redis')
 const fetchFromRedis = require('./redis-cache/fetch-from-redis')
 
-const connection = require('./db/connection')
-
 const Foo = require('./models/foo')
 const Bar = require('./models/bar')
 const Baz = require('./models/baz')
@@ -40,8 +38,6 @@ function showPerfResults(description, array) {
   console.log(`Ave (inc. 1st): ${aveInc1st.toPrecision(3)}`)
   console.log(`Ave (exc. 1st): ${aveExc1st.toPrecision(3)}`)
   console.log()
-
-  return { aveInc1st, aveExc1st }
 }
 
 function generateTestFoo() {
@@ -64,57 +60,24 @@ function generateTestFoo() {
 async function perfTest() {
   const trials = 10
 
-  const dbWriteTimes = []
   const protobufWriteTimes = []
-  const redisWriteTimes = []
-  const dbReadTimes = []
-  const redisReadTimes = []
   const protobufReadTimes = []
-
-  const ids = []
-  for (let i = 0; i < trials; i++) {
-    const foo = generateTestFoo()
-    ids.push(await profile(async () => await connection.writeFoo(foo), dbWriteTimes))
-  }
 
   for (let i = 0; i < trials; i++) {
     const foo = generateTestFoo()
     const encodedEntity = await profile(async () => await encodeEntity(foo), protobufWriteTimes)
-    await profile(async () => await writeToRedis(redisClient, `foo-${i}`, encodedEntity), redisWriteTimes)
+    await writeToRedis(redisClient, `foo-${i}`, encodedEntity)
   }
 
   for (let i = 0; i < trials; i++) {
-    const id = ids[i]
-    await profile(async () => await connection.readFoo(id), dbReadTimes)
-  }
-
-  for (let i = 0; i < trials; i++) {
-    const tuple = await profile(async () => await fetchFromRedis(redisClient, `foo-${i}`), redisReadTimes)
+    const tuple = await fetchFromRedis(redisClient, `foo-${i}`)
     await profile(async () => decodeEntity(tuple, Foo), protobufReadTimes)
   }
 
   console.log('Performance')
   console.log('===========')
-
-  showPerfResults('db-write (ms):', dbWriteTimes)
-
-  const protobufWritePerf = showPerfResults('protobuf-write (ms):', protobufWriteTimes)
-  const redisWritePerf = showPerfResults('redis-write (ms):', redisWriteTimes)
-
-  console.log('protobuf-redis-write (ms):')
-  console.log(`Ave (inc. 1st): ${(protobufWritePerf.aveInc1st + redisWritePerf.aveInc1st).toPrecision(3)}`)
-  console.log(`Ave (exc. 1st): : ${(protobufWritePerf.aveExc1st + redisWritePerf.aveExc1st).toPrecision(3)}`)
-  console.log()
-
-  showPerfResults('db-read (ms):', dbReadTimes)
-
-  const redisReadPerf = showPerfResults('redis-read (ms):', redisReadTimes)
-  const protobufReadPerf = showPerfResults('protobuf-read (ms):', protobufReadTimes)
-
-  console.log('protobuf-redis-read (ms):')
-  console.log(`Ave (inc. 1st): ${(protobufReadPerf.aveInc1st + redisReadPerf.aveInc1st).toPrecision(3)}`)
-  console.log(`Ave (exc. 1st): : ${(protobufReadPerf.aveExc1st + redisReadPerf.aveExc1st).toPrecision(3)}`)
-  console.log()
+  showPerfResults('protobuf-write (ms):', protobufWriteTimes)
+  showPerfResults('protobuf-read (ms):', protobufReadTimes)
   console.log()
 }
 
