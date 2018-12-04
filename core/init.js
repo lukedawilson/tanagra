@@ -13,24 +13,20 @@ function deserializeMap(kvp, result) {
   delete result[kvp.key]
 }
 
-module.exports = async (descriptorProtoFilePath, serializable) => {
-  serializable = serializable || new Map()
-
-  // Load protodefs for serialising protobuf schemas
-  const root = await loadAsync(descriptorProtoFilePath)
-  global.protobuf = { Type: root.lookupType('Type') }
-
-  // Add class and instance functions and getters by setting prototype
-  protobuf.Type.prototype.setClazz = function (clazz) {
+function setClazz(serializable) {
+  return function(clazz) {
     if (clazz) {
       this.clazz = clazz
       serializable.set(new clazz()._serializationKey, clazz.prototype)
     }
   }
+}
 
-  const superGet = protobuf.Type.prototype.get
-  protobuf.Type.prototype.get = function (name) {
-    const type = superGet.call(this, name)
+function get(serializable) {
+  const _super = protobuf.Type.prototype.get
+
+  return function (name) {
+    const type = _super.call(this, name)
 
     if (this.clazz && this.clazz._fieldTypes) {
       if (type) {
@@ -43,10 +39,13 @@ module.exports = async (descriptorProtoFilePath, serializable) => {
 
     return type
   }
+}
 
-  const superDecode = protobuf.Type.prototype.decode
-  protobuf.Type.prototype.decode = function(reader, length) {
-    const result = superDecode.call(this, reader, length)
+function decode(serializable) {
+  const _super = protobuf.Type.prototype.decode
+
+  return function(reader, length) {
+    const result = _super.call(this, reader, length)
 
     // Set prototype, which contains fields, getters, static members
     if (result._serializationKey) {
@@ -80,4 +79,17 @@ module.exports = async (descriptorProtoFilePath, serializable) => {
 
     return result
   }
+}
+
+module.exports = async (descriptorProtoFilePath, serializable) => {
+  serializable = serializable || new Map()
+
+  // Load protodefs for serialising protobuf schemas
+  const root = await loadAsync(descriptorProtoFilePath)
+  global.protobuf = { Type: root.lookupType('Type') }
+
+  // Extend Type proto, adding hooks for type map
+  protobuf.Type.prototype.setClazz = setClazz(serializable)
+  protobuf.Type.prototype.get = get(serializable)
+  protobuf.Type.prototype.decode = decode(serializable)
 }
