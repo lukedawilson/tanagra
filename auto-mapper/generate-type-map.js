@@ -1,5 +1,5 @@
 function serializableClasses(baseModule, map) {
-  if (baseModule.exports.prototype && baseModule.exports.prototype.serializable) {
+  if (baseModule.exports._serializationKey) {
     map.set(baseModule.exports._serializationKey, baseModule.exports.prototype)
   }
 
