@@ -1,4 +1,4 @@
-const serializable = require('../core/decorate-class')
+const serializable = require('tanagra-core').serializable
 
 const Bar = require('./bar')
 const Baz = require('./baz')

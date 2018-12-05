@@ -1,0 +1,24 @@
+{
+  "name": "tanagra-core",
+  "version": "0.1.0",
+  "description": "Core functions for Tanagra serialization library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/lukedawilson/tanagra.git"
+  },
+  "keywords": [
+    "node",
+    "javascript",
+    "serialization"
+  ],
+  "author": "Luke Wilson <luke.d.a.wilson@gmail.com> (https://github.com/lukedawilson/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lukedawilson/tanagra/issues"
+  },
+  "homepage": "https://github.com/lukedawilson/tanagra#readme"
+}
