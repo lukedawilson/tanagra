@@ -1,20 +1,20 @@
 {
-  "name": "protobuf-spike",
+  "name": "tanagra",
   "version": "0.1.0",
-  "description": "Proof of concept for serialising complex types with protobuffs",
-  "main": "index.js",
+  "description": "Serialization library for javascript",
+  "main": "demo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Luke",
-  "license": "UNLICENSED",
+  "author": "Luke Wilson <luke.d.a.wilson@gmail.com> (https://github.com/lukedawilson/)",
+  "license": "MIT",
   "dependencies": {
     "pg": "^7.6.1",
     "redis": "^2.8.0",
     "tanagra-auto-mapper": "^0.1.0",
     "tanagra-core": "^0.1.1",
     "tanagra-json": "^0.1.1",
-    "tanagra-protobuf": "^0.1.0",
+    "tanagra-protobuf": "^0.1.1",
     "tanagra-redis-cache": "^0.1.1",
     "yarn": "^1.12.3"
   }

@@ -182,12 +182,13 @@ tanagra-json@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/tanagra-json/-/tanagra-json-0.1.1.tgz#b9c224937e34212db9df4133bd06cca4f9ffb4b0"
 
-tanagra-protobuf@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/tanagra-protobuf/-/tanagra-protobuf-0.1.0.tgz#659f3d0eddd539eb8e863ced4cebffc78741a88e"
+tanagra-protobuf@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/tanagra-protobuf/-/tanagra-protobuf-0.1.1.tgz#2fc7070ddf0431828e04fce0d221aa261229bc87"
   dependencies:
     memory-cache "^0.2.0"
     protobufjs "^6.8.8"
+    tanagra-core "^0.1.1"
 
 tanagra-redis-cache@^0.1.1:
   version "0.1.1"

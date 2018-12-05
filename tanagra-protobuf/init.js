@@ -1,6 +1,8 @@
 const protobuf = require('protobufjs')
 const util = require('util')
 
+const KeyValuePair = require('./key-value-pair')
+
 const loadAsync = util.promisify(protobuf.load)
 
 function deserializeMap(mapFieldName, result, serializable) {
@@ -84,6 +86,7 @@ function decode(serializable) {
 
 module.exports = async (serializable) => {
   serializable = serializable || new Map()
+  serializable.set(KeyValuePair._serializationKey, KeyValuePair.prototype)
 
   // Load protodefs for serialising protobuf schemas
   const root = await loadAsync(`${__dirname}/descriptor.proto`)
