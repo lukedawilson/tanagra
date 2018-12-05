@@ -174,6 +174,10 @@ tanagra-core@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/tanagra-core/-/tanagra-core-0.1.0.tgz#72f2507b0ab416affe40e48e3935127cd03a0b46"
 
+tanagra-json@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/tanagra-json/-/tanagra-json-0.1.1.tgz#b9c224937e34212db9df4133bd06cca4f9ffb4b0"
+
 through@2:
   version "2.3.8"
   resolved "http://registry.npmjs.org/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"

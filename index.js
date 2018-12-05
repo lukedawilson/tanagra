@@ -9,9 +9,7 @@ const initProtobufs = require('./protobuf/init')
 const decodeEntity = require('./protobuf/decode-entity')
 const encodeEntity = require('./protobuf/encode-entity')
 
-const initJson = require('./json/init')
-const decodeJsonEntity = require('./json/decode-entity')
-const encodeJsonEntity = require('./json/encode-entity')
+const json = require('tanagra-json')
 
 const initRedis = require('./redis-cache/init')
 const writeToRedis = require('./redis-cache/write-to-redis')
@@ -78,9 +76,9 @@ async function perfTest() {
     memcache.clear()
 
     foo = generateTestFoo()
-    const stringifiedEntity = await profile(() => encodeJsonEntity(foo), jsonWriteTimes)
+    const stringifiedEntity = await profile(() => json.encodeEntity(foo), jsonWriteTimes)
     await redisClient.setAsync(`foo-${i}-json`, stringifiedEntity)
-    await initJson(null)
+    json.init()
     memcache.clear()
   }
 
@@ -91,8 +89,8 @@ async function perfTest() {
     memcache.clear()
 
     const string = await redisClient.getAsync(`foo-${i}-json`)
-    await profile(() => decodeJsonEntity(string, Foo), jsonReadTimes)
-    await initJson(null)
+    await profile(() => json.decodeEntity(string, Foo), jsonReadTimes)
+    json.init()
     memcache.clear()
   }
 
@@ -151,13 +149,13 @@ async function functionalTest(fn, title, showInputData) {
 }
 
 initProtobufs(null) // generateTypeMap(module)
-  .then(() => initJson(null)) // generateTypeMap(module)
+  .then(() => json.init()) // generateTypeMap(module)
   .then(() => initRedis(redisClient))
   .then(perfTest)
   .then(() => functionalTest(async (foo) => {
-    const encoded = encodeJsonEntity(foo)
+    const encoded = json.encodeEntity(foo)
     await redisClient.setAsync(`foo-json`, encoded)
-    return decodeJsonEntity(await redisClient.getAsync(`foo-json`), Foo)
+    return json.decodeEntity(await redisClient.getAsync(`foo-json`), Foo)
   }, 'json', true))
   .then(() => functionalTest(async (foo) => {
     const encodedTuple = encodeEntity(foo)
