@@ -7,8 +7,24 @@ function stringToBuffer(bufferString) {
 }
 
 module.exports = async (redisClient, key) => {
-  const encoded = stringToBuffer(await redisClient.getAsync(`${key}-encoded`))
+  const encodedFromRedis = await redisClient.getAsync(`${key}-encoded`)
+  if (!encodedFromRedis) {
+    return null
+  }
+
+  const encoded = stringToBuffer(encodedFromRedis)
+
   const type = await redisClient.getAsync(`${key}-type`)
-  const schema = stringToBuffer(await redisClient.getAsync(`${key}-schema`))
+  if (!type) {
+    return null
+  }
+
+  const schemaFromRedis = await redisClient.getAsync(`${key}-schema`)
+  if (!schemaFromRedis) {
+    return null
+  }
+
+  const schema = stringToBuffer(schemaFromRedis)
+
   return {encoded, type, schema}
 }

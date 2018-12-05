@@ -1,12 +1,16 @@
 const protobuf = require('protobufjs')
-const messageCache = require('memory-cache')
+const memcache = require('memory-cache')
 
 const KeyValuePair = require('./key-value-pair')
 const primitiveTypes = require('./primitive-types')
 
 function generateMessage(instance, message) {
   if (!message) {
-    message = new protobuf.Type(instance.constructor.name)
+    if (instance.constructor.name === 'Object') {
+      message = new protobuf.Type(`Object_${getObjectIndex()}`)
+    } else {
+      message = new protobuf.Type(instance.constructor.name)
+    }
   }
 
   const alreadyMappedFields = Object.keys(message.fields)
@@ -14,7 +18,7 @@ function generateMessage(instance, message) {
     .map(entry => ({ key: entry[0], value: entry[1] }))
     .filter(kvp => kvp.value && alreadyMappedFields.indexOf(kvp.key) === -1)
 
-  let i = 0
+  let i = alreadyMappedFields.length
   fieldsToMap.forEach(kvp => {
     if (kvp.value.constructor.name === 'Array') {
       const firstChild = kvp.value[0]
@@ -53,15 +57,24 @@ function generateMessage(instance, message) {
   return message
 }
 
+// ToDo: this could be a GUID, or else overflow errors could occur for large numbers of object instances
+function getObjectIndex() {
+  const objIndex = memcache.get('object-index') || 0
+  memcache.put('object-index', objIndex + 1)
+  return objIndex
+}
+
 function getTypeId(value) {
-  return value._serializationKey || value.constructor.name
+  return value.constructor.name === 'Object'
+    ? `Object_${getObjectIndex()}`
+    : (value._serializationKey || value.constructor.name)
 }
 
 function getSet(value) {
-  const messageFromCache = messageCache.get(getTypeId(value))
+  const messageFromCache = memcache.get(getTypeId(value))
   const message = generateMessage(value, messageFromCache)
   if (!messageFromCache) {
-    messageCache.put(getTypeId(value), message)
+    memcache.put(getTypeId(value), message)
   }
 
   return message
