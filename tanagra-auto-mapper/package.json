@@ -1,7 +1,7 @@
 {
-  "name": "tanagra-core",
-  "version": "0.1.1",
-  "description": "Core functions for Tanagra serialization library",
+  "name": "tanagra-auto-mapper",
+  "version": "0.1.0",
+  "description": "Auto-mapper walking the module tree and creating a type map for the Tanagra serialization library",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

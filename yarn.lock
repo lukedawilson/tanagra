@@ -170,9 +170,13 @@ split@^1.0.0:
   dependencies:
     through "2"
 
-tanagra-core@^0.1.0:
+tanagra-auto-mapper@^0.1.0:
   version "0.1.0"
-  resolved "https://registry.yarnpkg.com/tanagra-core/-/tanagra-core-0.1.0.tgz#72f2507b0ab416affe40e48e3935127cd03a0b46"
+  resolved "https://registry.yarnpkg.com/tanagra-auto-mapper/-/tanagra-auto-mapper-0.1.0.tgz#ac0e75650b0d843de684f82137cfdfacb1dc477c"
+
+tanagra-core@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/tanagra-core/-/tanagra-core-0.1.1.tgz#bc183936f5684e282f5b0b409824f88f8f1cf983"
 
 tanagra-json@^0.1.1:
   version "0.1.1"

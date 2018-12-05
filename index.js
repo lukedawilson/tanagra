@@ -3,7 +3,7 @@ const memcache = require('memory-cache')
 
 const { performance } = require('perf_hooks')
 
-const generateTypeMap = require('./auto-mapper/generate-type-map')
+const generateTypeMap = require('tanagra-auto-mapper').generateTypeMap
 
 const initProtobufs = require('./protobuf/init')
 const decodeEntity = require('./protobuf/decode-entity')
@@ -148,10 +148,10 @@ async function functionalTest(fn, title, showInputData) {
   console.log()
 }
 
-initProtobufs(null) // generateTypeMap(module)
+initProtobufs(generateTypeMap(module))
   .then(() => json.init()) // generateTypeMap(module)
   .then(() => initRedis(redisClient))
-  .then(perfTest)
+  //.then(perfTest)
   .then(() => functionalTest(async (foo) => {
     const encoded = json.encodeEntity(foo)
     await redisClient.setAsync(`foo-json`, encoded)
@@ -160,7 +160,7 @@ initProtobufs(null) // generateTypeMap(module)
   .then(() => functionalTest(async (foo) => {
     const encodedTuple = encodeEntity(foo)
     await writeToRedis(redisClient, 'foo', encodedTuple)
-    return decodeEntity(await fetchFromRedis(redisClient, 'foo'), Foo)
+    return decodeEntity(await fetchFromRedis(redisClient, 'foo')) // , Foo
   }, 'protobuf', false))
   .catch(console.log)
   .then(() => process.exit())
