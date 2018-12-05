@@ -7,9 +7,9 @@ const generateTypeMap = require('tanagra-auto-mapper').generateTypeMap
 const json = require('tanagra-json')
 const redisCache = require('tanagra-redis-cache')
 
-const initProtobufs = require('./protobuf/init')
-const decodeEntity = require('./protobuf/decode-entity')
-const encodeEntity = require('./protobuf/encode-entity')
+const initProtobufs = require('./tanagra-protobuf/init')
+const decodeEntity = require('./tanagra-protobuf/decode-entity')
+const encodeEntity = require('./tanagra-protobuf/encode-entity')
 
 const Foo = require('./models/foo')
 const Bar = require('./models/bar')
