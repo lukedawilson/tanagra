@@ -178,9 +178,9 @@ tanagra-core@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/tanagra-core/-/tanagra-core-0.1.1.tgz#bc183936f5684e282f5b0b409824f88f8f1cf983"
 
-tanagra-json@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/tanagra-json/-/tanagra-json-0.1.1.tgz#b9c224937e34212db9df4133bd06cca4f9ffb4b0"
+tanagra-json@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/tanagra-json/-/tanagra-json-0.1.2.tgz#857d475190a1aa053d0e1ee5a40d3dac0c2767d1"
 
 tanagra-protobuf-redis-cache@^0.1.2:
   version "0.1.2"

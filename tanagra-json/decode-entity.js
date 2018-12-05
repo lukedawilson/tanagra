@@ -6,7 +6,7 @@ function denormalizeJsonObject(instance) {
     }
   }
 
-  Object.entries(instance).map(entry => ({ key: entry[0], value: entry[1] })).forEach(kvp => {
+  Object.entries(instance).map(entry => ({ key: entry[0], value: entry[1] })).filter(kvp => kvp.value).forEach(kvp => {
     if (kvp.key.indexOf('_map') !== -1) {
       instance[kvp.key.replace('_map', '')] = new Map(kvp.value)
       instance[kvp.key].map(kvp => kvp[1]).forEach(denormalizeJsonObject)
