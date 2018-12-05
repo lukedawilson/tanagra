@@ -9,13 +9,12 @@
   "author": "Luke",
   "license": "UNLICENSED",
   "dependencies": {
-    "memory-cache": "^0.2.0",
     "pg": "^7.6.1",
-    "protobufjs": "^6.8.8",
     "redis": "^2.8.0",
     "tanagra-auto-mapper": "^0.1.0",
     "tanagra-core": "^0.1.1",
     "tanagra-json": "^0.1.1",
+    "tanagra-protobuf": "^0.1.0",
     "tanagra-redis-cache": "^0.1.1",
     "yarn": "^1.12.3"
   }

@@ -50,8 +50,8 @@
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.0.tgz#719551d2352d301ac8b81db732acb6bdc28dbdef"
 
 "@types/node@^10.1.0":
-  version "10.12.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.7.tgz#195808b2d4b2e7c33e75e7d9b24aeee88f94660d"
+  version "10.12.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.12.tgz#e15a9d034d9210f00320ef718a50c4a799417c47"
 
 buffer-writer@2.0.0:
   version "2.0.0"
@@ -181,6 +181,13 @@ tanagra-core@^0.1.1:
 tanagra-json@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/tanagra-json/-/tanagra-json-0.1.1.tgz#b9c224937e34212db9df4133bd06cca4f9ffb4b0"
+
+tanagra-protobuf@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/tanagra-protobuf/-/tanagra-protobuf-0.1.0.tgz#659f3d0eddd539eb8e863ced4cebffc78741a88e"
+  dependencies:
+    memory-cache "^0.2.0"
+    protobufjs "^6.8.8"
 
 tanagra-redis-cache@^0.1.1:
   version "0.1.1"

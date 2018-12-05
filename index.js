@@ -1,15 +1,11 @@
 const redis = require('redis')
-const memcache = require('memory-cache')
 
 const { performance } = require('perf_hooks')
 
-const generateTypeMap = require('tanagra-auto-mapper').generateTypeMap
+const protobuf = require('tanagra-protobuf')
 const json = require('tanagra-json')
+const generateTypeMap = require('tanagra-auto-mapper').generateTypeMap
 const redisCache = require('tanagra-redis-cache')
-
-const initProtobufs = require('./tanagra-protobuf/init')
-const decodeEntity = require('./tanagra-protobuf/decode-entity')
-const encodeEntity = require('./tanagra-protobuf/encode-entity')
 
 const Foo = require('./models/foo')
 const Bar = require('./models/bar')
@@ -66,28 +62,24 @@ async function perfTest() {
 
   for (let i = 0; i < trials; i++) {
     let foo = generateTestFoo()
-    const encodedEntity = await profile(async () => await encodeEntity(foo), protobufWriteTimes)
+    const encodedEntity = await profile(async () => await protobuf.encodeEntity(foo), protobufWriteTimes)
     await redisCache.set(redisClient, `foo-${i}`, encodedEntity)
-    await initProtobufs(null)
-    memcache.clear()
+    await protobuf.init(null)
 
     foo = generateTestFoo()
     const stringifiedEntity = await profile(() => json.encodeEntity(foo), jsonWriteTimes)
     await redisClient.setAsync(`foo-${i}-json`, stringifiedEntity)
     json.init()
-    memcache.clear()
   }
 
   for (let i = 0; i < trials; i++) {
     const tuple = await redisCache.get(redisClient, `foo-${i}`)
-    await profile(async () => decodeEntity(tuple, Foo), protobufReadTimes)
-    await initProtobufs(null)
-    memcache.clear()
+    await profile(async () => protobuf.decodeEntity(tuple, Foo), protobufReadTimes)
+    await protobuf.init(null)
 
     const string = await redisClient.getAsync(`foo-${i}-json`)
     await profile(() => json.decodeEntity(string, Foo), jsonReadTimes)
     json.init()
-    memcache.clear()
   }
 
   console.log('Performance')
@@ -144,7 +136,7 @@ async function functionalTest(fn, title, showInputData) {
   console.log()
 }
 
-initProtobufs(generateTypeMap(module))
+protobuf.init(generateTypeMap(module))
   .then(() => json.init()) // generateTypeMap(module)
   .then(() => redisCache.init(redisClient))
   .then(perfTest)
@@ -154,9 +146,9 @@ initProtobufs(generateTypeMap(module))
     return json.decodeEntity(await redisClient.getAsync(`foo-json`), Foo)
   }, 'json', true))
   .then(() => functionalTest(async (foo) => {
-    const encodedTuple = encodeEntity(foo)
+    const encodedTuple = protobuf.encodeEntity(foo)
     await redisCache.set(redisClient, 'foo', encodedTuple)
-    return decodeEntity(await redisCache.get(redisClient, 'foo')) // , Foo
+    return protobuf.decodeEntity(await redisCache.get(redisClient, 'foo')) // , Foo
   }, 'protobuf', false))
   .catch(console.log)
   .then(() => process.exit())
