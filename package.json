@@ -15,7 +15,7 @@
     "tanagra-core": "^0.1.1",
     "tanagra-json": "^0.1.1",
     "tanagra-protobuf": "^0.1.1",
-    "tanagra-redis-cache": "^0.1.1",
+    "tanagra-protobuf-redis-cache": "^0.1.2",
     "yarn": "^1.12.3"
   }
 }

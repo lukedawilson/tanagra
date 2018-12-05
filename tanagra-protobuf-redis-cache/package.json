@@ -1,7 +1,7 @@
 {
-  "name": "tanagra-redis-cache",
-  "version": "0.1.1",
-  "description": "Redis cache extension for the Tanagra serialization library",
+  "name": "tanagra-protobuf-redis-cache",
+  "version": "0.1.2",
+  "description": "Redis caching of protobufs for the Tanagra serialization library",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

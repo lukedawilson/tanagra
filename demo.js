@@ -5,7 +5,7 @@ const { performance } = require('perf_hooks')
 const protobuf = require('tanagra-protobuf')
 const json = require('tanagra-json')
 const generateTypeMap = require('tanagra-auto-mapper').generateTypeMap
-const redisCache = require('tanagra-redis-cache')
+const redisCache = require('tanagra-protobuf-redis-cache')
 
 const Foo = require('./models/foo')
 const Bar = require('./models/bar')
