@@ -82,11 +82,11 @@ function decode(serializable) {
   }
 }
 
-module.exports = async (descriptorProtoFilePath, serializable) => {
+module.exports = async (serializable) => {
   serializable = serializable || new Map()
 
   // Load protodefs for serialising protobuf schemas
-  const root = await loadAsync(descriptorProtoFilePath)
+  const root = await loadAsync(`${__dirname}/descriptor.proto`)
   global.protobuf = { Type: root.lookupType('Type') }
 
   // Extend Type proto, adding hooks for type map

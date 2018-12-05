@@ -74,7 +74,7 @@ async function perfTest() {
     let foo = generateTestFoo()
     const encodedEntity = await profile(async () => await encodeEntity(foo), protobufWriteTimes)
     await writeToRedis(redisClient, `foo-${i}`, encodedEntity)
-    await initProtobufs('./proto/descriptor.proto', null)
+    await initProtobufs(null)
     memcache.clear()
 
     foo = generateTestFoo()
@@ -87,7 +87,7 @@ async function perfTest() {
   for (let i = 0; i < trials; i++) {
     const tuple = await fetchFromRedis(redisClient, `foo-${i}`)
     await profile(async () => decodeEntity(tuple, Foo), protobufReadTimes)
-    await initProtobufs('./proto/descriptor.proto', null)
+    await initProtobufs(null)
     memcache.clear()
 
     const string = await redisClient.getAsync(`foo-${i}-json`)
@@ -150,7 +150,7 @@ async function functionalTest(fn, title, showInputData) {
   console.log()
 }
 
-initProtobufs('./proto/descriptor.proto', null) // generateTypeMap(module)
+initProtobufs(null) // generateTypeMap(module)
   .then(() => initJson(null)) // generateTypeMap(module)
   .then(() => initRedis(redisClient))
   .then(perfTest)
