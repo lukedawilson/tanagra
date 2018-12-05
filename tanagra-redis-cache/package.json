@@ -1,0 +1,26 @@
+{
+  "name": "tanagra-redis-cache",
+  "version": "0.1.1",
+  "description": "Redis cache extension for the Tanagra serialization library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/lukedawilson/tanagra.git"
+  },
+  "keywords": [
+    "node",
+    "javascript",
+    "serializer",
+    "redis",
+    "cache"
+  ],
+  "author": "Luke Wilson <luke.d.a.wilson@gmail.com> (https://github.com/lukedawilson/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lukedawilson/tanagra/issues"
+  },
+  "homepage": "https://github.com/lukedawilson/tanagra#readme"
+}

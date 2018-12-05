@@ -1,6 +1,8 @@
 const util = require('util')
 
-module.exports = redisClient => {
+exports.set = require('./set')
+exports.get = require('./get')
+exports.init = redisClient => {
   redisClient.lpushAsync = util.promisify(redisClient.lpush)
   redisClient.lrangeAsync = util.promisify(redisClient.lrange)
   redisClient.getAsync = util.promisify(redisClient.get)

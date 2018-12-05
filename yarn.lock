@@ -182,6 +182,10 @@ tanagra-json@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/tanagra-json/-/tanagra-json-0.1.1.tgz#b9c224937e34212db9df4133bd06cca4f9ffb4b0"
 
+tanagra-redis-cache@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/tanagra-redis-cache/-/tanagra-redis-cache-0.1.1.tgz#987f4d46ee3abdb1e38c9a877756ae21acabc926"
+
 through@2:
   version "2.3.8"
   resolved "http://registry.npmjs.org/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"

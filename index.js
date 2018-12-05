@@ -4,16 +4,12 @@ const memcache = require('memory-cache')
 const { performance } = require('perf_hooks')
 
 const generateTypeMap = require('tanagra-auto-mapper').generateTypeMap
+const json = require('tanagra-json')
+const redisCache = require('tanagra-redis-cache')
 
 const initProtobufs = require('./protobuf/init')
 const decodeEntity = require('./protobuf/decode-entity')
 const encodeEntity = require('./protobuf/encode-entity')
-
-const json = require('tanagra-json')
-
-const initRedis = require('./redis-cache/init')
-const writeToRedis = require('./redis-cache/write-to-redis')
-const fetchFromRedis = require('./redis-cache/fetch-from-redis')
 
 const Foo = require('./models/foo')
 const Bar = require('./models/bar')
@@ -71,7 +67,7 @@ async function perfTest() {
   for (let i = 0; i < trials; i++) {
     let foo = generateTestFoo()
     const encodedEntity = await profile(async () => await encodeEntity(foo), protobufWriteTimes)
-    await writeToRedis(redisClient, `foo-${i}`, encodedEntity)
+    await redisCache.set(redisClient, `foo-${i}`, encodedEntity)
     await initProtobufs(null)
     memcache.clear()
 
@@ -83,7 +79,7 @@ async function perfTest() {
   }
 
   for (let i = 0; i < trials; i++) {
-    const tuple = await fetchFromRedis(redisClient, `foo-${i}`)
+    const tuple = await redisCache.get(redisClient, `foo-${i}`)
     await profile(async () => decodeEntity(tuple, Foo), protobufReadTimes)
     await initProtobufs(null)
     memcache.clear()
@@ -150,8 +146,8 @@ async function functionalTest(fn, title, showInputData) {
 
 initProtobufs(generateTypeMap(module))
   .then(() => json.init()) // generateTypeMap(module)
-  .then(() => initRedis(redisClient))
-  //.then(perfTest)
+  .then(() => redisCache.init(redisClient))
+  .then(perfTest)
   .then(() => functionalTest(async (foo) => {
     const encoded = json.encodeEntity(foo)
     await redisClient.setAsync(`foo-json`, encoded)
@@ -159,8 +155,8 @@ initProtobufs(generateTypeMap(module))
   }, 'json', true))
   .then(() => functionalTest(async (foo) => {
     const encodedTuple = encodeEntity(foo)
-    await writeToRedis(redisClient, 'foo', encodedTuple)
-    return decodeEntity(await fetchFromRedis(redisClient, 'foo')) // , Foo
+    await redisCache.set(redisClient, 'foo', encodedTuple)
+    return decodeEntity(await redisCache.get(redisClient, 'foo')) // , Foo
   }, 'protobuf', false))
   .catch(console.log)
   .then(() => process.exit())

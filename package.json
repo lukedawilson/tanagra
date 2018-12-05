@@ -16,6 +16,7 @@
     "tanagra-auto-mapper": "^0.1.0",
     "tanagra-core": "^0.1.1",
     "tanagra-json": "^0.1.1",
+    "tanagra-redis-cache": "^0.1.1",
     "yarn": "^1.12.3"
   }
 }
