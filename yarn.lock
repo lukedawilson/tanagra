@@ -174,9 +174,9 @@ tanagra-auto-mapper@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/tanagra-auto-mapper/-/tanagra-auto-mapper-0.1.0.tgz#ac0e75650b0d843de684f82137cfdfacb1dc477c"
 
-tanagra-core@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/tanagra-core/-/tanagra-core-0.1.1.tgz#bc183936f5684e282f5b0b409824f88f8f1cf983"
+tanagra-core@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/tanagra-core/-/tanagra-core-0.1.2.tgz#89fc4a411c08a16c269b70eed1199bc663ae2594"
 
 tanagra-json@^0.1.2:
   version "0.1.2"
@@ -186,13 +186,13 @@ tanagra-protobuf-redis-cache@^0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/tanagra-protobuf-redis-cache/-/tanagra-protobuf-redis-cache-0.1.3.tgz#5dd9d5bf7c372062a760a7923a729cbc4588d4a8"
 
-tanagra-protobuf@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/tanagra-protobuf/-/tanagra-protobuf-0.1.2.tgz#56b291764cd53775b4d6fc895eeeaddfbb40650c"
+tanagra-protobuf@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/tanagra-protobuf/-/tanagra-protobuf-0.1.3.tgz#9a915b25f2f0b58191e01c4c664b27cee906ff14"
   dependencies:
     memory-cache "^0.2.0"
     protobufjs "^6.8.8"
-    tanagra-core "^0.1.1"
+    tanagra-core "^0.1.2"
 
 through@2:
   version "2.3.8"
