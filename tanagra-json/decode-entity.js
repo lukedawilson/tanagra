@@ -1,6 +1,6 @@
 function denormalizeJsonObject(instance) {
   if (instance._serializationKey) {
-    const proto = global.serializable.get(instance._serializationKey)
+    const proto = global.serializable && global.serializable.get(instance._serializationKey)
     if (proto) {
       Object.setPrototypeOf(instance, proto)
     }
@@ -10,6 +10,9 @@ function denormalizeJsonObject(instance) {
     if (kvp.key.indexOf('_map') !== -1) {
       instance[kvp.key.replace('_map', '')] = new Map(kvp.value)
       instance[kvp.key].map(kvp => kvp[1]).forEach(denormalizeJsonObject)
+      delete instance[kvp.key]
+    } else if (kvp.key.indexOf('_date') !== -1) {
+      instance[kvp.key.replace('_date', '')] = new Date(kvp.value)
       delete instance[kvp.key]
     } else if (kvp.value._serializationKey) {
       denormalizeJsonObject(kvp.value)

@@ -8,6 +8,8 @@ function normalizeJsonObject(instance) {
       const array = [...kvp.value]
       instance[`${kvp.key}_map`] = array
       array.map(subArray => subArray[1]).forEach(normalizeJsonObject)
+    } else if (kvp.value.constructor.name === 'Date') {
+      instance[`${kvp.key}_date`] = kvp.value
     }
   })
 }

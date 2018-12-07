@@ -1,6 +1,6 @@
 {
   "name": "tanagra-core",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Core functions for Tanagra serialization library",
   "main": "index.js",
   "scripts": {
