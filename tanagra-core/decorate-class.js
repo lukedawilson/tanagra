@@ -1,13 +1,15 @@
 module.exports = function(clazz, nestedClazzes, customSerializationKey) {
-  clazz._fieldTypes = nestedClazzes && new Map(nestedClazzes.map(klass => [klass._serializationKey, klass]))
+  const fieldTypes = nestedClazzes && new Map(nestedClazzes.map(klass => [klass._serializationKey, klass]))
+  Reflect.defineProperty(clazz, '_fieldTypes', {
+    get: function _fieldTypes() { return fieldTypes },
+    configurable: true
+  })
 
   const serializationKey = customSerializationKey || clazz.name
-  const getterDescriptor = {
+  Reflect.defineProperty(clazz, '_serializationKey', {
     get: function _serializationKey() { return serializationKey },
     configurable: true
-  }
-
-  Object.defineProperty(clazz, '_serializationKey', getterDescriptor)
+  })
 
   const ctorHandler = {
     construct (target, args) {
