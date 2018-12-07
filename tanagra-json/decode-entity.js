@@ -1,6 +1,14 @@
+function serializableClassMappings() {
+  if (!global.serializable) {
+    global.serializable = new Map()
+  }
+
+  return global.serializable
+}
+
 function denormalizeJsonObject(instance) {
   if (instance._serializationKey) {
-    const proto = global.serializable && global.serializable.get(instance._serializationKey)
+    const proto = serializableClassMappings().get(instance._serializationKey)
     if (proto) {
       Object.setPrototypeOf(instance, proto)
     }
@@ -22,13 +30,13 @@ function denormalizeJsonObject(instance) {
   })
 }
 
-function addSerializableClasses(clazz, map) {
+function addSerializableClasses(clazz) {
   if (clazz._serializationKey) {
-    map.set(clazz._serializationKey, clazz.prototype)
+    serializableClassMappings().set(clazz._serializationKey, clazz.prototype)
   }
 
   if (clazz._fieldTypes) {
-    clazz._fieldTypes.forEach(klass => addSerializableClasses(klass, map))
+    clazz._fieldTypes.forEach(addSerializableClasses)
   }
 }
 
@@ -36,7 +44,7 @@ module.exports = function(encoded, clazz) {
   const decoded = JSON.parse(encoded)
 
   if (clazz) {
-    addSerializableClasses(clazz, global.serializable)
+    addSerializableClasses(clazz)
   }
 
   denormalizeJsonObject(decoded)
