@@ -1,9 +1,13 @@
 function normalizeJsonObject(instance) {
   Object.entries(instance).map(entry => ({ key: entry[0], value: entry[1] })).forEach(kvp => {
-    if (kvp.value._serializationKey) {
+    if (kvp.value.constructor.name === 'Array') {
+      kvp.value.forEach(normalizeJsonObject)
+    } else if (kvp.value.constructor._serializationKey) {
       normalizeJsonObject(kvp.value)
     } else if (kvp.value.constructor.name === 'Map') {
-      instance[`${kvp.key}_map`] = [...kvp.value]
+      const array = [...kvp.value]
+      instance[`${kvp.key}_map`] = array
+      array.map(subArray => subArray[1]).forEach(normalizeJsonObject)
     }
   })
 }

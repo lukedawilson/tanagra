@@ -1,4 +1,4 @@
-const serializable = require('tanagra-core').serializable
+const serializable = require('../tanagra-core/index').serializable // require('tanagra-core').serializable
 
 const Baz = require('./baz')
 

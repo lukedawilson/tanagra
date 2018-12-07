@@ -10,6 +10,7 @@ function generateMessage(instance, message) {
       message = new protobuf.Type(`Object_${getObjectIndex()}`)
     } else {
       message = new protobuf.Type(instance.constructor.name)
+      message.add(new protobuf.Field('_serializationKey', 999, 'string'))
     }
   }
 
