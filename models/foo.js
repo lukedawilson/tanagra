@@ -28,4 +28,4 @@ class Foo {
   }
 }
 
-module.exports = serializable(Foo, module.filename, [Bar, Baz])
+module.exports = serializable(Foo, [Bar, Baz])

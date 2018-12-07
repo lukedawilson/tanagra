@@ -9,4 +9,4 @@ class KeyValuePair {
   }
 }
 
-module.exports = serializable(KeyValuePair, module.filename)
+module.exports = serializable(KeyValuePair)

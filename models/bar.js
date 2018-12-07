@@ -14,4 +14,4 @@ class Bar {
   }
 }
 
-module.exports = serializable(Bar, module.filename, [Baz])
+module.exports = serializable(Bar, [Baz])
