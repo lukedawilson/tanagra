@@ -24,9 +24,13 @@ function generateMessage(instance, message) {
     if (kvp.value.constructor.name === 'Array') {
       const firstChild = kvp.value[0]
       if (firstChild) {
-        const childMessage = getSet(firstChild) // assume all children of same type
-        message.add(childMessage)
-        message.add(new protobuf.Field(kvp.key, i++, childMessage.name, 'repeated'))
+        if (!primitiveTypes[firstChild.constructor.name]) {
+          const childMessage = getSet(firstChild) // assume all children of same type
+          message.add(childMessage)
+          message.add(new protobuf.Field(kvp.key, i++, childMessage.name, 'repeated'))
+        } else {
+          message.add(new protobuf.Field(kvp.key, i++, primitiveTypes[firstChild.constructor.name], 'repeated'))
+        }
       }
     } else if (kvp.value.constructor.name === 'Map') {
       const firstKey = kvp.value.keys().next().value

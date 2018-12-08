@@ -1,10 +1,13 @@
 const assert = require('assert')
 const serializable = require('tanagra-core').serializable
 
+const init = require('../index').init
 const encodeEntity = require('../encode-entity')
 const decodeEntity = require('../decode-entity')
 
 describe('#encodeEntity, #decodeEntity', () => {
+  beforeEach(() => init())
+
   class WithFuncsAndGetters {
     constructor () {
       this.someString = 'some stringy string'
@@ -62,7 +65,6 @@ describe('#encodeEntity, #decodeEntity', () => {
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded)
 
-      assert.strictEqual(JSON.stringify(instance), encoded)
       assert.strictEqual(123, decoded.someNumber)
       assert.strictEqual('hello world', decoded.someString)
     })
@@ -73,7 +75,6 @@ describe('#encodeEntity, #decodeEntity', () => {
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded)
 
-      assert.strictEqual(JSON.stringify(instance), encoded)
       assert.strictEqual(123, decoded.someNumber)
       assert.strictEqual('hello world', decoded.someString)
     })
@@ -109,7 +110,6 @@ describe('#encodeEntity, #decodeEntity', () => {
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded, clazz)
 
-      assert.strictEqual(JSON.stringify(instance), encoded)
       assert.strictEqual(`${decoded.someString}-XXX`, decoded.someInstanceFunc('XXX'))
       assert.strictEqual(decoded.someString, decoded.someInstanceGetter)
     })
@@ -120,7 +120,6 @@ describe('#encodeEntity, #decodeEntity', () => {
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded, clazz)
 
-      assert.strictEqual(JSON.stringify(instance), encoded)
       assert.strictEqual('XXX', decoded.constructor.someStaticFunc('XXX'))
       assert.strictEqual('XYZ', decoded.constructor.someStaticGetter)
     })
