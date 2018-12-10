@@ -1,5 +1,7 @@
 # tanagra
 
+![Shaka, When the Walls Fell](https://i.imgur.com/ejkP6Rvm.jpg)
+
 A simple, lightweight node.js serialization library supporting ES6 classes (including Maps).
 Currently serializes to both JSON and Google Protobuf formats.
 
