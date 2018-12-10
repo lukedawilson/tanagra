@@ -57,6 +57,16 @@ describe('#encodeEntity, #decodeEntity', () => {
       }
     }
 
+    class ClassWithComplexMap {
+      constructor() {
+        this.someMap = new Map([
+          [123, new SimpleClass()],
+          [789, new SimpleClass()],
+          [456, new SimpleClass()]
+        ])
+      }
+    }
+
     it('should successfully encode/decode a simple class without serialization metadata', () => {
       const instance = new SimpleClass()
       const encoded = encodeEntity(instance)
@@ -99,6 +109,15 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.deepStrictEqual('foo', decoded.someMap.get(123))
       assert.deepStrictEqual('bar', decoded.someMap.get(789))
       assert.deepStrictEqual('baz', decoded.someMap.get(456))
+    })
+
+    it('should handle maps of complex types', () => {
+      const instance = new ClassWithComplexMap()
+      const encoded = encodeEntity(instance)
+      const decoded = decodeEntity(encoded)
+      assert.deepStrictEqual(123, decoded.someMap.get(123).someNumber)
+      assert.deepStrictEqual(123, decoded.someMap.get(789).someNumber)
+      assert.deepStrictEqual(123, decoded.someMap.get(456).someNumber)
     })
   })
 

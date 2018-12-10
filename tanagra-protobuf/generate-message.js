@@ -43,12 +43,6 @@ function generateMessage(instance, message) {
           message.add(childMessage)
           message.add(new protobuf.Field(`${kvp.key}_map`, i++, childMessage.name, 'repeated'))
         }
-
-        // Add internal representation of map to instance being serialized
-        instance[`${kvp.key}_map`] = Array.from(kvp.value.keys()).map(key => {
-          const value = kvp.value.get(key)
-          return new KeyValuePair(key, value, key._serializationKey, value._serializationKey)
-        })
       }
     } else if (!primitiveTypes[kvp.value.constructor.name]) {
       const subMessage = getSet(kvp.value)
@@ -59,7 +53,26 @@ function generateMessage(instance, message) {
     }
   })
 
+  normaliseInstance(instance)
+
   return message
+}
+
+function normaliseInstance(instance) {
+  Object.entries(instance).map(entry => ({ key: entry[0], value: entry[1] })).filter(kvp => kvp.value).forEach(kvp => {
+    if (kvp.value.constructor.name === 'Array') {
+      kvp.value.forEach(normaliseInstance)
+    } else if (kvp.value.constructor._serializationKey) {
+      normaliseInstance(kvp.value)
+    } else if (kvp.value.constructor.name === 'Map') {
+      instance[`${kvp.key}_map`] = Array.from(kvp.value.keys()).map(key => {
+        const value = kvp.value.get(key)
+        return new KeyValuePair(key, value, key._serializationKey, value._serializationKey)
+      })
+
+      Array.from(kvp.value.values()).forEach(normaliseInstance)
+    }
+  })
 }
 
 // ToDo: this could be a GUID, or else overflow errors could occur for large numbers of object instances
@@ -76,10 +89,11 @@ function getTypeId(value) {
 }
 
 function getSet(value) {
-  const messageFromCache = memcache.get(getTypeId(value))
+  let typeId = getTypeId(value)
+  const messageFromCache = typeId !== 'KeyValuePair' && memcache.get(typeId)
   const message = generateMessage(value, messageFromCache)
   if (!messageFromCache) {
-    memcache.put(getTypeId(value), message)
+    memcache.put(typeId, message)
   }
 
   return message

@@ -1,6 +1,6 @@
 {
   "name": "tanagra-json",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "JSON support for the Tanagra serialization library",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,6 @@
   "homepage": "https://github.com/lukedawilson/tanagra#readme",
   "devDependencies": {
     "mocha": "^5.2.0",
-    "tanagra-core": "^0.1.5"
+    "tanagra-core": "^0.1.6"
   }
 }

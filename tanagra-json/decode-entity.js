@@ -1,10 +1,5 @@
-function serializableClassMappings() {
-  if (!global.serializable) {
-    global.serializable = new Map()
-  }
-
-  return global.serializable
-}
+const serializableClassMappings = require('tanagra-core').serializableClassMappings.get
+const addSerializableClasses = require('tanagra-core').addSerializableClasses
 
 function denormalizeJsonObject(instance) {
   if (instance._serializationKey) {
@@ -28,16 +23,6 @@ function denormalizeJsonObject(instance) {
       kvp.value.forEach(denormalizeJsonObject)
     }
   })
-}
-
-function addSerializableClasses(clazz) {
-  if (clazz._serializationKey) {
-    serializableClassMappings().set(clazz._serializationKey, clazz.prototype)
-  }
-
-  if (clazz._fieldTypes) {
-    clazz._fieldTypes.forEach(addSerializableClasses)
-  }
 }
 
 module.exports = function(encoded, clazz) {

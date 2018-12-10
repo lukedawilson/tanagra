@@ -36,6 +36,10 @@ describe('#encodeEntity, #decodeEntity', () => {
         this.someNumber = 123
         this.someString = 'hello world'
       }
+
+      someNumberFunc() {
+        return this.someNumber
+      }
     }
 
     class ClassWithDate {
@@ -50,12 +54,33 @@ describe('#encodeEntity, #decodeEntity', () => {
       }
     }
 
+    const simpleClass = serializable(SimpleClass)
+    class ClassWithComplexArray {
+      constructor() {
+        this.someArray = [
+          new simpleClass(),
+          new simpleClass(),
+          new simpleClass()
+        ]
+      }
+    }
+
     class ClassWithMap {
       constructor() {
         this.someMap = new Map([
           [123, 'foo'],
           [789, 'bar'],
           [456, 'baz']
+        ])
+      }
+    }
+
+    class ClassWithComplexMap {
+      constructor() {
+        this.someMap = new Map([
+          [123, new simpleClass()],
+          [789, new simpleClass()],
+          [456, new simpleClass()]
         ])
       }
     }
@@ -93,6 +118,16 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.deepStrictEqual([123, 789, 456], decoded.someArray)
     })
 
+    it('should handle arrays of complex types', () => {
+      const classWithComplexArray = serializable(ClassWithComplexArray, [simpleClass])
+      const withArray = new classWithComplexArray()
+      const encoded = encodeEntity(withArray)
+      const decoded = decodeEntity(encoded, classWithComplexArray)
+      assert.deepStrictEqual(123, decoded.someArray[0].someNumberFunc())
+      assert.deepStrictEqual(123, decoded.someArray[1].someNumberFunc())
+      assert.deepStrictEqual(123, decoded.someArray[2].someNumberFunc())
+    })
+
     it('should handle maps', () => {
       const instance = new ClassWithMap()
       const encoded = encodeEntity(instance)
@@ -100,6 +135,16 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.deepStrictEqual('foo', decoded.someMap.get(123))
       assert.deepStrictEqual('bar', decoded.someMap.get(789))
       assert.deepStrictEqual('baz', decoded.someMap.get(456))
+    })
+
+    it('should handle maps of complex types', () => {
+      const classWithComplexMap = serializable(ClassWithComplexMap, [simpleClass])
+      const instance = new classWithComplexMap()
+      const encoded = encodeEntity(instance)
+      const decoded = decodeEntity(encoded, classWithComplexMap)
+      assert.deepStrictEqual(123, decoded.someMap.get(123).someNumber)
+      assert.deepStrictEqual(123, decoded.someMap.get(789).someNumber)
+      assert.deepStrictEqual(123, decoded.someMap.get(456).someNumber)
     })
   })
 
@@ -126,78 +171,34 @@ describe('#encodeEntity, #decodeEntity', () => {
   })
 
   describe('nesting', () => {
-    class WithNested1 {
-      constructor() {
-        this.primitive = 123
-        this.nested = new withNested2()
-      }
-    }
-
-    class WithNested2 {
-      constructor() {
-        this.primitive = 'hello world'
-        this.nested = new withFuncsAndGetters()
-      }
-    }
-
-    class WithArrayNesting {
-      constructor() {
-        this.nestedArray = [
-          new withNested1(),
-          new withNested1(),
-          new withNested1()
-        ]
-      }
-    }
-
-    class WithMapNesting {
-      constructor() {
-        this.nestedMap = new Map([
-          ['a', new withNested4()],
-          ['b', new withNested4()],
-          ['c', new withNested4()]
-        ])
-      }
-    }
-
-    class WithNested3 {
-      constructor() {
-        this.array = new withArrayNesting()
-        this.map = new withMapNesting()
-      }
-    }
-
-    class WithNested4 {
-      constructor() {
-        this.primitive = 123
-        this.nested = new Map([
-          ['a', new withNested2()],
-          ['b', new withNested2()]
-        ])
-      }
-
-      myFunc() {
-        return this.primitive
-      }
-    }
-
     const withFuncsAndGetters = serializable(WithFuncsAndGetters)
-    const withNested2 = serializable(WithNested2, [withFuncsAndGetters])
-    const withNested1 = serializable(WithNested1, [withNested2])
-    const withArrayNesting = serializable(WithArrayNesting, [withNested1])
-    const withNested4 = serializable(WithNested4, [withNested2])
-    const withMapNesting = serializable(WithMapNesting, [withNested4])
-    const withNested3 = serializable(WithNested3, [withArrayNesting, withMapNesting])
 
     it('should support simple nesting', () => {
-      const instance = new withNested1()
+      class WithNestedOuter {
+        constructor() {
+          this.primitive = 123
+          this.nested = new withNestedInner()
+        }
+      }
+
+      class WithNestedInner {
+        constructor() {
+          this.primitive = 'hello world'
+          this.nested = new withFuncsAndGetters()
+        }
+      }
+
+      const withNestedInner = serializable(WithNestedInner, [withFuncsAndGetters])
+      const withNestedOuter = serializable(WithNestedOuter, [withNestedInner])
+
+      const instance = new withNestedOuter()
       const encoded = encodeEntity(instance)
-      const decoded = decodeEntity(encoded, withNested1)
+      const decoded = decodeEntity(encoded, withNestedOuter)
 
       assert.strictEqual(123, decoded.primitive)
-      assert.strictEqual('WithNested1', decoded.constructor.name)
+      assert.strictEqual('WithNestedOuter', decoded.constructor.name)
       assert.strictEqual('hello world', decoded.nested.primitive)
-      assert.strictEqual('WithNested2', decoded.nested.constructor.name)
+      assert.strictEqual('WithNestedInner', decoded.nested.constructor.name)
       assert.strictEqual('some stringy string', decoded.nested.nested.someString)
       assert.strictEqual('some stringy string', decoded.nested.nested.someInstanceGetter)
       assert.strictEqual('some stringy string-XXX', decoded.nested.nested.someInstanceFunc('XXX'))
@@ -207,35 +208,46 @@ describe('#encodeEntity, #decodeEntity', () => {
     })
 
     it('should support array and map nesting', () => {
-      const instance = new withNested3()
-      const encoded = encodeEntity(instance)
-      const decoded = decodeEntity(encoded, withNested3)
-
-      for (let i = 0; i < 3; i++) {
-        const withNested1Inst = decoded.array.nestedArray[i]
-        assert.strictEqual('WithNested1', withNested1Inst.constructor.name)
-
-        const withNested2Inst = withNested1Inst.nested
-        assert.strictEqual('WithNested2', withNested2Inst.constructor.name)
-
-        const withFuncsAndGettersInst = withNested2Inst.nested
-        assert.strictEqual('WithFuncsAndGetters', withFuncsAndGettersInst.constructor.name)
-        assert.strictEqual('some stringy string', withFuncsAndGettersInst.someInstanceGetter)
-        assert.strictEqual('some stringy string-XXX', withFuncsAndGettersInst.someInstanceFunc('XXX'))
-        assert.strictEqual('XYZ', withFuncsAndGettersInst.constructor.someStaticGetter)
-        assert.strictEqual('XXX', withFuncsAndGettersInst.constructor.someStaticFunc('XXX'))
+      class WithMapOuter {
+        constructor() {
+          this.primitive = 123
+          this.map = new Map([
+            ['a', new withMapInner()],
+            ['b', new withMapInner()],
+            ['c', new withMapInner()]
+          ])
+        }
       }
 
+      class WithMapInner {
+        constructor() {
+          this.primitive = 'hello world'
+          this.innerMap = new Map([
+            [123, new withFuncsAndGetters()],
+            [456, new withFuncsAndGetters()],
+            [789, new withFuncsAndGetters()]
+          ])
+        }
+
+        myFunc() {
+          return this.primitive
+        }
+      }
+
+      const withMapInner = serializable(WithMapInner, [withFuncsAndGetters])
+      const withMapOuter = serializable(WithMapOuter, [withMapInner])
+
+      const instance = new withMapOuter()
+      const encoded = encodeEntity(instance)
+      const decoded = decodeEntity(encoded, withMapOuter)
+
       for (const key of ['a', 'b', 'c']) {
-        const withNested4Inst = decoded.map.nestedMap.get(key)
-        assert.strictEqual('WithNested4', withNested4Inst.constructor.name)
-        assert.strictEqual(123, withNested4Inst.myFunc())
+        const innerInst = decoded.map.get(key)
+        assert.strictEqual('WithMapInner', innerInst.constructor.name)
+        assert.strictEqual('hello world', innerInst.myFunc())
 
-        for (const innerKey of ['a', 'b']) {
-          const withNested2Inst = withNested4Inst.nested.get(innerKey)
-          assert.strictEqual('WithNested2', withNested2Inst.constructor.name)
-
-          const withFuncsAndGettersInst = withNested2Inst.nested
+        for (const innerKey of [123, 789, 456]) {
+          const withFuncsAndGettersInst = innerInst.innerMap.get(innerKey)
           assert.strictEqual('WithFuncsAndGetters', withFuncsAndGettersInst.constructor.name)
           assert.strictEqual('some stringy string', withFuncsAndGettersInst.someInstanceGetter)
           assert.strictEqual('some stringy string-XXX', withFuncsAndGettersInst.someInstanceFunc('XXX'))
