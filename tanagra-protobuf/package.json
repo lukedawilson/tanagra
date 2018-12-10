@@ -1,6 +1,6 @@
 {
   "name": "tanagra-protobuf",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Google Protobuf support for the Tanagra serialization library",
   "main": "index.js",
   "scripts": {

@@ -1,6 +1,6 @@
 {
   "name": "tanagra-auto-mapper",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Auto-mapper walking the module tree and creating a type map for the Tanagra serialization library",
   "main": "index.js",
   "scripts": {
