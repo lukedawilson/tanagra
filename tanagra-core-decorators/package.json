@@ -1,0 +1,28 @@
+{
+  "name": "tanagra-core-decorators",
+  "version": "0.1.0",
+  "description": "Experimental support for es-next decorators",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/babel src --out-dir dest && node ./dest/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukedawilson/tanagra.git"
+  },
+  "keywords": [
+    "tanagra"
+  ],
+  "author": "Luke Wilson <luke.d.a.wilson@gmail.com> (https://github.com/lukedawilson/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lukedawilson/tanagra/issues"
+  },
+  "homepage": "https://github.com/lukedawilson/tanagra#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-proposal-decorators": "^7.2.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2"
+  }
+}
