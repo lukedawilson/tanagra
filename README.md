@@ -18,18 +18,24 @@ features, _Babel_ transpiling or _TypeScript_.
 
 The project is divided into a number of modules:
 
-- `tanagra-core` - common functionality required by the different serialization formats,
-  including the function for marking classes as _serializable_
-- `tanagra-json` - serializes the data into `JSON` format
-- `tanagra-protobuf` - serializes the data into `Google protobuffers` format (experimental)
-- `tanagra-protobuf-redis-cache` - a helper library for storing serialized protobufs in _redis_
-- `tanagra-auto-mapper` - walks the module tree in _node.js_ to build up a map of classes, meaning
-  the user doesn't have to specify the type to deserialize to (experimental)
+- [tanagra-core](https://www.npmjs.com/package/tanagra-core) - common functionality required by the different
+  serialization formats, including the function for marking classes as _serializable_
+- [tanagra-json](https://www.npmjs.com/package/tanagra-json) - serializes the data into `JSON` format
+- [tanagra-protobuf](https://www.npmjs.com/package/tanagra-protobuf) - serializes the data into `Google protobuffers`
+  format (experimental)
+- [tanagra-protobuf-redis-cache](https://www.npmjs.com/package/tanagra-protobuf-redis-cache) - a helper library
+  for storing serialized protobufs in _redis_
+- [tanagra-auto-mapper](https://www.npmjs.com/package/tanagra-auto-mapper) - walks the module tree in _node.js_
+  to build up a map of classes, meaning the user doesn't have to specify the type to deserialize to (experimental)
 
 ## Installation
 
 ```bash
 $ npm add --save tanagra-core
+$ npm add --save tanagra-json
+$ npm add --save tanagra-protobuf
+$ npm add --save tanagra-protobuf-redis-cache
+$ npm add --save tanagra-auto-mapper
 ```
 
 ## Usage
@@ -66,6 +72,6 @@ const encoded = json.encodeEntity(foo)
 
 ...
 
-const decoded = json.decodeEntity(foo, Foo)
+const decoded = json.decodeEntity(encoded, Foo)
 
 ```
