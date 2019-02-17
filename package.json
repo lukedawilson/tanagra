@@ -9,7 +9,6 @@
   "author": "Luke Wilson <luke.d.a.wilson@gmail.com> (https://github.com/lukedawilson/)",
   "license": "MIT",
   "dependencies": {
-    "pg": "^7.6.1",
     "redis": "^2.8.0"
   }
 }
