@@ -10,7 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "pg": "^7.6.1",
-    "redis": "^2.8.0",
-    "yarn": "^1.12.3"
+    "redis": "^2.8.0"
   }
 }
