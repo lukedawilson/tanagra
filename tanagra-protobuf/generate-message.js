@@ -1,102 +1,94 @@
 const protobuf = require('protobufjs')
 const memcache = require('memory-cache')
 
-const KeyValuePair = require('./key-value-pair')
 const primitiveTypes = require('./primitive-types')
+const KeyValuePair = require('./key-value-pair')
 
-function generateMessage(instance, message) {
-  if (!message) {
-    if (instance.constructor.name === 'Object') {
-      message = new protobuf.Type(`Object_${getObjectIndex()}`)
-    } else {
-      message = new protobuf.Type(instance.constructor.name)
-      message.add(new protobuf.Field('_serializationKey', 999, 'string'))
-    }
+function generateMessage(instance) {
+  let message
+  if (instance.constructor.name === 'Object') {
+    message = new protobuf.Type(`Object_${getObjectIndex()}`)
+  } else {
+    message = new protobuf.Type(instance.constructor.name)
+    message.add(new protobuf.Field('_serializationKey', 999, 'string'))
   }
 
-  const alreadyMappedFields = Object.keys(message.fields)
-  const fieldsToMap = Object.entries(instance)
-    .map(entry => ({ key: entry[0], value: entry[1] }))
-    .filter(kvp => kvp.value && alreadyMappedFields.indexOf(kvp.key) === -1)
+  let i = 0
+  const fields = Object.entries(instance)
+  for (const field of fields) {
+    const name = field[0], value = field[1], type = value.constructor.name
+    if (name === '_serializationKey') continue
 
-  let i = alreadyMappedFields.length
-  fieldsToMap.forEach(kvp => {
-    if (kvp.value.constructor.name === 'Array') {
-      const firstChild = kvp.value[0]
-      if (firstChild) {
-        if (!primitiveTypes[firstChild.constructor.name]) {
-          const childMessage = getSet(firstChild) // assume all children of same type
-          message.add(childMessage)
-          message.add(new protobuf.Field(kvp.key, i++, childMessage.name, 'repeated'))
-        } else {
-          message.add(new protobuf.Field(kvp.key, i++, primitiveTypes[firstChild.constructor.name], 'repeated'))
-        }
-      }
-    } else if (kvp.value.constructor.name === 'Map') {
-      const firstKey = kvp.value.keys().next().value
-      const firstValue = firstKey && kvp.value.get(firstKey)
-      if (firstValue) {
-        // If KeyValuePair repeated field not already added, add it
-        if (alreadyMappedFields.indexOf(`${kvp.key}_map`) === -1) {
-          const childValue = new KeyValuePair(firstKey, firstValue, firstKey._serializationKey, firstValue._serializationKey)
-          const childMessage = getSet(childValue)
-          message.add(childMessage)
-          message.add(new protobuf.Field(`${kvp.key}_map`, i++, childMessage.name, 'repeated'))
-        }
-      }
-    } else if (!primitiveTypes[kvp.value.constructor.name]) {
-      const subMessage = getSet(kvp.value)
-      message.add(subMessage)
-      message.add(new protobuf.Field(kvp.key, i++, subMessage.name))
-    } else {
-      message.add(new protobuf.Field(kvp.key, i++, primitiveTypes[kvp.value.constructor.name]))
-    }
-  })
-
-  normaliseInstance(instance)
+    i = addProtoField(message, name, value, i, type)
+  }
 
   return message
 }
 
-function normaliseInstance(instance) {
-  Object.entries(instance).map(entry => ({ key: entry[0], value: entry[1] })).filter(kvp => kvp.value).forEach(kvp => {
-    if (kvp.value.constructor.name === 'Array') {
-      kvp.value.forEach(normaliseInstance)
-    } else if (kvp.value.constructor._serializationKey) {
-      normaliseInstance(kvp.value)
-    } else if (kvp.value.constructor.name === 'Map') {
-      instance[`${kvp.key}_map`] = Array.from(kvp.value.keys()).map(key => {
-        const value = kvp.value.get(key)
-        return new KeyValuePair(key, value, key._serializationKey, value._serializationKey)
-      })
-
-      Array.from(kvp.value.values()).forEach(normaliseInstance)
+function addProtoField(message, name, value, i, type, rule = undefined) {
+  if (primitiveTypes[type]) {
+    message.add(new protobuf.Field(name, i++, primitiveTypes[type], rule))
+  } else if (type === 'Array') {
+    const childValue = value[0], childType = childValue.constructor.name
+    if (childValue) {
+      i = addProtoField(message, name, childValue, i, childType, 'repeated')
     }
-  })
+  } else if (type === 'Map') {
+    const childKey = value.keys().next().value, childValue = childKey && value.get(childKey)
+    if (childValue) {
+      const kvp = new KeyValuePair(childKey, childValue, getTypeId(childKey), getTypeId(childValue))
+      const childMessage = getOrGenerateMessage(kvp)
+      message.add(childMessage)
+      message.add(new protobuf.Field(`${name}_map`, i++, childMessage.name, 'repeated'))
+    }
+  } else {
+    const subMessage = getOrGenerateMessage(value)
+    message.add(subMessage)
+    message.add(new protobuf.Field(name, i++, subMessage.name, rule))
+  }
+
+  return i
 }
 
-// ToDo: this could be a GUID, or else overflow errors could occur for large numbers of object instances
+function addNormalisedMapsToInstance(instance) {
+  const fields = Object.entries(instance)
+  for (const field of fields) {
+    const name = field[0], value = field[1], type = value.constructor.name
+    if (type === 'Array') {
+      value.forEach(addNormalisedMapsToInstance)
+    } else if (type === 'Map') {
+      instance[`${name}_map`] = Array.from(value.keys()).map(k => {
+        const v = value.get(k)
+        return new KeyValuePair(k, v, k._serializationKey, v._serializationKey)
+      })
+
+      Array.from(value.values()).forEach(addNormalisedMapsToInstance)
+    } else if (!primitiveTypes[type]) {
+      addNormalisedMapsToInstance(value)
+    }
+  }
+}
+
+function getTypeId(value) {
+  return value.constructor.name === 'Object'
+    ? null
+    : (value._serializationKey || value.constructor.name)
+}
+
 function getObjectIndex() {
   const objIndex = memcache.get('object-index') || 0
   memcache.put('object-index', objIndex + 1)
   return objIndex
 }
 
-function getTypeId(value) {
-  return value.constructor.name === 'Object'
-    ? `Object_${getObjectIndex()}`
-    : (value._serializationKey || value.constructor.name)
+function getOrGenerateMessage(instance) {
+  const typeId = getTypeId(instance)
+  const existing = typeId && memcache.get(typeId)
+  return existing || generateMessage(instance)
 }
 
-function getSet(value) {
-  let typeId = getTypeId(value)
-  const messageFromCache = typeId !== 'KeyValuePair' && memcache.get(typeId)
-  const message = generateMessage(value, messageFromCache)
-  if (!messageFromCache) {
-    memcache.put(typeId, message)
-  }
-
+module.exports = instance => {
+  const message = getOrGenerateMessage(instance)
+  addNormalisedMapsToInstance(instance)
   return message
 }
-
-module.exports = getSet

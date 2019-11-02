@@ -234,6 +234,78 @@ describe('#encodeEntity, #decodeEntity', () => {
       }
     })
 
+    it('should support 3-level array nesting', () => {
+      class WithArrayOuter {
+        constructor() {
+          this.primitive = 123
+          this.array = [
+            new withArrayInner(),
+            new withArrayInner(),
+            new withArrayInner()
+          ]
+        }
+      }
+
+      class WithArrayInner {
+        constructor() {
+          this.primitive = 'hello world'
+          this.innerArray = [
+            new withArrayInnerInner(),
+            new withArrayInnerInner(),
+            new withArrayInnerInner()
+          ]
+        }
+
+        myFunc() {
+          return this.primitive
+        }
+      }
+
+      class WithArrayInnerInner {
+        constructor() {
+          this.primitive = 'hello world 2'
+          this.innerArray = [
+            new withFuncsAndGetters(),
+            new withFuncsAndGetters(),
+            new withFuncsAndGetters()
+          ]
+        }
+
+        myFunc() {
+          return this.primitive
+        }
+      }
+
+      const withArrayInnerInner = serializable(WithArrayInnerInner, [withFuncsAndGetters])
+      const withArrayInner = serializable(WithArrayInner, [withArrayInnerInner])
+      const withArrayOuter = serializable(WithArrayOuter, [withArrayInner])
+
+      const instance = new withArrayOuter()
+      const encoded = encodeEntity(instance)
+      const decoded = decodeEntity(encoded, withArrayOuter)
+
+      for (const i of [0, 1, 2]) {
+        const innerInst = decoded.array[i]
+        assert.strictEqual('WithArrayInner', innerInst.constructor.name)
+        assert.strictEqual('hello world', innerInst.myFunc())
+
+        for (const ii of [0, 1, 2]) {
+          const innerInnerInst = innerInst.innerArray[ii]
+          assert.strictEqual('WithArrayInnerInner', innerInnerInst.constructor.name)
+          assert.strictEqual('hello world 2', innerInnerInst.myFunc())
+
+          for (const iii of [0, 1, 2]) {
+            const withFuncsAndGettersInst = innerInnerInst.innerArray[iii]
+            assert.strictEqual('WithFuncsAndGetters', withFuncsAndGettersInst.constructor.name)
+            assert.strictEqual('some stringy string', withFuncsAndGettersInst.someInstanceGetter)
+            assert.strictEqual('some stringy string-XXX', withFuncsAndGettersInst.someInstanceFunc('XXX'))
+            assert.strictEqual('XYZ', withFuncsAndGettersInst.constructor.someStaticGetter)
+            assert.strictEqual('XXX', withFuncsAndGettersInst.constructor.someStaticFunc('XXX'))
+          }
+        }
+      }
+    })
+
     it('should support maps of complex types', () => {
       const simpleClass = serializable(SimpleClass)
       class ClassWithComplexMap {
