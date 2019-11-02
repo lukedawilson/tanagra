@@ -28,6 +28,8 @@ function generateMessage(instance) {
 function addProtoField(message, name, value, i, type, rule = undefined) {
   if (primitiveTypes[type]) {
     message.add(new protobuf.Field(name, i++, primitiveTypes[type], rule))
+  } else if ((type === 'Array' || type === 'Map') && rule) {
+    // Do nothing - we don't support applying rules to arrays or maps (e.g. arrays of arrays, arrays of maps, etc.)
   } else if (type === 'Array') {
     const childValue = value[0], childType = childValue.constructor.name
     if (childValue) {

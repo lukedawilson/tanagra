@@ -381,6 +381,39 @@ describe('#encodeEntity, #decodeEntity', () => {
       }
     })
 
+    it('should ignore arrays of arrays', () => {
+      class WithArrayOuter {
+        constructor() {
+          this.primitive = 123
+          this.array = [
+            [ new withArrayInner(), new withArrayInner() ],
+            [ new withArrayInner(), new withArrayInner() ],
+          ]
+        }
+      }
+
+      class WithArrayInner {
+        constructor() {
+          this.primitive = 'hello world'
+        }
+
+        myFunc() {
+          return this.primitive
+        }
+      }
+
+      const withArrayInner = serializable(WithArrayInner)
+      const withArrayOuter = serializable(WithArrayOuter, [withArrayInner])
+
+      const instance = new withArrayOuter()
+      const encoded = encodeEntity(instance)
+      const decoded = decodeEntity(encoded, withArrayOuter)
+
+      assert.strictEqual('WithArrayOuter', decoded.constructor.name)
+      assert.strictEqual(123, decoded.primitive)
+      assert.strictEqual(undefined, decoded.array)
+    })
+
     it('should support more complex structures', () => {
       class WithNested1 {
         constructor() {
