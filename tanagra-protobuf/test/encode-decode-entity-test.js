@@ -64,6 +64,22 @@ describe('#encodeEntity, #decodeEntity', () => {
       }
     }
 
+    class ClassWithMaps {
+      constructor() {
+        this.someMap = new Map([
+          [123, 'foo'],
+          [789, 'bar'],
+          [456, 'baz']
+        ])
+
+        this.someOtherMap = new Map([
+          [321, 'oof'],
+          [987, 'rab'],
+          [654, 'zab']
+        ])
+      }
+    }
+
     it('should successfully encode/decode a simple class without serialization metadata', () => {
       const instance = new SimpleClass()
       const encoded = encodeEntity(instance)
@@ -104,6 +120,18 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.deepStrictEqual('foo', decoded.someMap.get(123))
       assert.deepStrictEqual('bar', decoded.someMap.get(789))
       assert.deepStrictEqual('baz', decoded.someMap.get(456))
+    })
+
+    it('should support multiple maps', () => {
+      const instance = new ClassWithMaps()
+      const encoded = encodeEntity(instance)
+      const decoded = decodeEntity(encoded)
+      assert.deepStrictEqual('foo', decoded.someMap.get(123))
+      assert.deepStrictEqual('bar', decoded.someMap.get(789))
+      assert.deepStrictEqual('baz', decoded.someMap.get(456))
+      assert.deepStrictEqual('oof', decoded.someOtherMap.get(321))
+      assert.deepStrictEqual('rab', decoded.someOtherMap.get(987))
+      assert.deepStrictEqual('zab', decoded.someOtherMap.get(654))
     })
   })
 
@@ -329,6 +357,43 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.deepStrictEqual(123, decoded.someMap.get(123).someNumber)
       assert.deepStrictEqual(123, decoded.someMap.get(789).someNumber)
       assert.deepStrictEqual(123, decoded.someMap.get(456).someNumber)
+    })
+
+    it('should support maps of objects', () => {
+      const simpleClass = serializable(SimpleClass)
+      class ClassWithComplexMap {
+        constructor() {
+          this.someMap = new Map([
+            [123, { 'a': 1, 'b': 2 }],
+            [789, { 'a': 7, 'b': 8 }],
+            [456, { 'a': 4 }]
+          ])
+          this.someOtherObject = { 'x': 10, 'y': 20, 'z': 5 }
+          this.someOtherMap = new Map([
+            [123, { 'x': 1, 'y': 2 }],
+            [789, { 'x': 7, 'y': 8 }],
+            [456, { 'x': 4 }]
+          ])
+        }
+      }
+
+      const classWithComplexMap = serializable(ClassWithComplexMap, [simpleClass])
+      const instance = new classWithComplexMap()
+      const encoded = encodeEntity(instance)
+      const decoded = decodeEntity(encoded, classWithComplexMap)
+      assert.deepStrictEqual(1, decoded.someMap.get(123)['a'])
+      assert.deepStrictEqual(2, decoded.someMap.get(123)['b'])
+      assert.deepStrictEqual(7, decoded.someMap.get(789)['a'])
+      assert.deepStrictEqual(8, decoded.someMap.get(789)['b'])
+      assert.deepStrictEqual(4, decoded.someMap.get(456)['a'])
+      assert.deepStrictEqual(10, decoded.someOtherObject.x)
+      assert.deepStrictEqual(20, decoded.someOtherObject.y)
+      assert.deepStrictEqual(5, decoded.someOtherObject.z)
+      assert.deepStrictEqual(1, decoded.someOtherMap.get(123)['x'])
+      assert.deepStrictEqual(2, decoded.someOtherMap.get(123)['y'])
+      assert.deepStrictEqual(7, decoded.someOtherMap.get(789)['x'])
+      assert.deepStrictEqual(8, decoded.someOtherMap.get(789)['y'])
+      assert.deepStrictEqual(4, decoded.someOtherMap.get(456)['x'])
     })
 
     it('should support map nesting', () => {

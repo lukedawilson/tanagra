@@ -184,6 +184,33 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.deepStrictEqual(123, decoded.someArray[2].someNumberFunc())
     })
 
+    it('should support maps of objects', () => {
+      const simpleClass = serializable(SimpleClass)
+      class ClassWithComplexMap {
+        constructor() {
+          this.someMap = new Map([
+            [123, { 'a': 1, 'b': 2 }],
+            [789, { 'a': 7, 'b': 8 }],
+            [456, { 'a': 4 }]
+          ])
+          this.someOtherObject = { 'x': 10, 'y': 20, 'z': 5 }
+        }
+      }
+
+      const classWithComplexMap = serializable(ClassWithComplexMap, [simpleClass])
+      const instance = new classWithComplexMap()
+      const encoded = encodeEntity(instance)
+      const decoded = decodeEntity(encoded, classWithComplexMap)
+      assert.deepStrictEqual(1, decoded.someMap.get(123)['a'])
+      assert.deepStrictEqual(2, decoded.someMap.get(123)['b'])
+      assert.deepStrictEqual(7, decoded.someMap.get(789)['a'])
+      assert.deepStrictEqual(8, decoded.someMap.get(789)['b'])
+      assert.deepStrictEqual(4, decoded.someMap.get(456)['a'])
+      assert.deepStrictEqual(10, decoded.someOtherObject.x)
+      assert.deepStrictEqual(20, decoded.someOtherObject.y)
+      assert.deepStrictEqual(5, decoded.someOtherObject.z)
+    })
+
     it('should support array nesting', () => {
       class WithArrayOuter {
         constructor() {

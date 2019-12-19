@@ -3,6 +3,7 @@ const memcache = require('memory-cache')
 
 const primitiveTypes = require('./primitive-types')
 const KeyValuePair = require('./key-value-pair')
+const getTypeId = require('./get-type-id')
 
 function generateMessage(instance) {
   let message
@@ -38,7 +39,7 @@ function addProtoField(message, name, value, i, type, rule = undefined) {
   } else if (type === 'Map') {
     const childKey = value.keys().next().value, childValue = childKey && value.get(childKey)
     if (childValue) {
-      const kvp = new KeyValuePair(childKey, childValue, getTypeId(childKey), getTypeId(childValue))
+      const kvp = new KeyValuePair(childKey, childValue)
       const childMessage = getOrGenerateMessage(kvp)
       message.add(childMessage)
       message.add(new protobuf.Field(`${name}_map`, i++, childMessage.name, 'repeated'))
@@ -61,20 +62,14 @@ function addNormalisedMapsToInstance(instance) {
     } else if (type === 'Map') {
       instance[`${name}_map`] = Array.from(value.keys()).map(k => {
         const v = value.get(k)
-        return new KeyValuePair(k, v, k._serializationKey, v._serializationKey)
+        return new KeyValuePair(k, v)
       })
 
       Array.from(value.values()).forEach(addNormalisedMapsToInstance)
-    } else if (!primitiveTypes[type]) {
+    } else if (!primitiveTypes[type]) { // type !== 'Object'
       addNormalisedMapsToInstance(value)
     }
   }
-}
-
-function getTypeId(value) {
-  return value.constructor.name === 'Object'
-    ? null
-    : (value._serializationKey || value.constructor.name)
 }
 
 function getObjectIndex() {
