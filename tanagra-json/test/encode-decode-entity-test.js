@@ -61,6 +61,22 @@ describe('#encodeEntity, #decodeEntity', () => {
       }
     }
 
+    class ClassWithMaps {
+      constructor() {
+        this.someMap = new Map([
+          [123, 'foo'],
+          [789, 'bar'],
+          [456, 'baz']
+        ])
+
+        this.someOtherMap = new Map([
+          [321, 'oof'],
+          [987, 'rab'],
+          [654, 'zab']
+        ])
+      }
+    }
+
     it('should successfully encode/decode a simple class without serialization metadata', () => {
       const instance = new SimpleClass()
       const encoded = encodeEntity(instance)
@@ -102,6 +118,18 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.deepStrictEqual('bar', decoded.someMap.get(789))
       assert.deepStrictEqual('baz', decoded.someMap.get(456))
     })
+
+    it('should support multiple maps', () => {
+      const instance = new ClassWithMaps()
+      const encoded = encodeEntity(instance)
+      const decoded = decodeEntity(encoded)
+      assert.deepStrictEqual('foo', decoded.someMap.get(123))
+      assert.deepStrictEqual('bar', decoded.someMap.get(789))
+      assert.deepStrictEqual('baz', decoded.someMap.get(456))
+      assert.deepStrictEqual('oof', decoded.someOtherMap.get(321))
+      assert.deepStrictEqual('rab', decoded.someOtherMap.get(987))
+      assert.deepStrictEqual('zab', decoded.someOtherMap.get(654))
+    })
   })
 
   describe('functions and getters', () => {
@@ -134,6 +162,7 @@ describe('#encodeEntity, #decodeEntity', () => {
         constructor() {
           this.primitive = 123
           this.nested = new withNestedInner()
+          this.nested2 = new withNestedInner()
         }
       }
 
@@ -161,6 +190,15 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.strictEqual('XYZ', decoded.nested.nested.constructor.someStaticGetter)
       assert.strictEqual('XXX', decoded.nested.nested.constructor.someStaticFunc('XXX'))
       assert.strictEqual('WithFuncsAndGetters', decoded.nested.nested.constructor.name)
+
+      assert.strictEqual('hello world', decoded.nested2.primitive)
+      assert.strictEqual('WithNestedInner', decoded.nested2.constructor.name)
+      assert.strictEqual('some stringy string', decoded.nested2.nested.someString)
+      assert.strictEqual('some stringy string', decoded.nested2.nested.someInstanceGetter)
+      assert.strictEqual('some stringy string-XXX', decoded.nested2.nested.someInstanceFunc('XXX'))
+      assert.strictEqual('XYZ', decoded.nested2.nested.constructor.someStaticGetter)
+      assert.strictEqual('XXX', decoded.nested2.nested.constructor.someStaticFunc('XXX'))
+      assert.strictEqual('WithFuncsAndGetters', decoded.nested2.nested.constructor.name)
     })
 
     it('should support arrays of complex types', () => {

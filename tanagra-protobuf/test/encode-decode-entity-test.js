@@ -165,6 +165,7 @@ describe('#encodeEntity, #decodeEntity', () => {
         constructor() {
           this.primitive = 123
           this.nested = new withNestedInner()
+          this.nested2 = new withNestedInner()
         }
       }
 
@@ -184,6 +185,7 @@ describe('#encodeEntity, #decodeEntity', () => {
 
       assert.strictEqual(123, decoded.primitive)
       assert.strictEqual('WithNestedOuter', decoded.constructor.name)
+
       assert.strictEqual('hello world', decoded.nested.primitive)
       assert.strictEqual('WithNestedInner', decoded.nested.constructor.name)
       assert.strictEqual('some stringy string', decoded.nested.nested.someString)
@@ -192,6 +194,15 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.strictEqual('XYZ', decoded.nested.nested.constructor.someStaticGetter)
       assert.strictEqual('XXX', decoded.nested.nested.constructor.someStaticFunc('XXX'))
       assert.strictEqual('WithFuncsAndGetters', decoded.nested.nested.constructor.name)
+
+      assert.strictEqual('hello world', decoded.nested2.primitive)
+      assert.strictEqual('WithNestedInner', decoded.nested2.constructor.name)
+      assert.strictEqual('some stringy string', decoded.nested2.nested.someString)
+      assert.strictEqual('some stringy string', decoded.nested2.nested.someInstanceGetter)
+      assert.strictEqual('some stringy string-XXX', decoded.nested2.nested.someInstanceFunc('XXX'))
+      assert.strictEqual('XYZ', decoded.nested2.nested.constructor.someStaticGetter)
+      assert.strictEqual('XXX', decoded.nested2.nested.constructor.someStaticFunc('XXX'))
+      assert.strictEqual('WithFuncsAndGetters', decoded.nested2.nested.constructor.name)
     })
 
     it('should support arrays of complex types', () => {
@@ -216,7 +227,7 @@ describe('#encodeEntity, #decodeEntity', () => {
     })
 
     it('should support array nesting', () => {
-      class WithArrayOuter {
+      class WithArrayOuter1 {
         constructor() {
           this.primitive = 123
           this.array = [
@@ -227,7 +238,7 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      class WithArrayInner {
+      class WithArrayInner1 {
         constructor() {
           this.primitive = 'hello world'
           this.innerArray = [
@@ -242,8 +253,8 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const withArrayInner = serializable(WithArrayInner, [withFuncsAndGetters])
-      const withArrayOuter = serializable(WithArrayOuter, [withArrayInner])
+      const withArrayInner = serializable(WithArrayInner1, [withFuncsAndGetters])
+      const withArrayOuter = serializable(WithArrayOuter1, [withArrayInner])
 
       const instance = new withArrayOuter()
       const encoded = encodeEntity(instance)
@@ -251,7 +262,7 @@ describe('#encodeEntity, #decodeEntity', () => {
 
       for (const i of [0, 1, 2]) {
         const innerInst = decoded.array[i]
-        assert.strictEqual('WithArrayInner', innerInst.constructor.name)
+        assert.strictEqual('WithArrayInner1', innerInst.constructor.name)
         assert.strictEqual('hello world', innerInst.myFunc())
 
         for (const ii of [0, 1, 2]) {
@@ -266,7 +277,7 @@ describe('#encodeEntity, #decodeEntity', () => {
     })
 
     it('should support 3-level array nesting', () => {
-      class WithArrayOuter {
+      class WithArrayOuter2 {
         constructor() {
           this.primitive = 123
           this.array = [
@@ -277,7 +288,7 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      class WithArrayInner {
+      class WithArrayInner2 {
         constructor() {
           this.primitive = 'hello world'
           this.innerArray = [
@@ -308,8 +319,8 @@ describe('#encodeEntity, #decodeEntity', () => {
       }
 
       const withArrayInnerInner = serializable(WithArrayInnerInner, [withFuncsAndGetters])
-      const withArrayInner = serializable(WithArrayInner, [withArrayInnerInner])
-      const withArrayOuter = serializable(WithArrayOuter, [withArrayInner])
+      const withArrayInner = serializable(WithArrayInner2, [withArrayInnerInner])
+      const withArrayOuter = serializable(WithArrayOuter2, [withArrayInner])
 
       const instance = new withArrayOuter()
       const encoded = encodeEntity(instance)
@@ -317,7 +328,7 @@ describe('#encodeEntity, #decodeEntity', () => {
 
       for (const i of [0, 1, 2]) {
         const innerInst = decoded.array[i]
-        assert.strictEqual('WithArrayInner', innerInst.constructor.name)
+        assert.strictEqual('WithArrayInner2', innerInst.constructor.name)
         assert.strictEqual('hello world', innerInst.myFunc())
 
         for (const ii of [0, 1, 2]) {
@@ -447,7 +458,7 @@ describe('#encodeEntity, #decodeEntity', () => {
     })
 
     it('should ignore arrays of arrays', () => {
-      class WithArrayOuter {
+      class WithArrayOuter3 {
         constructor() {
           this.primitive = 123
           this.array = [
@@ -468,13 +479,13 @@ describe('#encodeEntity, #decodeEntity', () => {
       }
 
       const withArrayInner = serializable(WithArrayInner)
-      const withArrayOuter = serializable(WithArrayOuter, [withArrayInner])
+      const withArrayOuter = serializable(WithArrayOuter3, [withArrayInner])
 
       const instance = new withArrayOuter()
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded, withArrayOuter)
 
-      assert.strictEqual('WithArrayOuter', decoded.constructor.name)
+      assert.strictEqual('WithArrayOuter3', decoded.constructor.name)
       assert.strictEqual(123, decoded.primitive)
       assert.strictEqual(undefined, decoded.array)
     })

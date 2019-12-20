@@ -41,12 +41,12 @@ function addProtoField(message, name, value, i, type, rule = undefined) {
     if (childValue) {
       const kvp = new KeyValuePair(childKey, childValue)
       const childMessage = getOrGenerateMessage(kvp)
-      message.add(childMessage)
+      if (!message.get(childMessage.name)) message.add(childMessage)
       message.add(new protobuf.Field(`${name}_map`, i++, childMessage.name, 'repeated'))
     }
   } else {
     const subMessage = getOrGenerateMessage(value)
-    message.add(subMessage)
+    if (!message.get(subMessage.name)) message.add(subMessage)
     message.add(new protobuf.Field(name, i++, subMessage.name, rule))
   }
 
@@ -81,7 +81,13 @@ function getObjectIndex() {
 function getOrGenerateMessage(instance) {
   const typeId = getTypeId(instance)
   const existing = typeId && memcache.get(typeId)
-  return existing || generateMessage(instance)
+  if (existing) {
+    return existing
+  }
+
+  const newMessage = generateMessage(instance)
+  memcache.put(typeId, newMessage)
+  return newMessage
 }
 
 module.exports = instance => {
