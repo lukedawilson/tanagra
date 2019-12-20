@@ -6,18 +6,13 @@ const KeyValuePair = require('./key-value-pair')
 const getTypeId = require('./get-type-id')
 
 function generateMessage(instance) {
-  let message
-  if (instance.constructor.name === 'Object') {
-    message = new protobuf.Type(`Object_${getObjectIndex()}`)
-  } else {
-    message = new protobuf.Type(instance.constructor.name)
-    message.add(new protobuf.Field('_serializationKey', 999, 'string'))
-  }
+  const message = new protobuf.Type(getTypeId(instance))
+  message.add(new protobuf.Field('_serializationKey', 999, 'string'))
 
   let i = 0
   const fields = Object.entries(instance)
   for (const field of fields) {
-    const name = field[0], value = field[1], type = value.constructor.name
+    const name = field[0], value = field[1], type = getTypeId(value)
     if (name === '_serializationKey') continue
 
     i = addProtoField(message, name, value, i, type)
@@ -32,7 +27,7 @@ function addProtoField(message, name, value, i, type, rule = undefined) {
   } else if ((type === 'Array' || type === 'Map') && rule) {
     // Do nothing - we don't support applying rules to arrays or maps (e.g. arrays of arrays, arrays of maps, etc.)
   } else if (type === 'Array') {
-    const childValue = value[0], childType = childValue.constructor.name
+    const childValue = value[0], childType = getTypeId(childValue)
     if (childValue) {
       i = addProtoField(message, name, childValue, i, childType, 'repeated')
     }
@@ -56,7 +51,7 @@ function addProtoField(message, name, value, i, type, rule = undefined) {
 function addNormalisedMapsToInstance(instance) {
   const fields = Object.entries(instance)
   for (const field of fields) {
-    const name = field[0], value = field[1], type = value.constructor.name
+    const name = field[0], value = field[1], type = getTypeId(value)
     if (type === 'Array') {
       value.forEach(addNormalisedMapsToInstance)
     } else if (type === 'Map') {
@@ -66,25 +61,20 @@ function addNormalisedMapsToInstance(instance) {
       })
 
       Array.from(value.values()).forEach(addNormalisedMapsToInstance)
-    } else if (!primitiveTypes[type]) { // type !== 'Object'
+    } else if (!primitiveTypes[type]) {
       addNormalisedMapsToInstance(value)
     }
   }
 }
 
-function getObjectIndex() {
-  const objIndex = memcache.get('object-index') || 0
-  memcache.put('object-index', objIndex + 1)
-  return objIndex
-}
-
 function getOrGenerateMessage(instance) {
   const typeId = getTypeId(instance)
-  const existing = typeId && memcache.get(typeId)
+  const existing = typeId && typeId !== 'KeyValuePair' && memcache.get(typeId)
   if (existing) {
     return existing
   }
 
+  console.log(typeId)
   const newMessage = generateMessage(instance)
   memcache.put(typeId, newMessage)
   return newMessage
