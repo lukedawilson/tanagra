@@ -23,7 +23,9 @@
   },
   "homepage": "https://github.com/lukedawilson/tanagra#readme",
   "devDependencies": {
-    "mocha": "^5.2.0",
-    "tanagra-core": "^0.1.6"
+    "mocha": "^5.2.0"
+  },
+  "dependencies": {
+    "tanagra-core": "^0.2.0"
   }
 }

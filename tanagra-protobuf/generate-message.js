@@ -74,7 +74,6 @@ function getOrGenerateMessage(instance) {
     return existing
   }
 
-  console.log(typeId)
   const newMessage = generateMessage(instance)
   memcache.put(typeId, newMessage)
   return newMessage
