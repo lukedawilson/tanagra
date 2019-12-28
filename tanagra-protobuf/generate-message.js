@@ -33,7 +33,7 @@ function addProtoField(message, name, value, i, type, rule = undefined) {
     }
   } else if (type === 'Map') {
     const childKey = value.keys().next().value, childValue = childKey && value.get(childKey)
-    if (childValue) {
+    if (childValue) { // ToDo: iterate until we find a value
       const kvp = new KeyValuePair(childKey, childValue)
       const childMessage = getOrGenerateMessage(kvp)
       if (!message.get(childMessage.name)) message.add(childMessage)
@@ -69,7 +69,7 @@ function addNormalisedMapsToInstance(instance) {
 
 function getOrGenerateMessage(instance) {
   const typeId = getTypeId(instance)
-  const existing = typeId && typeId !== 'KeyValuePair' && memcache.get(typeId)
+  const existing = typeId && memcache.get(typeId)
   if (existing) {
     return existing
   }

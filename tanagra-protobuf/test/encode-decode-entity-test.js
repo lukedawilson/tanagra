@@ -389,7 +389,7 @@ describe('#encodeEntity, #decodeEntity', () => {
             [789, { 'a': 7, 'b': 8 }],
             [456, { 'a': 4 }]
           ])
-          this.someOtherObject = { 'x': 10, 'y': 20, 'z': 5 }
+          this.someOtherObject = { 'aa': 10, 'bb': 20, 'cc': 5 }
           this.someOtherMap = new Map([
             [123, { 'x': 1, 'y': 2 }],
             [789, { 'x': 7, 'y': 8 }],
@@ -403,19 +403,16 @@ describe('#encodeEntity, #decodeEntity', () => {
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded, classWithComplexMap)
 
-      console.log('someMap', decoded.someOtherMap)
       assert.deepStrictEqual(1, decoded.someMap.get(123).a)
       assert.deepStrictEqual(2, decoded.someMap.get(123).b)
       assert.deepStrictEqual(7, decoded.someMap.get(789).a)
       assert.deepStrictEqual(8, decoded.someMap.get(789).b)
       assert.deepStrictEqual(4, decoded.someMap.get(456).a)
 
-      console.log('someOtherObject', decoded.someOtherObject)
-      assert.deepStrictEqual(10, decoded.someOtherObject.x)
-      assert.deepStrictEqual(20, decoded.someOtherObject.y)
-      assert.deepStrictEqual(5, decoded.someOtherObject.z)
+      assert.deepStrictEqual(10, decoded.someOtherObject.aa)
+      assert.deepStrictEqual(20, decoded.someOtherObject.bb)
+      assert.deepStrictEqual(5, decoded.someOtherObject.cc)
 
-      console.log('someOtherMap', decoded.someOtherMap)
       assert.deepStrictEqual(1, decoded.someOtherMap.get(123).x)
       assert.deepStrictEqual(2, decoded.someOtherMap.get(123).y)
       assert.deepStrictEqual(7, decoded.someOtherMap.get(789).x)
