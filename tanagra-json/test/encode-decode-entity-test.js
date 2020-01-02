@@ -47,7 +47,7 @@ describe('#encodeEntity, #decodeEntity', () => {
 
     class ClassWithArray {
       constructor() {
-        this.someArray = [123, 789, 456]
+        this.someArray = [null, 123, 789, 456]
       }
     }
 
@@ -56,7 +56,9 @@ describe('#encodeEntity, #decodeEntity', () => {
         this.someMap = new Map([
           [123, 'foo'],
           [789, 'bar'],
-          [456, 'baz']
+          [456, 'baz'],
+          [null, 'foobar'],
+          [654, null]
         ])
       }
     }
@@ -107,7 +109,7 @@ describe('#encodeEntity, #decodeEntity', () => {
       const withArray = new ClassWithArray()
       const encoded = encodeEntity(withArray)
       const decoded = decodeEntity(encoded)
-      assert.deepStrictEqual([123, 789, 456], decoded.someArray)
+      assert.deepStrictEqual([null, 123, 789, 456], decoded.someArray)
     })
 
     it('should support maps', () => {
@@ -117,6 +119,8 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.deepStrictEqual('foo', decoded.someMap.get(123))
       assert.deepStrictEqual('bar', decoded.someMap.get(789))
       assert.deepStrictEqual('baz', decoded.someMap.get(456))
+      assert.deepStrictEqual('foobar', decoded.someMap.get(null))
+      assert.deepStrictEqual(null, decoded.someMap.get(654))
     })
 
     it('should support multiple maps', () => {

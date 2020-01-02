@@ -2,6 +2,8 @@ const serializableClassMappings = require('tanagra-core').serializableClassMappi
 const addSerializableClasses = require('tanagra-core').addSerializableClasses
 
 function denormalizeJsonObject(instance) {
+  if (instance === null || instance === undefined) return
+
   if (instance._serializationKey) {
     const proto = serializableClassMappings().get(instance._serializationKey)
     if (proto) {

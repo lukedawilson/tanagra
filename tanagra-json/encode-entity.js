@@ -1,4 +1,6 @@
 function normalizeJsonObject(instance) {
+  if (instance === null || instance === undefined) return
+
   Object.entries(instance).map(entry => ({ key: entry[0], value: entry[1] })).filter(kvp => kvp.value).forEach(kvp => {
     if (kvp.value.constructor.name === 'Array') {
       kvp.value.forEach(normalizeJsonObject)
