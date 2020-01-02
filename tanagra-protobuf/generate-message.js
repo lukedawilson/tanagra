@@ -30,14 +30,18 @@ function addProtoField(message, name, value, i, type, rule = undefined) {
     const childValue = value[0], childType = getTypeId(childValue)
     if (childValue) {
       i = addProtoField(message, name, childValue, i, childType, 'repeated')
+    } else {
+      throw new Error('Null values in arrays not supported')
     }
   } else if (type === 'Map') {
     const childKey = value.keys().next().value, childValue = childKey && value.get(childKey)
-    if (childValue) { // ToDo: iterate until we find a value
+    if (childValue) {
       const kvp = new KeyValuePair(childKey, childValue)
       const childMessage = getOrGenerateMessage(kvp)
       if (!message.get(childMessage.name)) message.add(childMessage)
       message.add(new protobuf.Field(`${name}_map`, i++, childMessage.name, 'repeated'))
+    } else {
+      throw new Error('Null values in maps not supported')
     }
   } else {
     const subMessage = getOrGenerateMessage(value)
