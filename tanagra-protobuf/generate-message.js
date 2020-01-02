@@ -29,22 +29,29 @@ function addProtoField(message, name, value, i, type, rule = undefined) {
   } else if ((type === 'Array' || type === 'Map') && rule) {
     // Do nothing - we don't support applying rules to arrays or maps (e.g. arrays of arrays, arrays of maps, etc.)
   } else if (type === 'Array') {
-    const childValue = value[0]
-    if (childValue !== null && childValue !== undefined) {
-      const childType = getTypeId(childValue)
+    if (!value.some(x => x === null || x === undefined)) {
+      const childValue = value[0], childType = getTypeId(childValue)
       i = addProtoField(message, name, childValue, i, childType, 'repeated')
-    } else {
-      throw new Error('Null values in arrays not supported')
     }
   } else if (type === 'Map') {
-    const childKey = value.keys().next().value, childValue = childKey && value.get(childKey)
-    if (childValue !== null && childValue !== undefined) {
+    let hasNulls = false, childKey = null, childValue
+    for (let [k, v] of value) {
+      if (k === null || k === undefined || v === null || v === undefined) {
+        hasNulls = true
+        break
+      }
+
+      if (childKey === null) {
+        childKey = k
+        childValue = v
+      }
+    }
+
+    if (!hasNulls) {
       const kvp = new KeyValuePair(childKey, childValue)
       const childMessage = getOrGenerateMessage(kvp)
       if (!message.get(childMessage.name)) message.add(childMessage)
       message.add(new protobuf.Field(`${name}_map`, i++, childMessage.name, 'repeated'))
-    } else {
-      throw new Error('Null values in maps not supported')
     }
   } else {
     const subMessage = getOrGenerateMessage(value)
@@ -67,12 +74,21 @@ function addNormalisedMapsToInstance(instance) {
     if (type === 'Array') {
       value.forEach(addNormalisedMapsToInstance)
     } else if (type === 'Map') {
-      instance[`${name}_map`] = Array.from(value.keys()).map(k => {
-        const v = value.get(k)
-        return new KeyValuePair(k, v)
-      })
+      const mapArray = []
+      let hasNulls = false
+      for (let [k, v] of value) {
+        if (k === null || k === undefined || v === null || v === undefined) {
+          hasNulls = true
+          break
+        }
 
-      Array.from(value.values()).forEach(addNormalisedMapsToInstance)
+        mapArray.push(new KeyValuePair(k, v))
+      }
+
+      if (!hasNulls) {
+        instance[`${name}_map`] = mapArray
+        Array.from(value.values()).forEach(addNormalisedMapsToInstance)
+      }
     } else if (!primitiveTypes[type]) {
       addNormalisedMapsToInstance(value)
     }

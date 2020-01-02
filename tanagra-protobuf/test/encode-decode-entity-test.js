@@ -53,6 +53,7 @@ describe('#encodeEntity, #decodeEntity', () => {
       constructor() {
         this.someArray = [123, 789, 456]
         this.someOtherArray = [false, false, true]
+        this.someThirdArray = [null, 'aaa', 'bb']
       }
     }
 
@@ -66,6 +67,16 @@ describe('#encodeEntity, #decodeEntity', () => {
         this.someOtherMap = new Map([
           ['foo', false],
           ['bar', true],
+          ['baz', false]
+        ])
+        this.someThirdMap = new Map([
+          ['foo', null],
+          ['bar', true],
+          ['baz', false]
+        ])
+        this.someFourthMap = new Map([
+          ['foo', true],
+          [null, true],
           ['baz', false]
         ])
       }
@@ -120,6 +131,7 @@ describe('#encodeEntity, #decodeEntity', () => {
       const decoded = decodeEntity(encoded)
       assert.deepStrictEqual([123, 789, 456], decoded.someArray)
       assert.deepStrictEqual([false, false, true], decoded.someOtherArray)
+      assert.deepStrictEqual(undefined, decoded.someThirdArray)
     })
 
     it('should support maps', () => {
@@ -134,6 +146,9 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.deepStrictEqual(false, decoded.someOtherMap.get('foo'))
       assert.deepStrictEqual(true, decoded.someOtherMap.get('bar'))
       assert.deepStrictEqual(false, decoded.someOtherMap.get('baz'))
+
+      assert.deepStrictEqual(undefined, decoded.someThirdMap)
+      assert.deepStrictEqual(undefined, decoded.someFourthMap)
     })
 
     it('should support multiple maps', () => {
