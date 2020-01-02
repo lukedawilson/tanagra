@@ -1,6 +1,6 @@
 {
   "name": "tanagra-json",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "JSON support for the Tanagra serialization library",
   "main": "index.js",
   "scripts": {
