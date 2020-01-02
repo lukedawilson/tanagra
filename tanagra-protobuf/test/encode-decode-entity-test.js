@@ -12,6 +12,7 @@ describe('#encodeEntity, #decodeEntity', () => {
     constructor() {
       this.someNumber = 123
       this.someString = 'hello world'
+      this.someNull = null
     }
 
     someNumberFunc() {
@@ -51,6 +52,7 @@ describe('#encodeEntity, #decodeEntity', () => {
     class ClassWithArray {
       constructor() {
         this.someArray = [123, 789, 456]
+        this.someOtherArray = [false, false, true]
       }
     }
 
@@ -60,6 +62,11 @@ describe('#encodeEntity, #decodeEntity', () => {
           [123, 'foo'],
           [789, 'bar'],
           [456, 'baz']
+        ])
+        this.someOtherMap = new Map([
+          ['foo', false],
+          ['bar', true],
+          ['baz', false]
         ])
       }
     }
@@ -87,6 +94,7 @@ describe('#encodeEntity, #decodeEntity', () => {
 
       assert.strictEqual(123, decoded.someNumber)
       assert.strictEqual('hello world', decoded.someString)
+      assert.strictEqual(undefined, decoded.someNull)
     })
 
     it('should successfully encode/decode a simple class with serialization metadata', () => {
@@ -111,24 +119,32 @@ describe('#encodeEntity, #decodeEntity', () => {
       const encoded = encodeEntity(withArray)
       const decoded = decodeEntity(encoded)
       assert.deepStrictEqual([123, 789, 456], decoded.someArray)
+      assert.deepStrictEqual([false, false, true], decoded.someOtherArray)
     })
 
     it('should support maps', () => {
       const instance = new ClassWithMap()
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded)
+
       assert.deepStrictEqual('foo', decoded.someMap.get(123))
       assert.deepStrictEqual('bar', decoded.someMap.get(789))
       assert.deepStrictEqual('baz', decoded.someMap.get(456))
+
+      assert.deepStrictEqual(false, decoded.someOtherMap.get('foo'))
+      assert.deepStrictEqual(true, decoded.someOtherMap.get('bar'))
+      assert.deepStrictEqual(false, decoded.someOtherMap.get('baz'))
     })
 
     it('should support multiple maps', () => {
       const instance = new ClassWithMaps()
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded)
+
       assert.deepStrictEqual('foo', decoded.someMap.get(123))
       assert.deepStrictEqual('bar', decoded.someMap.get(789))
       assert.deepStrictEqual('baz', decoded.someMap.get(456))
+
       assert.deepStrictEqual('oof', decoded.someOtherMap.get(321))
       assert.deepStrictEqual('rab', decoded.someOtherMap.get(987))
       assert.deepStrictEqual('zab', decoded.someOtherMap.get(654))

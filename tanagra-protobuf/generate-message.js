@@ -12,9 +12,11 @@ function generateMessage(instance) {
   let i = 0
   const fields = Object.entries(instance)
   for (const field of fields) {
-    const name = field[0], value = field[1], type = getTypeId(value)
+    const name = field[0], value = field[1]
     if (name === '_serializationKey') continue
+    if (value === null || value === undefined) continue
 
+    const type = getTypeId(value)
     i = addProtoField(message, name, value, i, type)
   }
 
@@ -27,15 +29,16 @@ function addProtoField(message, name, value, i, type, rule = undefined) {
   } else if ((type === 'Array' || type === 'Map') && rule) {
     // Do nothing - we don't support applying rules to arrays or maps (e.g. arrays of arrays, arrays of maps, etc.)
   } else if (type === 'Array') {
-    const childValue = value[0], childType = getTypeId(childValue)
-    if (childValue) {
+    const childValue = value[0]
+    if (childValue !== null && childValue !== undefined) {
+      const childType = getTypeId(childValue)
       i = addProtoField(message, name, childValue, i, childType, 'repeated')
     } else {
       throw new Error('Null values in arrays not supported')
     }
   } else if (type === 'Map') {
     const childKey = value.keys().next().value, childValue = childKey && value.get(childKey)
-    if (childValue) {
+    if (childValue !== null && childValue !== undefined) {
       const kvp = new KeyValuePair(childKey, childValue)
       const childMessage = getOrGenerateMessage(kvp)
       if (!message.get(childMessage.name)) message.add(childMessage)
@@ -53,9 +56,14 @@ function addProtoField(message, name, value, i, type, rule = undefined) {
 }
 
 function addNormalisedMapsToInstance(instance) {
+  if (instance === null || instance === undefined) return
+
   const fields = Object.entries(instance)
   for (const field of fields) {
-    const name = field[0], value = field[1], type = getTypeId(value)
+    const name = field[0], value = field[1]
+    if (value === null || value === undefined) continue
+
+    const type = getTypeId(value)
     if (type === 'Array') {
       value.forEach(addNormalisedMapsToInstance)
     } else if (type === 'Map') {
