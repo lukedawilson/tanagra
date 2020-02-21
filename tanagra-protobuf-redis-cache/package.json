@@ -4,7 +4,8 @@
   "description": "Redis caching of protobufs for the Tanagra serialization library",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "jsdoc ./* -d ./docs --readme ./README.md"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/lukedawilson/tanagra/issues"
   },
-  "homepage": "https://github.com/lukedawilson/tanagra#readme"
+  "homepage": "https://github.com/lukedawilson/tanagra#readme",
+  "devDependencies": {
+    "jsdoc": "^3.6.3"
+  }
 }
