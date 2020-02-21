@@ -75,3 +75,8 @@ const encoded = json.encodeEntity(foo)
 const decoded = json.decodeEntity(encoded, Foo)
 
 ```
+
+## Documentation
+
+To generate API docs for a particular module, navigate to the relevant project folder (e.g. _tanagra-core_)
+and run `npm run docs` from the root folder. The jsdoc will appear in the _docs_ folder.

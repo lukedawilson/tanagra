@@ -1,3 +1,36 @@
+/**
+ * Decorates a class with serialization metadata, required when deserializing it.
+ *
+ * @function serializable
+ * @param clazz Class to decorate with serialization metadata.
+ * @param nestedClazzes Referenced classes. (Note that the library traverses this list recursively, so there's no need
+ *                      to list all classes recursively.)
+ * @param customSerializationKey By default, when the class is serialized, it is keyed on its name; this default can
+ *                               be overridden by setting this parameter.
+ * @example
+ * const serializable = require('tanagra-core').serializable
+ *
+ * class Foo {
+ *    constructor(bar) {
+ *      this.bar = bar
+ *    }
+ * }
+ * module.exports = serializable(Foo, [Bar])
+ *
+ * class Bar {
+ *    constructor(baz) {
+ *      this.baz = baz
+ *    }
+ * }
+ * module.exports = serializable(Bar, [Baz])
+ *
+ * class Baz {
+ *    constructor(string) {
+ *      this.string = string
+ *    }
+ * }
+ * module.exports = serializable(Baz)
+ */
 module.exports = function(clazz, nestedClazzes, customSerializationKey) {
   const fieldTypes = nestedClazzes && new Map(nestedClazzes.map(klass => [klass._serializationKey, klass]))
   Reflect.defineProperty(clazz, '_fieldTypes', {
