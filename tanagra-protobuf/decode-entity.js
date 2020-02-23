@@ -69,4 +69,17 @@ function decodeEntity(tuple, clazz) {
   return instance
 }
 
+/**
+ * Deserializes a class instance that was serialized in Google protobuffers format.
+ *
+ * @function decodeEntity
+ * @param encoded Serialized instance, with class metadata.
+ * @param clazz Type parameter specifying class to deserialize to.
+ *
+ * @returns Object Deserialized instance of specified type.
+ * @example
+ * const protobuf = require('tanagra-protobuf')
+ * protobuf.init()
+ * const foo = protobuf.decodeEntity(tuple, SomeDecoratedClass)
+ */
 module.exports = decodeEntity
