@@ -16,6 +16,18 @@ function normalizeJsonObject(instance) {
   })
 }
 
+/**
+ * Serializes a decorated class instance as a JSON string.
+ *
+ * @function encodeEntity
+ * @param instance A decorated class instance.
+ *
+ * @returns String JSON encoding of the instance.
+ * @example
+ * const json = require('tanagra-json')
+ * const foo = new SomeDecoratedClass()
+ * const serialized = json.encodeEntity(foo)
+ */
 module.exports = function(instance) {
   normalizeJsonObject(instance)
   return JSON.stringify(instance)
