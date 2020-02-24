@@ -33,15 +33,13 @@ features, _Babel_ transpiling or _TypeScript_.
 
 The project is divided into a number of modules:
 
-- [tanagra-core](https://www.npmjs.com/package/tanagra-core) - common functionality required by the different
-  serialization formats, including the function for marking classes as _serializable_
-- [tanagra-json](https://www.npmjs.com/package/tanagra-json) - serializes the data into `JSON` format
-- [tanagra-protobuf](https://www.npmjs.com/package/tanagra-protobuf) - serializes the data into `Google protobuffers`
-  format (experimental)
-- [tanagra-protobuf-redis-cache](https://www.npmjs.com/package/tanagra-protobuf-redis-cache) - a helper library
-  for storing serialized protobufs in _redis_
-- [tanagra-auto-mapper](https://www.npmjs.com/package/tanagra-auto-mapper) - walks the module tree in _node.js_
-  to build up a map of classes, meaning the user doesn't have to specify the type to deserialize to (experimental)
+- [tanagra-core](module-tanagra-core.html) - common functionality required by the different serialization formats,
+  including the function for marking classes as _serializable_
+- [tanagra-json](module-tanagra-json.html) - serializes the data into `JSON` format
+- [tanagra-protobuf](module-tanagra-protobuf.html) - serializes the data into `Google protobuffers` format (experimental)
+- [tanagra-protobuf-redis-cache](module-tanagra-protobuf-redis-cache.html) - a helper library for storing serialized protobufs in _redis_
+- [tanagra-auto-mapper](module-tanagra-auto-mapper.html) - walks the module tree in _node.js_ to build up a map of classes,
+  meaning the user doesn't have to specify the type to deserialize to (experimental)
 
 ## Installation
 
@@ -103,6 +101,7 @@ Can be filed via [GitHub](https://github.com/lukedawilson/tanagra/issues/new/cho
 
 ## Contributing
 
-You might want to start with some [n00b issues](https://github.com/lukedawilson/tanagra/labels/good%20first%20issue).
+I welcome contributions to the project. You might want to start with some
+[n00b issues](https://github.com/lukedawilson/tanagra/labels/good%20first%20issue).
 Otherwise, just [browse the issues](https://github.com/lukedawilson/tanagra/issues) and pick one.
 You might want to [email me](mailto:luke.d.a.wilson@gmail.com) to let me know you're working on it.

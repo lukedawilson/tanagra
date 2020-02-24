@@ -118,15 +118,13 @@ features, <em>Babel</em> transpiling or <em>TypeScript</em>.</p>
 <h2>Project structure</h2>
 <p>The project is divided into a number of modules:</p>
 <ul>
-<li><a href="https://www.npmjs.com/package/tanagra-core">tanagra-core</a> - common functionality required by the different
-serialization formats, including the function for marking classes as <em>serializable</em></li>
-<li><a href="https://www.npmjs.com/package/tanagra-json">tanagra-json</a> - serializes the data into <code>JSON</code> format</li>
-<li><a href="https://www.npmjs.com/package/tanagra-protobuf">tanagra-protobuf</a> - serializes the data into <code>Google protobuffers</code>
-format (experimental)</li>
-<li><a href="https://www.npmjs.com/package/tanagra-protobuf-redis-cache">tanagra-protobuf-redis-cache</a> - a helper library
-for storing serialized protobufs in <em>redis</em></li>
-<li><a href="https://www.npmjs.com/package/tanagra-auto-mapper">tanagra-auto-mapper</a> - walks the module tree in <em>node.js</em>
-to build up a map of classes, meaning the user doesn't have to specify the type to deserialize to (experimental)</li>
+<li><a href="module-tanagra-core.html">tanagra-core</a> - common functionality required by the different serialization formats,
+including the function for marking classes as <em>serializable</em></li>
+<li><a href="module-tanagra-json.html">tanagra-json</a> - serializes the data into <code>JSON</code> format</li>
+<li><a href="module-tanagra-protobuf.html">tanagra-protobuf</a> - serializes the data into <code>Google protobuffers</code> format (experimental)</li>
+<li><a href="module-tanagra-protobuf-redis-cache.html">tanagra-protobuf-redis-cache</a> - a helper library for storing serialized protobufs in <em>redis</em></li>
+<li><a href="module-tanagra-auto-mapper.html">tanagra-auto-mapper</a> - walks the module tree in <em>node.js</em> to build up a map of classes,
+meaning the user doesn't have to specify the type to deserialize to (experimental)</li>
 </ul>
 <h2>Installation</h2>
 <pre class="prettyprint source lang-bash"><code>$ npm add --save tanagra-core
