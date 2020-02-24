@@ -111,6 +111,7 @@ You might want to [email me](mailto:luke.d.a.wilson@gmail.com) to let me know yo
 - Support for class versioning (to allow deserialization to a previous version of a class,
   e.g. for instances cached before it was refactored)
 - Better handling of dynamic changes to class structure at runtime
+- Better support for pre-ES6 data-structures (functions-as-classes)
 - Full support for Google protobufs (including caching in Redis)
 - Support for ESNext decorators
 - Support for Typescript
