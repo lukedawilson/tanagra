@@ -4,7 +4,7 @@
   "description": "Serialization library for javascript",
   "main": "demo.js",
   "scripts": {
-    "docs": "rm -rf docs; jsdoc ./* --readme ./README.md -d docs -t ./node_modules/braintree-jsdoc-template; mv docs/tanagra/*/* docs/; rm -r docs/tanagra"
+    "docs": "find docs/* -not -name CNAME -delete; jsdoc ./* --readme ./README.md -d docs -t ./node_modules/braintree-jsdoc-template; mv docs/tanagra/*/* docs/; rm -r docs/tanagra"
   },
   "repository": {
     "type": "git",
