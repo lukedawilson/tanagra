@@ -24,7 +24,5 @@
     "url": "https://github.com/lukedawilson/tanagra/issues"
   },
   "homepage": "https://github.com/lukedawilson/tanagra#readme",
-  "devDependencies": {
-    "jsdoc": "^3.6.3"
-  }
+  "devDependencies": {}
 }

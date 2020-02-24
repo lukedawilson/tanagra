@@ -4,8 +4,7 @@
   "description": "JSON support for the Tanagra serialization library",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
-    "docs": "jsdoc ./* -d ./docs --readme ./README.md"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -24,7 +23,6 @@
   },
   "homepage": "https://github.com/lukedawilson/tanagra#readme",
   "devDependencies": {
-    "jsdoc": "^3.6.3",
     "mocha": "^5.2.0"
   },
   "dependencies": {
