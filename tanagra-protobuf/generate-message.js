@@ -107,6 +107,14 @@ function getOrGenerateMessage(instance) {
   return newMessage
 }
 
+/**
+ * Generates a protobuf schema for a given decorated class instance.
+ *
+ * @package
+ * @function generateMessage
+ * @param instance Instance of a class decorated with serialization metadata.
+ * @returns {protobuf.Type}
+ */
 module.exports = instance => {
   const message = getOrGenerateMessage(instance)
   addNormalisedMapsToInstance(instance)

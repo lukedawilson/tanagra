@@ -7,9 +7,17 @@ const KeyValuePair = require('./key-value-pair')
 
 const loadAsync = util.promisify(protobuf.load)
 
-module.exports = async (serializable) => {
-  if (serializable) {
-    serializableClassMappings.set(serializable)
+/**
+ * Initializes the protobuf serializer.
+ *
+ * @function init
+ * @param serializableTypeMap Optional map of (unique key -> prototype) specifying serializable types
+ *                            to add to initial cache.
+ * @returns {Promise.<void>}
+ */
+module.exports = async (serializableTypeMap) => {
+  if (serializableTypeMap) {
+    serializableClassMappings.set(serializableTypeMap)
   }
 
   serializableClassMappings.get().set(KeyValuePair._serializationKey, KeyValuePair.prototype)

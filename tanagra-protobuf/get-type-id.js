@@ -1,3 +1,11 @@
+/**
+ * Gets a unique identifier for the type of a given decorated class instance.
+ *
+ * @package
+ * @function getTypeId
+ * @param instance Instance of a class decorated with serialization metadata.
+ * @returns {String}
+ */
 module.exports = instance => {
   if (instance === null || instance === undefined) {
     throw new Error('Instance must not be null or undefined')
