@@ -1,16 +1,26 @@
 {
   "name": "tanagra",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "description": "Serialization library for javascript",
   "main": "demo.js",
   "scripts": {
     "docs": "jsdoc ./* -d ./docs --readme ./README.md"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/lukedawilson/tanagra.git"
+  },
+  "keywords": [
+    "node",
+    "javascript",
+    "serializer"
+  ],
   "author": "Luke Wilson <luke.d.a.wilson@gmail.com> (https://github.com/lukedawilson/)",
   "license": "MIT",
-  "dependencies": {
-    "redis": "^2.8.0"
+  "bugs": {
+    "url": "https://github.com/lukedawilson/tanagra/issues"
   },
+  "homepage": "https://lukedawilson.github.io/tanagra",
   "devDependencies": {
     "jsdoc": "^3.6.3"
   }

@@ -1,0 +1,11 @@
+{
+  "name": "demo",
+  "version": "0.1.0",
+  "description": "Demo/test of core functionality",
+  "main": "demo.js",
+  "author": "Luke Wilson <luke.d.a.wilson@gmail.com> (https://github.com/lukedawilson/)",
+  "license": "MIT",
+  "dependencies": {
+    "redis": "^3.0.2"
+  }
+}
