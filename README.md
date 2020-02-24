@@ -1,4 +1,19 @@
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
 # tanagra
+
+<a class="github-button"
+   href="https://github.com/lukedawilson/tanagra/subscription"
+   data-icon="octicon-eye"
+   aria-label="Watch lukedawilson/tanagra on GitHub">Watch</a>
+<a class="github-button"
+   href="https://github.com/lukedawilson/tanagra"
+   data-icon="octicon-star"
+   aria-label="Star lukedawilson/tanagra on GitHub">Star</a>
+<a class="github-button"
+   href="https://github.com/lukedawilson/tanagra/issues"
+   data-icon="octicon-issue-opened"
+   aria-label="Issue lukedawilson/tanagra on GitHub">Issue</a>
 
 ![Shaka, When the Walls Fell](https://i.imgur.com/ejkP6Rvm.jpg)
 
@@ -14,7 +29,7 @@ the original classes, allowing them to be used in code as the originals were. Th
 only standard Javascript (currently tested with ES6 and node.js), with no dependency on experimental
 features, _Babel_ transpiling or _TypeScript_.
 
-## Architecture
+## Project structure
 
 The project is divided into a number of modules:
 
@@ -44,7 +59,7 @@ Alternatively, to install the packages required for default (JSON) serialization
 $ npm add --save tanagra
 ```
 
-## Usage
+## Basic usage
 
 The following example declares a serializable class, and uses the `tanagra-json` module
 to serialize/deserialize it:
@@ -82,6 +97,12 @@ const decoded = json.decodeEntity(encoded, Foo)
 
 ```
 
-## Documentation
+## Bug reports and feature requests
 
-To generate API docs, run `npm run docs` from the root folder. The documentation will appear in the _docs_ folder.
+Can be filed via [GitHub](https://github.com/lukedawilson/tanagra/issues/new/choose).
+
+## Contributing
+
+You might want to start with some [n00b issues](https://github.com/lukedawilson/tanagra/labels/good%20first%20issue).
+Otherwise, just [browse the issues](https://github.com/lukedawilson/tanagra/issues) and pick one.
+You might want to [email me](mailto:luke.d.a.wilson@gmail.com) to let me know you're working on it.

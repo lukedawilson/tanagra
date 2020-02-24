@@ -91,7 +91,20 @@
 
   <section class="readme">
     <article>
-      <h1>tanagra</h1>
+      <script async defer src="https://buttons.github.io/buttons.js"></script>
+<h1>tanagra</h1>
+<p><a class="github-button"
+   href="https://github.com/lukedawilson/tanagra/subscription"
+   data-icon="octicon-eye"
+   aria-label="Watch lukedawilson/tanagra on GitHub">Watch</a>
+<a class="github-button"
+   href="https://github.com/lukedawilson/tanagra"
+   data-icon="octicon-star"
+   aria-label="Star lukedawilson/tanagra on GitHub">Star</a>
+<a class="github-button"
+   href="https://github.com/lukedawilson/tanagra/issues"
+   data-icon="octicon-issue-opened"
+   aria-label="Issue lukedawilson/tanagra on GitHub">Issue</a></p>
 <p><img src="https://i.imgur.com/ejkP6Rvm.jpg" alt="Shaka, When the Walls Fell"></p>
 <p>A simple, lightweight node.js serialization library supporting ES6 classes (including Maps).
 Currently serializes to both JSON and Google Protobuf formats.</p>
@@ -102,7 +115,7 @@ datastore such as <em>redis</em>. The deserialized objects contain all the data 
 the original classes, allowing them to be used in code as the originals were. The library requires
 only standard Javascript (currently tested with ES6 and node.js), with no dependency on experimental
 features, <em>Babel</em> transpiling or <em>TypeScript</em>.</p>
-<h2>Architecture</h2>
+<h2>Project structure</h2>
 <p>The project is divided into a number of modules:</p>
 <ul>
 <li><a href="https://www.npmjs.com/package/tanagra-core">tanagra-core</a> - common functionality required by the different
@@ -125,7 +138,7 @@ $ npm add --save tanagra-auto-mapper
 <p>Alternatively, to install the packages required for default (JSON) serialization:</p>
 <pre class="prettyprint source lang-bash"><code>$ npm add --save tanagra
 </code></pre>
-<h2>Usage</h2>
+<h2>Basic usage</h2>
 <p>The following example declares a serializable class, and uses the <code>tanagra-json</code> module
 to serialize/deserialize it:</p>
 <pre class="prettyprint source lang-javascript"><code>const serializable = require('tanagra-core').serializable
@@ -159,8 +172,12 @@ const encoded = json.encodeEntity(foo)
 const decoded = json.decodeEntity(encoded, Foo)
 
 </code></pre>
-<h2>Documentation</h2>
-<p>To generate API docs, run <code>npm run docs</code> from the root folder. The documentation will appear in the <em>docs</em> folder.</p>
+<h2>Bug reports and feature requests</h2>
+<p>Can be filed via <a href="https://github.com/lukedawilson/tanagra/issues/new/choose">GitHub</a>.</p>
+<h2>Contributing</h2>
+<p>You might want to start with some <a href="https://github.com/lukedawilson/tanagra/labels/good%20first%20issue">n00b issues</a>.
+Otherwise, just <a href="https://github.com/lukedawilson/tanagra/issues">browse the issues</a> and pick one.
+You might want to <a href="mailto:luke.d.a.wilson@gmail.com">email me</a> to let me know you're working on it.</p>
     </article>
   </section>
 
