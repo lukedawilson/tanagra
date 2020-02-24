@@ -1,6 +1,6 @@
 {
   "name": "tanagra-protobuf",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Google Protobuf support for the Tanagra serialization library",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/lukedawilson/tanagra/issues"
   },
-  "homepage": "https://github.com/lukedawilson/tanagra#readme",
+  "homepage": "https://lukedawilson.github.io/tanagra",
   "dependencies": {
     "memory-cache": "^0.2.0",
     "protobufjs": "^6.8.8",

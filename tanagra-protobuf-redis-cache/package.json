@@ -1,6 +1,6 @@
 {
   "name": "tanagra-protobuf-redis-cache",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Redis caching of protobufs for the Tanagra serialization library",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,6 @@
   "bugs": {
     "url": "https://github.com/lukedawilson/tanagra/issues"
   },
-  "homepage": "https://github.com/lukedawilson/tanagra#readme",
+  "homepage": "https://lukedawilson.github.io/tanagra",
   "devDependencies": {}
 }
