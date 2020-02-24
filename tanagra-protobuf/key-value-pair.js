@@ -10,11 +10,7 @@ class KeyValuePair {
   }
 }
 
-/**
- * A key-value-pair for serializable types, used internally for serializing ES6 maps.
- *
- * @package
- * @memberOf module:tanagra-protobuf
- * @class KeyValuePair
+/*
+ * A key-value-pair for serializable types, used for serializing instances of Map.
  */
 module.exports = serializable(KeyValuePair)

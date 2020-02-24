@@ -5,6 +5,9 @@ const primitiveTypes = require('./primitive-types')
 const KeyValuePair = require('./key-value-pair')
 const getTypeId = require('./get-type-id')
 
+/*
+ * Generates a protobuf schema for the given instance.
+ */
 function generateMessage(instance) {
   const message = new protobuf.Type(getTypeId(instance))
   message.add(new protobuf.Field('_serializationKey', 999, 'string'))
@@ -23,6 +26,9 @@ function generateMessage(instance) {
   return message
 }
 
+/*
+ * Generates a protobuf field, adds it to the schema and returns a sequence number used for the next field.
+ */
 function addProtoField(message, name, value, i, type, rule = undefined) {
   if (primitiveTypes[type]) {
     message.add(new protobuf.Field(name, i++, primitiveTypes[type], rule))
@@ -62,6 +68,9 @@ function addProtoField(message, name, value, i, type, rule = undefined) {
   return i
 }
 
+/*
+ * Converts Map instances to something protobuf can serialize.
+ */
 function addNormalisedMapsToInstance(instance) {
   if (instance === null || instance === undefined) return
 
@@ -95,6 +104,9 @@ function addNormalisedMapsToInstance(instance) {
   }
 }
 
+/*
+ * Generates a protobuf schema for the given instance, or retrieves an existing one from the cache.
+ */
 function getOrGenerateMessage(instance) {
   const typeId = getTypeId(instance)
   const existing = typeId && memcache.get(typeId)
@@ -107,15 +119,6 @@ function getOrGenerateMessage(instance) {
   return newMessage
 }
 
-/**
- * Generates a protobuf schema for a given decorated class instance.
- *
- * @package
- * @memberOf module:tanagra-protobuf
- * @function generateMessage
- * @param instance Instance of a class decorated with serialization metadata.
- * @returns {protobuf.Type}
- */
 module.exports = instance => {
   const message = getOrGenerateMessage(instance)
   addNormalisedMapsToInstance(instance)
