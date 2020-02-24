@@ -100,5 +100,6 @@ to avoid duplication.
 - Better handling of dynamic changes to class structure at runtime
 - Better support for pre-ES6 data-structures (functions-as-classes)
 - Full support for Google protobufs (including caching in Redis)
+- Support for client-side Javascript
 - Support for ESNext decorators
 - Support for Typescript
