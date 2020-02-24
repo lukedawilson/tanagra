@@ -1,4 +1,19 @@
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
 # tanagra
+
+<a class="github-button"
+   href="https://github.com/lukedawilson/tanagra/subscription"
+   data-icon="octicon-eye"
+   aria-label="Watch lukedawilson/tanagra on GitHub">Watch</a>
+<a class="github-button"
+   href="https://github.com/lukedawilson/tanagra"
+   data-icon="octicon-star"
+   aria-label="Star lukedawilson/tanagra on GitHub">Star</a>
+<a class="github-button"
+   href="https://github.com/lukedawilson/tanagra/issues"
+   data-icon="octicon-issue-opened"
+   aria-label="Issue lukedawilson/tanagra on GitHub">Issue</a>
 
 ![Shaka, When the Walls Fell](https://i.imgur.com/ejkP6Rvm.jpg)
 
