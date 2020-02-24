@@ -38,6 +38,12 @@ $ npm add --save tanagra-protobuf-redis-cache
 $ npm add --save tanagra-auto-mapper
 ```
 
+Alternatively, to install the packages required for default (JSON) serialization:
+
+```bash
+$ npm add --save tanagra
+```
+
 ## Usage
 
 The following example declares a serializable class, and uses the `tanagra-json` module
@@ -78,5 +84,4 @@ const decoded = json.decodeEntity(encoded, Foo)
 
 ## Documentation
 
-To generate API docs for a particular module, navigate to the relevant project folder (e.g. _tanagra-core_)
-and run `npm run docs` from the root folder. The jsdoc will appear in the _docs_ folder.
+To generate API docs, run `npm run docs` from the root folder. The documentation will appear in the _docs_ folder.

@@ -23,5 +23,9 @@
   "homepage": "https://lukedawilson.github.io/tanagra",
   "devDependencies": {
     "jsdoc": "^3.6.3"
+  },
+  "dependencies": {
+    "tanagra-core": "file:tanagra-core",
+    "tanagra-json": "file:tanagra-json"
   }
 }
