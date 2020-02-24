@@ -105,3 +105,12 @@ I welcome contributions to the project. You might want to start with some
 [n00b issues](https://github.com/lukedawilson/tanagra/labels/good%20first%20issue).
 Otherwise, just [browse the issues](https://github.com/lukedawilson/tanagra/issues) and pick one.
 You might want to [email me](mailto:luke.d.a.wilson@gmail.com) to let me know you're working on it.
+
+## Roadmap
+
+- Support for class versioning (to allow deserialization to a previous version of a class,
+  e.g. for instances cached before it was refactored)
+- Better handling of dynamic changes to class structure at runtime
+- Full support for Google protobufs (including caching in Redis)
+- Support for ESNext decorators
+- Support for Typescript
