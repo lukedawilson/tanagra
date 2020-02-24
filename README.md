@@ -14,9 +14,9 @@ the original classes, allowing them to be used in code as the originals were. Th
 only standard Javascript (currently tested with ES6 and node.js), with no dependency on experimental
 features, _Babel_ transpiling or _TypeScript_.
 
-The project website can be found [here](http://tanagrajs.net).
-
-The npm packages can be found [here](https://www.npmjs.com/package/tanagra).
+Useful links:
+- The project website can be found [here](http://tanagrajs.net).
+- The npm packages can be found [here](https://www.npmjs.com/package/tanagra).
 
 ## Project structure
 
