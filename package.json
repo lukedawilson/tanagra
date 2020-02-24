@@ -4,7 +4,7 @@
   "description": "Serialization library for javascript",
   "main": "demo.js",
   "scripts": {
-    "docs": "jsdoc ./* --readme ./README.md -d docs; mv docs/tanagra/*/* docs/; rm -r docs/tanagra"
+    "docs": "rm -rf docs; jsdoc ./* --readme ./README.md -d docs; mv docs/tanagra/*/* docs/; rm -r docs/tanagra"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,8 @@
   "devDependencies": {
     "jsdoc": "^3.6.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "tanagra-core": "^0.2.2",
+    "tanagra-json": "^0.2.0"
+  }
 }
