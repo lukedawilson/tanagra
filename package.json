@@ -1,10 +1,10 @@
 {
   "name": "tanagra",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Serialization library for javascript",
   "main": "demo.js",
   "scripts": {
-    "docs": "jsdoc ./* -d ./docs --readme ./README.md"
+    "docs": "jsdoc ./* --readme ./README.md -d docs; mv docs/tanagra/*/* docs/; rm -r docs/tanagra"
   },
   "repository": {
     "type": "git",
@@ -24,8 +24,5 @@
   "devDependencies": {
     "jsdoc": "^3.6.3"
   },
-  "dependencies": {
-    "tanagra-core": "file:tanagra-core",
-    "tanagra-json": "file:tanagra-json"
-  }
+  "dependencies": {}
 }
