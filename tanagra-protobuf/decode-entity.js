@@ -72,6 +72,7 @@ function decodeEntity(tuple, clazz) {
 /**
  * Deserializes a class instance that was serialized in Google protobuffers format.
  *
+ * @memberOf module:tanagra-protobuf
  * @function decodeEntity
  * @param encoded Serialized instance, with class metadata.
  * @param clazz Type parameter specifying class to deserialize to.

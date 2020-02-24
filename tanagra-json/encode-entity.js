@@ -19,6 +19,7 @@ function normalizeJsonObject(instance) {
 /**
  * Serializes a decorated class instance as a JSON string.
  *
+ * @memberOf module:tanagra-json
  * @function encodeEntity
  * @param instance A decorated class instance.
  *

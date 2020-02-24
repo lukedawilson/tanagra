@@ -111,6 +111,7 @@ function getOrGenerateMessage(instance) {
  * Generates a protobuf schema for a given decorated class instance.
  *
  * @package
+ * @memberOf module:tanagra-protobuf
  * @function generateMessage
  * @param instance Instance of a class decorated with serialization metadata.
  * @returns {protobuf.Type}

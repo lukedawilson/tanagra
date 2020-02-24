@@ -2,6 +2,7 @@
  * Gets a unique identifier for the type of a given decorated class instance.
  *
  * @package
+ * @memberOf module:tanagra-protobuf
  * @function getTypeId
  * @param instance Instance of a class decorated with serialization metadata.
  * @returns {String}

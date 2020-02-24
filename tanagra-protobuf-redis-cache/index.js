@@ -1,3 +1,5 @@
+/** @module tanagra-protobuf-redis-cache */
+
 const util = require('util')
 
 exports.set = require('./set')

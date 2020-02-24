@@ -30,6 +30,7 @@ function denormalizeJsonObject(instance) {
 /**
  * Deserializes a class instance that was serialized in JSON format.
  *
+ * @memberOf module:tanagra-json
  * @function decodeEntity
  * @param encoded Serialized instance, with class metadata.
  * @param clazz Type parameter specifying class to deserialize to.

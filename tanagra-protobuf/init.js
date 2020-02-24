@@ -10,6 +10,7 @@ const loadAsync = util.promisify(protobuf.load)
 /**
  * Initializes the protobuf serializer.
  *
+ * @memberOf module:tanagra-protobuf
  * @function init
  * @param serializableTypeMap Optional map of (unique key -> prototype) specifying serializable types
  *                            to add to initial cache.

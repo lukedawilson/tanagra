@@ -9,6 +9,7 @@ function stringToBuffer(bufferString) {
 /**
  * Retrieves a serialized class from redis.
  *
+ * @memberOf module:tanagra-protobuf-redis-cache
  * @function get
  * @param redisClient
  * @param key Unique key used to store serialized class in Redis

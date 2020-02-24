@@ -5,6 +5,7 @@ function bufferToString(buffer) {
 /**
  * Stores a serialized class in redis.
  *
+ * @memberOf module:tanagra-protobuf-redis-cache
  * @function set
  * @param redisClient
  * @param key Unique key used to store serialized class in Redis

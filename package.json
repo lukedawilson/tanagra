@@ -5,12 +5,14 @@
   "main": "demo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "echo \"Error: please run command from relevant project folder\" && exit 1"
+    "docs": "jsdoc ./* -d ./docs --readme ./README.md"
   },
   "author": "Luke Wilson <luke.d.a.wilson@gmail.com> (https://github.com/lukedawilson/)",
   "license": "MIT",
   "dependencies": {
     "redis": "^2.8.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jsdoc": "^3.6.3"
+  }
 }

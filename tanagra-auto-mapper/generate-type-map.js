@@ -12,6 +12,7 @@ function addSerializableClasses(baseModule, map) {
  * Walks the module tree in _node.js_ to build up a map of classes, meaning the user doesn't have to specify the type
  * to deserialize to.
  *
+ * @memberOf module:tanagra-auto-mapper
  * @function generateTypeMap
  * @param baseModule The module which contains all other modules to be analyzed.
  * @returns Map Map of the _serializationKey of a serialised class to its prototype.

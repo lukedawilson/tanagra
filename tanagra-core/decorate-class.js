@@ -1,6 +1,7 @@
 /**
  * Decorates a class with serialization metadata, required when deserializing it.
  *
+ * @memberOf module:tanagra-core
  * @function serializable
  * @param clazz Class to decorate with serialization metadata.
  * @param nestedClazzes Referenced classes. (Note that the library traverses this list recursively, so there's no need

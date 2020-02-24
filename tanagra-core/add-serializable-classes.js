@@ -4,6 +4,7 @@ const serializableClassMappings = require('./serializable-class-mappings').get
  * Adds the prototype of the specified decorated class, and those of all classes referenced by it, to the global cache.
  * This prototype is then retrieved when a serialized object is deserialized.
  *
+ * @memberOf module:tanagra-core
  * @function addSerializableClasses
  * @param clazz Decorated class to add to cache.
  * @example

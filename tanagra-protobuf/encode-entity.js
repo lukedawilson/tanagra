@@ -15,6 +15,7 @@ function encodeEntity(value) {
 /**
  * Serializes a decorated class instance as a Google protobuffers binary object.
  *
+ * @memberOf module:tanagra-protobuf
  * @function encodeEntity
  * @param instance A decorated class instance.
  *

@@ -17,6 +17,7 @@ class CustomReader extends protobuf.BufferReader {
  * that supports dates.
  *
  * @package
+ * @memberOf module:tanagra-protobuf
  * @class CustomReader
  * @type {CustomReader}
  */

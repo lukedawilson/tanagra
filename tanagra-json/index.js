@@ -1,3 +1,5 @@
+/** @module tanagra-json **/
+
 const serializableClassMappings = require('tanagra-core').serializableClassMappings
 
 exports.encodeEntity = require('./encode-entity')
