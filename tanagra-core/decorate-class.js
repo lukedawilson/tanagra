@@ -11,27 +11,35 @@
  *                               be overridden by setting this parameter.
  * @example
  * const serializable = require('tanagra-core').serializable
- *
  * class Foo {
- *    constructor(bar) {
+ *    constructor(string, bar) {
+ *      this.string = string // a primitive type - no need to specify it as a dependency
  *      this.bar = bar
  *    }
  * }
  * module.exports = serializable(Foo, [Bar])
  *
- * class Bar {
- *    constructor(baz) {
- *      this.baz = baz
- *    }
- * }
- * module.exports = serializable(Bar, [Baz])
+ * // ...
  *
- * class Baz {
- *    constructor(string) {
- *      this.string = string
+ * const serializable = require('tanagra-core').serializable
+ * class Bar {
+ *    constructor(number, baz, fooBar) {
+ *      this.number = number // another primitive
+ *      this.baz = baz
+ *      this.fooBar = fooBar
  *    }
  * }
- * module.exports = serializable(Baz)
+ * module.exports = serializable(Bar, [Baz, FooBar], [
+ *    // referenced types for previous versions of Bar
+ *   [Baz3, FooBar],
+ *   [Baz2],
+ *   [Baz1]
+ * ])
+ *
+ * // ...
+ *
+ * module.exports = require('tanagra-core').serializable(class Baz1 { })
+ * // etc.
  */
 module.exports = function(clazz, nestedClazzes = [], previousVersions = [], customSerializationKey) {
   const allVersions = nestedClazzes.concat(previousVersions.flatMap(ver => ver))

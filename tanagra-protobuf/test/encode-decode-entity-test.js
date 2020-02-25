@@ -1,5 +1,5 @@
 const assert = require('assert')
-const serializable = require('tanagra-core').serializable
+const serializable = require('../../tanagra-core').serializable
 
 const init = require('../index').init
 const encodeEntity = require('../encode-entity')
@@ -188,6 +188,52 @@ describe('#encodeEntity, #decodeEntity', () => {
     })
   })
 
+  describe('versioning', () => {
+    class Parent {
+      constructor() { this.child1 = new Child1() }
+    }
+
+    const Child1 = serializable(class Child1 {
+      constructor() { this.field = 'child 1' }
+      child1Func() { return this.field }
+    })
+
+    const Child2 = serializable(class Child2 {
+      constructor() { this.field = 'child 2' }
+      child2Func() { return this.field }
+    })
+
+    const Child3 = serializable(class Child3 {
+      constructor() { this.field = 'child 3' }
+      child3Func() { return this.field }
+    })
+
+    const Child4 = serializable(class Child4 {
+      constructor() { this.field = 'child 4' }
+      child4Func() { return this.field }
+    })
+
+    const SerializableFoo = serializable(Parent, [Child1], [
+      [Child2, Child4],
+      [Child3, Child4]
+    ])
+
+    it('should support versioning', () => {
+      const serializedFooOlder = encodeEntity({ child3: new Child3(), child4: new Child4() })
+      const fooOlder = decodeEntity(serializedFooOlder, SerializableFoo)
+      assert.strictEqual('child 3', fooOlder.child3.child3Func())
+      assert.strictEqual('child 4', fooOlder.child4.child4Func())
+
+      const serializedFooOld = encodeEntity({ child2: new Child2(), child4: new Child4() })
+      const fooOld = decodeEntity(serializedFooOld, SerializableFoo)
+      assert.strictEqual('child 2', fooOld.child2.child2Func())
+      assert.strictEqual('child 4', fooOld.child4.child4Func())
+
+      const foo = decodeEntity(encodeEntity(new Parent()), SerializableFoo)
+      assert.strictEqual('child 1', foo.child1.child1Func())
+    })
+  })
+
   describe('nesting', () => {
     const withFuncsAndGetters = serializable(WithFuncsAndGetters)
 
@@ -364,7 +410,6 @@ describe('#encodeEntity, #decodeEntity', () => {
 
         for (const ii of [0, 1, 2]) {
           const innerInnerInst = innerInst.innerArray[ii]
-          debugger
           assert.strictEqual('WithArrayInnerInner', innerInnerInst.constructor.name)
           assert.strictEqual('hello world 2', innerInnerInst.myFunc())
 

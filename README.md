@@ -69,10 +69,14 @@ class Foo {
   }
 }
 
-// Mark class `Foo` as serializable and containing sub-types `Bar`, `Baz` and `FooBar`
-module.exports = serializable(Foo, [Bar, Baz, FooBar])
+// Mark class `Foo` as serializable and containing sub-types `Bar` and `Baz`
+module.exports = serializable(Foo, [Bar, Baz], [
+  // previous versions of the class
+  [Bar, Baz, FooBar], // this version also references FooBar
+  [FooBarBaz]         // this version references a different type altogether, FooBarBaz
+])
 
-...
+// ...
 
 const json = require('tanagra-json') // alternatively, `require('tanagra-protobuf')`
 json.init()                          // `await json.init()` if you're using `tanagra-protobuf`
@@ -80,7 +84,7 @@ json.init()                          // `await json.init()` if you're using `tan
 const foo = new Foo(bar, baz)
 const encoded = json.encodeEntity(foo)
 
-...
+// ...
 
 const decoded = json.decodeEntity(encoded, Foo)
 
@@ -95,8 +99,6 @@ to avoid duplication.
 
 ## Roadmap
 
-- Support for class versioning (to allow deserialization to a previous version of a class,
-  e.g. for instances cached before it was refactored)
 - Better handling of dynamic changes to class structure at runtime
 - Better support for pre-ES6 data-structures (functions-as-classes)
 - Full support for Google protobufs (including caching in Redis)

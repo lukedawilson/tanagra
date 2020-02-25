@@ -300,7 +300,7 @@ addSerializableClasses(SerializableFoo) // adds SerializableFoo, SerializableBar
       </svg>
     </a>
     <h4 class="name" id=".serializable">
-      <span class="type-signature">(static) </span>serializable<span class="signature">(clazz, nestedClazzes, customSerializationKey)</span><span class="type-signature"></span>
+      <span class="type-signature">(static) </span>serializable<span class="signature">(clazz, nestedClazzes, previousVersions, customSerializationKey)</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -376,6 +376,26 @@ addSerializableClasses(SerializableFoo) // adds SerializableFoo, SerializableBar
         <td class="description last">
           Referenced classes. (Note that the library traverses this list recursively, so there's no need
                      to list all classes recursively.)
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>previousVersions</code></td>
+        
+
+        <td class="type">
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          Lists of referenced classes for previous versions of this class (an array of arrays).
           
         </td>
       </tr>
@@ -475,27 +495,35 @@ addSerializableClasses(SerializableFoo) // adds SerializableFoo, SerializableBar
     
 
   <pre class="prettyprint"><code>const serializable = require('tanagra-core').serializable
-
 class Foo {
-   constructor(bar) {
+   constructor(string, bar) {
+     this.string = string // a primitive type - no need to specify it as a dependency
      this.bar = bar
    }
 }
 module.exports = serializable(Foo, [Bar])
 
-class Bar {
-   constructor(baz) {
-     this.baz = baz
-   }
-}
-module.exports = serializable(Bar, [Baz])
+// ...
 
-class Baz {
-   constructor(string) {
-     this.string = string
+const serializable = require('tanagra-core').serializable
+class Bar {
+   constructor(number, baz, fooBar) {
+     this.number = number // another primitive
+     this.baz = baz
+     this.fooBar = fooBar
    }
 }
-module.exports = serializable(Baz)</code></pre>
+module.exports = serializable(Bar, [Baz, FooBar], [
+   // referenced types for previous versions of Bar
+  [Baz3, FooBar],
+  [Baz2],
+  [Baz1]
+])
+
+// ...
+
+module.exports = require('tanagra-core').serializable(class Baz1 { })
+// etc.</code></pre>
 
 
   </div>

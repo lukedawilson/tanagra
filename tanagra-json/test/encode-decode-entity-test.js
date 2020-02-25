@@ -57,7 +57,7 @@ describe('#encodeEntity, #decodeEntity', () => {
           [123, 'foo'],
           [789, 'bar'],
           [456, 'baz'],
-          [null, 'foobar'],
+          [null, 'child 3'],
           [654, null]
         ])
       }
@@ -119,7 +119,7 @@ describe('#encodeEntity, #decodeEntity', () => {
       assert.deepStrictEqual('foo', decoded.someMap.get(123))
       assert.deepStrictEqual('bar', decoded.someMap.get(789))
       assert.deepStrictEqual('baz', decoded.someMap.get(456))
-      assert.deepStrictEqual('foobar', decoded.someMap.get(null))
+      assert.deepStrictEqual('child 3', decoded.someMap.get(null))
       assert.deepStrictEqual(null, decoded.someMap.get(654))
     })
 
@@ -159,70 +159,48 @@ describe('#encodeEntity, #decodeEntity', () => {
   })
 
   describe('versioning', () => {
-    class Foo {
-      constructor() {
-        this.bar = new Bar()
-      }
+    class Parent {
+      constructor() { this.child1 = new Child1() }
     }
 
-    const Bar = serializable(class Bar {
-      constructor() {
-        this.field = 'bar'
-      }
-
-      barFunc() {
-        return this.field
-      }
+    const Child1 = serializable(class Child1 {
+      constructor() { this.field = 'child 1' }
+      child1Func() { return this.field }
     })
 
-    const Baz = serializable(class Baz {
-      constructor() {
-        this.field = 'baz'
-      }
-
-      bazFunc() {
-        return this.field
-      }
+    const Child2 = serializable(class Child2 {
+      constructor() { this.field = 'child 2' }
+      child2Func() { return this.field }
     })
 
-    const Foobar = serializable(class Foobar {
-      constructor() {
-        this.field = 'foobar'
-      }
-
-      foobarFunc() {
-        return this.field
-      }
+    const Child3 = serializable(class Child3 {
+      constructor() { this.field = 'child 3' }
+      child3Func() { return this.field }
     })
 
-    const Foobarbaz = serializable(class Foobarbaz {
-      constructor() {
-        this.field = 'foobarbaz'
-      }
-
-      FoobarbazFunc() {
-        return this.field
-      }
+    const Child4 = serializable(class Child4 {
+      constructor() { this.field = 'child 4' }
+      child4Func() { return this.field }
     })
 
-    const SerializableFoo = serializable(Foo, [Bar], [
-      [Baz, Foobarbaz],
-      [Foobar, Foobarbaz]
+    const SerializableFoo = serializable(Parent, [Child1], [
+      [Child2, Child4],
+      [Child3, Child4]
     ])
 
     it('should support versioning', () => {
-      const serializedFooOlder = encodeEntity({ foobar: new Foobar(), foobarbaz1: new Foobarbaz() })
+      const serializedFooOlder = encodeEntity({ child3: new Child3(), child4: new Child4() })
       const fooOlder = decodeEntity(serializedFooOlder, SerializableFoo)
-      assert.strictEqual('foobar', fooOlder.foobar.foobarFunc())
-      assert.strictEqual('foobarbaz', fooOlder.foobarbaz1.FoobarbazFunc())
+      assert.strictEqual('child 3', fooOlder.child3.child3Func())
+      assert.strictEqual('child 4', fooOlder.child4.child4Func())
 
-      const serializedFooOld = encodeEntity({ baz: new Baz(), foobarbaz2: new Foobarbaz() })
+      const serializedFooOld = encodeEntity({ child2: new Child2(), child4: new Child4() })
       const fooOld = decodeEntity(serializedFooOld, SerializableFoo)
-      assert.strictEqual('baz', fooOld.baz.bazFunc())
-      assert.strictEqual('foobarbaz', fooOld.foobarbaz2.FoobarbazFunc())
+      assert.strictEqual('child 2', fooOld.child2.child2Func())
+      assert.strictEqual('child 4', fooOld.child4.child4Func())
 
-      const foo = decodeEntity(encodeEntity(new Foo()), SerializableFoo)
-      assert.strictEqual('bar', foo.bar.barFunc())
+      const foo = decodeEntity(encodeEntity(new Parent()), SerializableFoo)
+      assert.strictEqual('child 1', foo.child1.child1Func())
     })
   })
 
