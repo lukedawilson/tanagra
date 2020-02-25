@@ -6,6 +6,7 @@
  * @param clazz Class to decorate with serialization metadata.
  * @param nestedClazzes Referenced classes. (Note that the library traverses this list recursively, so there's no need
  *                      to list all classes recursively.)
+ * @param previousVersions Lists of referenced classes for previous versions of this class (an array of arrays).
  * @param customSerializationKey By default, when the class is serialized, it is keyed on its name; this default can
  *                               be overridden by setting this parameter.
  * @example
@@ -32,8 +33,9 @@
  * }
  * module.exports = serializable(Baz)
  */
-module.exports = function(clazz, nestedClazzes, customSerializationKey) {
-  const fieldTypes = nestedClazzes && new Map(nestedClazzes.map(klass => [klass._serializationKey, klass]))
+module.exports = function(clazz, nestedClazzes = [], previousVersions = [], customSerializationKey) {
+  const allVersions = nestedClazzes.concat(previousVersions.flatMap(ver => ver))
+  const fieldTypes = new Map(allVersions.map(klass => [klass._serializationKey, klass]))
   Reflect.defineProperty(clazz, '_fieldTypes', {
     get: function _fieldTypes() { return fieldTypes },
     configurable: true

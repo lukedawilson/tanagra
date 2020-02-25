@@ -23,7 +23,7 @@ describe('#serializable', () => {
   })
 
   it('should set the static and instance _serializationKey properties to the specified key', () => {
-    const clazz = serializable(TestClass1, null, 'my key')
+    const clazz = serializable(TestClass1, undefined, undefined, 'my key')
     const instance = new clazz()
 
     assert.equal('my key', clazz._serializationKey, 'Static _serializationKey not set')

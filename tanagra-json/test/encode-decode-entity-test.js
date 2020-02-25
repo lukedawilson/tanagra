@@ -1,5 +1,5 @@
 const assert = require('assert')
-const serializable = require('tanagra-core').serializable
+const serializable = require('../../tanagra-core').serializable
 
 const encodeEntity = require('../encode-entity')
 const decodeEntity = require('../decode-entity')
@@ -155,6 +155,74 @@ describe('#encodeEntity, #decodeEntity', () => {
 
       assert.strictEqual('XXX', decoded.constructor.someStaticFunc('XXX'))
       assert.strictEqual('XYZ', decoded.constructor.someStaticGetter)
+    })
+  })
+
+  describe('versioning', () => {
+    class Foo {
+      constructor() {
+        this.bar = new Bar()
+      }
+    }
+
+    const Bar = serializable(class Bar {
+      constructor() {
+        this.field = 'bar'
+      }
+
+      barFunc() {
+        return this.field
+      }
+    })
+
+    const Baz = serializable(class Baz {
+      constructor() {
+        this.field = 'baz'
+      }
+
+      bazFunc() {
+        return this.field
+      }
+    })
+
+    const Foobar = serializable(class Foobar {
+      constructor() {
+        this.field = 'foobar'
+      }
+
+      foobarFunc() {
+        return this.field
+      }
+    })
+
+    const Foobarbaz = serializable(class Foobarbaz {
+      constructor() {
+        this.field = 'foobarbaz'
+      }
+
+      FoobarbazFunc() {
+        return this.field
+      }
+    })
+
+    const SerializableFoo = serializable(Foo, [Bar], [
+      [Baz, Foobarbaz],
+      [Foobar, Foobarbaz]
+    ])
+
+    it('should support versioning', () => {
+      const serializedFooOlder = encodeEntity({ foobar: new Foobar(), foobarbaz1: new Foobarbaz() })
+      const fooOlder = decodeEntity(serializedFooOlder, SerializableFoo)
+      assert.strictEqual('foobar', fooOlder.foobar.foobarFunc())
+      assert.strictEqual('foobarbaz', fooOlder.foobarbaz1.FoobarbazFunc())
+
+      const serializedFooOld = encodeEntity({ baz: new Baz(), foobarbaz2: new Foobarbaz() })
+      const fooOld = decodeEntity(serializedFooOld, SerializableFoo)
+      assert.strictEqual('baz', fooOld.baz.bazFunc())
+      assert.strictEqual('foobarbaz', fooOld.foobarbaz2.FoobarbazFunc())
+
+      const foo = decodeEntity(encodeEntity(new Foo()), SerializableFoo)
+      assert.strictEqual('bar', foo.bar.barFunc())
     })
   })
 
