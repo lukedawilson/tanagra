@@ -1,6 +1,6 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-# tanagra
+# tanagra.js
 
 <a class="github-button"
    href="https://github.com/lukedawilson/tanagra/subscription"
@@ -22,7 +22,7 @@ Currently serializes to both JSON and Google Protobuf formats.
 
 ## Overview
 
-The _tanagra_ project aims to provide javascript developers with the ability to serialize complex,
+The _tanagra.js_ project aims to provide javascript developers with the ability to serialize complex,
 nested classes into a format which can be transmitted over a network or stored in a
 datastore such as _redis_. The deserialized objects contain all the data and functions of
 the original classes, allowing them to be used in code as the originals were. The library requires
