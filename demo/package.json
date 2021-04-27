@@ -6,6 +6,6 @@
   "author": "Luke Wilson <luke.d.a.wilson@gmail.com> (https://github.com/lukedawilson/)",
   "license": "MIT",
   "dependencies": {
-    "redis": "^3.0.2"
+    "redis": "^3.1.1"
   }
 }
