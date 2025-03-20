@@ -3,7 +3,7 @@ const serializable = require('../../tanagra-core/index').serializable // require
 const Bar = require('./bar')
 const Baz = require('./baz')
 
-class Foo {
+module.exports = serializable()(class Foo {
   constructor(string = null, number = null, bars = [], bazs = null) {
     this.string = string
     this.number = number
@@ -26,6 +26,4 @@ class Foo {
   static get staticGet1() {
     return 'more static'
   }
-}
-
-module.exports = serializable(Foo, [Bar, Baz])
+})

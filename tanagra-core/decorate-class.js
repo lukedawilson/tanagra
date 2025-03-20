@@ -5,55 +5,19 @@ const addSerializableClasses = require('./add-serializable-classes')
  *
  * @memberOf module:tanagra-core
  * @function serializable
- * @param nestedClasses Referenced classes. (Note that the library traverses this list recursively, so there's no need
- *                      to list all classes recursively.)
- * @param previousVersions Lists of referenced classes for previous versions of this class (an array of arrays).
  * @param customSerializationKey By default, when the class is serialized, it is keyed on its name; this default can
  *                               be overridden by setting this parameter.
  * @example
  * const serializable = require('tanagra-core').serializable
- * class Foo {
- *    constructor(string, bar) {
- *      this.string = string // a primitive type - no need to specify it as a dependency
- *      this.bar = bar
- *    }
- * }
- * module.exports = serializable([Bar])(Foo)
- *
- * // ...
- *
- * const serializable = require('tanagra-core').serializable
- * class Bar {
- *    constructor(number, baz, fooBar) {
- *      this.number = number // another primitive
- *      this.baz = baz
- *      this.fooBar = fooBar
- *    }
- * }
- * module.exports = serializable([Baz, FooBar], [
- *    // referenced types for previous versions of Bar
- *   [Baz3, FooBar],
- *   [Baz2],
- *   [Baz1]
- * ])(Bar)
- *
- * // ...
- *
- * module.exports = require('tanagra-core').serializable()(class Baz1 {
- *   // ...
+ * module.exports = serializable()(class Foo {
+ *   constructor(barNumber, bazObject) {
+ *     this.barNumber = barNumber // primitive
+ *     this.bazObject = bazObject // serializable object
+ *   }
  * })
- *
- * // etc.
  */
-module.exports = function(nestedClasses = [], previousVersions = [], customSerializationKey) {
+module.exports = function(customSerializationKey) {
   return function (clazz) {
-    const allVersions = nestedClasses.concat(previousVersions.flatMap(ver => ver))
-    const fieldTypes = new Map(allVersions.map(klass => [klass._serializationKey, klass]))
-    Reflect.defineProperty(clazz, '_fieldTypes', {
-      get: function _fieldTypes() { return fieldTypes },
-      configurable: true
-    })
-
     const serializationKey = customSerializationKey || clazz.name
     Reflect.defineProperty(clazz, '_serializationKey', {
       get: function _serializationKey() { return serializationKey },

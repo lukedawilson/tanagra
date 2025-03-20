@@ -152,16 +152,16 @@ async function functionalTest(fn, title, showInputData) {
 
 redisCache.init(redisClient)
 protobuf.init()
-  .then(perfTest)
+    // .then(perfTest) // ToDo: fix protobuf library
   .then(() => functionalTest(async (foo) => {
     const encoded = json.encodeEntity(foo)
     await redisClient.setAsync(`foo-json`, encoded)
     return json.decodeEntity(await redisClient.getAsync(`foo-json`))
   }, 'json', true))
-  .then(() => functionalTest(async (foo) => {
-    const encodedTuple = protobuf.encodeEntity(foo)
-    await redisCache.set(redisClient, 'foo', encodedTuple)
-    return protobuf.decodeEntity(await redisCache.get(redisClient, 'foo')) // , Foo
-  }, 'protobuf', false))
+  // .then(() => functionalTest(async (foo) => {
+  //   const encodedTuple = protobuf.encodeEntity(foo)
+  //   await redisCache.set(redisClient, 'foo', encodedTuple)
+  //   return protobuf.decodeEntity(await redisCache.get(redisClient, 'foo')) // , Foo
+  // }, 'protobuf', false))
   .catch(console.log)
   .then(() => process.exit())

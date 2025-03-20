@@ -41,16 +41,12 @@ The project is divided into a number of modules:
 - [tanagra-core](module-tanagra-core.html) - common functionality required by the different serialization formats,
   including the function for marking classes as _serializable_
 - [tanagra-json](module-tanagra-json.html) - serializes the data into `JSON` format
-- [tanagra-protobuf](module-tanagra-protobuf.html) - serializes the data into `Google protobuffers` format **(experimental)**
-- [tanagra-protobuf-redis-cache](module-tanagra-protobuf-redis-cache.html) - a helper library for storing serialized protobufs in _redis_ **(experimental)**
 
 ## Installation
 
 ```bash
 $ npm add --save tanagra-core
 $ npm add --save tanagra-json
-$ npm add --save tanagra-protobuf
-$ npm add --save tanagra-protobuf-redis-cache
 ```
 
 Alternatively, to install the packages required for JSON serialization:
@@ -71,7 +67,7 @@ to serialize/deserialize it.
 
 const serializable = require('tanagra-core').serializable
 
-class Foo {
+module.exports = serializable()(class Foo {
   constructor(
     bar,
     baz1,
@@ -88,14 +84,7 @@ class Foo {
       ['b', fooBar2]
     ])
   }
-}
-
-// Mark class `Foo` as serializable and containing sub-types `Bar` and `Baz`
-module.exports = serializable([Bar, Baz], [
-  // previous versions of the class
-  [Bar, Baz, FooBar], // this version also references FooBar
-  [FooBarBaz]         // this version references a different type altogether, FooBarBaz
-])(Foo)
+})
 
 // ------ ------ ------
 
@@ -116,7 +105,7 @@ const decoded = json.decodeEntity(encoded)
 
 import { serializable } from 'tanagra-core'
 
-class Foo {
+export default serializable()(class Foo {
   constructor(
     bar: Bar,
     baz1: Baz,
@@ -133,14 +122,7 @@ class Foo {
       ['b', fooBar2]
     ])
   }
-}
-
-// Mark class `Foo` as serializable and containing sub-types `Bar` and `Baz`
-export default serializable([Bar, Baz], [
-  // previous versions of the class
-  [Bar, Baz, FooBar], // this version also references FooBar
-  [FooBarBaz]         // this version references a different type altogether, FooBarBaz
-])(Foo)
+})
 
 // ------ ------ ------
 
@@ -164,6 +146,6 @@ to avoid duplication.
 ## Roadmap
 
 - Better handling of dynamic changes to class structure at runtime
-- Better support for pre-ES6 data-structures (functions-as-classes)
-- Full support for Google protobufs (including caching in Redis)
 - Support for client-side Javascript
+- Full support for Google protobufs (including caching in Redis)
+- Better support for pre-ES6 data-structures (functions-as-classes)

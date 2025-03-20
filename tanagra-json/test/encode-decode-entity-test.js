@@ -208,10 +208,7 @@ describe('#encodeEntity, #decodeEntity', () => {
       child4Func() { return this.field }
     })
 
-    const SerializableFoo = serializable([Child1], [
-      [Child2, Child4],
-      [Child3, Child4]
-    ])(Parent)
+    const SerializableFoo = serializable()(Parent)
 
     it('should support versioning', () => {
       const serializedFooOlder = encodeEntity({ child3: new Child3(), child4: new Child4() })
@@ -248,8 +245,8 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const withNestedInner = serializable([withFuncsAndGetters])(WithNestedInner)
-      const withNestedOuter = serializable([withNestedInner])(WithNestedOuter)
+      const withNestedInner = serializable()(WithNestedInner)
+      const withNestedOuter = serializable()(WithNestedOuter)
 
       const instance = new withNestedOuter()
       const encoded = encodeEntity(instance)
@@ -288,7 +285,7 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const classWithComplexArray = serializable([simpleClass])(ClassWithComplexArray)
+      const classWithComplexArray = serializable()(ClassWithComplexArray)
       const withArray = new classWithComplexArray()
       const encoded = encodeEntity(withArray)
       const decoded = decodeEntity(encoded, classWithComplexArray)
@@ -310,7 +307,7 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const classWithComplexMap = serializable([simpleClass])(ClassWithComplexMap)
+      const classWithComplexMap = serializable()(ClassWithComplexMap)
       const instance = new classWithComplexMap()
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded, classWithComplexMap)
@@ -351,8 +348,8 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const withArrayInner = serializable([withFuncsAndGetters])(WithArrayInner)
-      const withArrayOuter = serializable([withArrayInner])(WithArrayOuter)
+      const withArrayInner = serializable()(WithArrayInner)
+      const withArrayOuter = serializable()(WithArrayOuter)
 
       const instance = new withArrayOuter()
       const encoded = encodeEntity(instance)
@@ -416,9 +413,9 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const withArrayInnerInner = serializable([withFuncsAndGetters])(WithArrayInnerInner)
-      const withArrayInner = serializable([withArrayInnerInner])(WithArrayInner)
-      const withArrayOuter = serializable([withArrayInner])(WithArrayOuter)
+      const withArrayInnerInner = serializable()(WithArrayInnerInner)
+      const withArrayInner = serializable()(WithArrayInner)
+      const withArrayOuter = serializable()(WithArrayOuter)
 
       const instance = new withArrayOuter()
       const encoded = encodeEntity(instance)
@@ -458,7 +455,7 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const classWithComplexMap = serializable([simpleClass])(ClassWithComplexMap)
+      const classWithComplexMap = serializable()(ClassWithComplexMap)
       const instance = new classWithComplexMap()
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded, classWithComplexMap)
@@ -494,8 +491,8 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const withMapInner = serializable([withFuncsAndGetters])(WithMapInner)
-      const withMapOuter = serializable([withMapInner])(WithMapOuter)
+      const withMapInner = serializable()(WithMapInner)
+      const withMapOuter = serializable()(WithMapOuter)
 
       const instance = new withMapOuter()
       const encoded = encodeEntity(instance)
@@ -574,12 +571,12 @@ describe('#encodeEntity, #decodeEntity', () => {
       }
 
       const withFuncsAndGetters = serializable()(WithFuncsAndGetters)
-      const withNested2 = serializable([withFuncsAndGetters])(WithNested2)
-      const withNested1 = serializable([withNested2])(WithNested1)
-      const withArrayNesting = serializable([withNested1])(WithArrayNesting)
-      const withNested4 = serializable([withNested2])(WithNested4)
-      const withMapNesting = serializable([withNested4])(WithMapNesting)
-      const withNested3 = serializable([withArrayNesting, withMapNesting])(WithNested3)
+      const withNested2 = serializable()(WithNested2)
+      const withNested1 = serializable()(WithNested1)
+      const withArrayNesting = serializable()(WithArrayNesting)
+      const withNested4 = serializable()(WithNested4)
+      const withMapNesting = serializable()(WithMapNesting)
+      const withNested3 = serializable()(WithNested3)
 
       const instance = new withNested3()
       const encoded = encodeEntity(instance)
