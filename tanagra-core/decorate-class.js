@@ -1,3 +1,5 @@
+const addSerializableClasses = require('./add-serializable-classes')
+
 /**
  * Decorates a class with serialization metadata, required when deserializing it.
  *
@@ -62,6 +64,9 @@ module.exports = function(clazz, nestedClazzes = [], previousVersions = [], cust
       return instance
     }
   }
+
+  // add class mappings for deserialization
+  addSerializableClasses(clazz)
 
   return new Proxy(clazz, ctorHandler)
 }

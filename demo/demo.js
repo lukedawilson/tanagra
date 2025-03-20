@@ -80,11 +80,11 @@ async function perfTest() {
 
   for (let i = 0; i < trials; i++) {
     const tuple = await redisCache.get(redisClient, `foo-${i}`)
-    await profile(async () => protobuf.decodeEntity(tuple, Foo), protobufReadTimes)
+    await profile(async () => protobuf.decodeEntity(tuple), protobufReadTimes)
     await protobuf.init(null)
 
     const string = await redisClient.getAsync(`foo-${i}-json`)
-    await profile(() => json.decodeEntity(string, Foo), jsonReadTimes)
+    await profile(() => json.decodeEntity(string), jsonReadTimes)
     json.init()
 
     const control = await redisClient.getAsync(`foo-${i}-control`)
@@ -162,7 +162,7 @@ protobuf.init(generateTypeMap(module))
   .then(() => functionalTest(async (foo) => {
     const encoded = json.encodeEntity(foo)
     await redisClient.setAsync(`foo-json`, encoded)
-    return json.decodeEntity(await redisClient.getAsync(`foo-json`), Foo)
+    return json.decodeEntity(await redisClient.getAsync(`foo-json`))
   }, 'json', true))
   .then(() => functionalTest(async (foo) => {
     const encodedTuple = protobuf.encodeEntity(foo)

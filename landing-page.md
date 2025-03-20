@@ -95,7 +95,7 @@ const encoded = json.encodeEntity(foo)
 
 // ...
 
-const decoded = json.decodeEntity(encoded, Foo)
+const decoded = json.decodeEntity(encoded)
 
 ```
 

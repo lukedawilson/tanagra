@@ -81,6 +81,6 @@ function decodeEntity(tuple, clazz) {
  * @example
  * const protobuf = require('tanagra-protobuf')
  * protobuf.init()
- * const foo = protobuf.decodeEntity(tuple, SomeDecoratedClass)
+ * const foo = protobuf.decodeEntity(tuple)
  */
 module.exports = decodeEntity

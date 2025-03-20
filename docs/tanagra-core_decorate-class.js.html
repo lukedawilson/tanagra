@@ -90,7 +90,9 @@
 
 <section>
   <article>
-    <pre class="prettyprint source linenums"><code>/**
+    <pre class="prettyprint source linenums"><code>const addSerializableClasses = require('./add-serializable-classes')
+
+/**
  * Decorates a class with serialization metadata, required when deserializing it.
  *
  * @memberOf module:tanagra-core
@@ -154,6 +156,9 @@ module.exports = function(clazz, nestedClazzes = [], previousVersions = [], cust
       return instance
     }
   }
+
+  // add class mappings for deserialization
+  addSerializableClasses(clazz)
 
   return new Proxy(clazz, ctorHandler)
 }

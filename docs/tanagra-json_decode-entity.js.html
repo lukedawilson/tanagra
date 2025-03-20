@@ -91,12 +91,11 @@
 <section>
   <article>
     <pre class="prettyprint source linenums"><code>const serializableClassMappings = require('tanagra-core').serializableClassMappings.get
-const addSerializableClasses = require('tanagra-core').addSerializableClasses
 
 function denormalizeJsonObject(instance) {
   if (instance === null || instance === undefined) return
 
-  if (instance._serializationKey) { // ToDo: no need to look it up, pass in clazz and use clazz.prototype
+  if (instance._serializationKey) {
     const proto = serializableClassMappings().get(instance._serializationKey)
     if (proto) {
       Object.setPrototypeOf(instance, proto)
@@ -125,21 +124,15 @@ function denormalizeJsonObject(instance) {
  * @memberOf module:tanagra-json
  * @function decodeEntity
  * @param encoded Serialized instance, with class metadata.
- * @param clazz Type parameter specifying class to deserialize to.
  *
  * @returns Object Deserialized instance of specified type.
  * @example
  * const json = require('tanagra-json')
- * const foo = json.decodeEntity(someSerializedJsonString, SomeDecoratedClass)
+ * const foo = json.decodeEntity(someSerializedJsonString)
  */
-module.exports = function(encoded, clazz) {
+module.exports = function(encoded) {
   const decoded = JSON.parse(encoded)
-
-  if (clazz) {
-    addSerializableClasses(clazz) // ToDo: do we need this at all?
-  }
-
-  denormalizeJsonObject(decoded) // ToDo: pass in clazz here
+  denormalizeJsonObject(decoded)
   return decoded
 }
 </code></pre>

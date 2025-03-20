@@ -1,6 +1,6 @@
 {
   "name": "tanagra",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "Serialization library for javascript",
   "scripts": {
     "docs": "find docs/* -not -name CNAME -not -name _config.yml -delete; jsdoc ./* --readme ./landing-page.md -d docs -t ./node_modules/braintree-jsdoc-template -c ./jsdoc.conf.json; mv docs/tanagra/*/* docs/; rm -r docs/tanagra"
@@ -25,7 +25,7 @@
     "jsdoc": "^3.6.3"
   },
   "dependencies": {
-    "tanagra-core": "^0.3.0",
-    "tanagra-json": "^0.3.4"
+    "tanagra-core": "^0.4.0",
+    "tanagra-json": "^0.4.0"
   }
 }
