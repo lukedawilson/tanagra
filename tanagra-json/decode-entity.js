@@ -4,7 +4,7 @@ const addSerializableClasses = require('tanagra-core').addSerializableClasses
 function denormalizeJsonObject(instance) {
   if (instance === null || instance === undefined) return
 
-  if (instance._serializationKey) {
+  if (instance._serializationKey) { // ToDo: no need to look it up, pass in clazz and use clazz.prototype
     const proto = serializableClassMappings().get(instance._serializationKey)
     if (proto) {
       Object.setPrototypeOf(instance, proto)
@@ -44,9 +44,9 @@ module.exports = function(encoded, clazz) {
   const decoded = JSON.parse(encoded)
 
   if (clazz) {
-    addSerializableClasses(clazz)
+    addSerializableClasses(clazz) // ToDo: do we need this at all?
   }
 
-  denormalizeJsonObject(decoded)
+  denormalizeJsonObject(decoded) // ToDo: pass in clazz here
   return decoded
 }
