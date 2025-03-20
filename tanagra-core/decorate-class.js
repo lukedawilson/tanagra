@@ -1,7 +1,7 @@
 const addSerializableClasses = require('./add-serializable-classes')
 
 /**
- * Decorates a class with serialization metadata, required when deserializing it.
+ * Decorates a class with serialization metadata, and returns the class.
  *
  * @memberOf module:tanagra-core
  * @function serializable
@@ -9,6 +9,7 @@ const addSerializableClasses = require('./add-serializable-classes')
  *                               be overridden by setting this parameter.
  * @example
  * const serializable = require('tanagra-core').serializable
+ *
  * module.exports = serializable()(class Foo {
  *   constructor(barNumber, bazObject) {
  *     this.barNumber = barNumber // primitive

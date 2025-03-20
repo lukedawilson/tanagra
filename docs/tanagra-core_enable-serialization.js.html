@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      tanagra-protobuf/encode-entity.js - Documentation
+      tanagra-core/enable-serialization.js - Documentation
   </title>
 
   <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
@@ -81,7 +81,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        tanagra-protobuf/encode-entity.js
+        tanagra-core/enable-serialization.js
       </h1>
     
 
@@ -90,36 +90,29 @@
 
 <section>
   <article>
-    <pre class="prettyprint source linenums"><code>const primitiveTypes = require('./primitive-types')
-const generateMessage = require('./generate-message')
-
-function encodeEntity(instance) {
-  if (!instance || !instance.constructor || primitiveTypes[instance.constructor.name]) {
-    throw new Error(`Type is not serializable: ${(instance &amp;&amp; instance.constructor &amp;&amp; instance.constructor.name) || 'Object'}`)
-  }
-
-  const message = generateMessage(instance)
-  const encoded = message.encode(instance).finish()
-  const schema = global.protobuf.Type.encode(message.toJSON()).finish()
-  return { encoded, type: message.name, schema }
-}
-
-/**
- * Serializes a decorated class instance as a Google protobuffers binary object.
+    <pre class="prettyprint source linenums"><code>/**
+ * Decorates a class with serialization metadata.
+ * Useful when developing in Typescript because of
+ * &lt;a href="https://github.com/microsoft/TypeScript/issues/41231">limitations&lt;/a> of the type system.
  *
- * @memberOf module:tanagra-protobuf
- * @function encodeEntity
- * @param instance A decorated class instance.
- *
- * @returns Object Tuple (binary encoding, class name, protobuf schema).
+ * @memberOf module:tanagra-core
+ * @function enableSerialization
  * @example
- * const protobuf = require('tanagra-protobuf')
- * protobuf.init()
+ * // Typescript
  *
- * const foo = new SomeDecoratedClass()
- * const serialized = protobuf.encodeEntity(foo)
+ * import { enableSerialization } from 'tanagra-core'
+ *
+ * class Foo {
+ *   constructor(bar: number, baz: Baz) {
+ *     this.bar = bar // primitive
+ *     this.baz = baz // serializable object
+ *   }
+ * }
+ *
+ * enableSerialization(Foo)
+ * export default Foo
  */
-module.exports = encodeEntity
+module.exports = require('./decorate-class')()
 </code></pre>
   </article>
 </section>

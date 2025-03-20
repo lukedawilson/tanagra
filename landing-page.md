@@ -103,9 +103,9 @@ const decoded = json.decodeEntity(encoded)
 ```typescript
 // ------ foo.ts ------
 
-import { serializable } from 'tanagra-core'
+import { enableSerialization } from 'tanagra-core'
 
-export default serializable()(class Foo {
+class Foo {
   constructor(
     bar: Bar,
     baz1: Baz,
@@ -122,7 +122,10 @@ export default serializable()(class Foo {
       ['b', fooBar2]
     ])
   }
-})
+}
+
+enableSerialization(Foo)
+export default Foo
 
 // ------ ------ ------
 

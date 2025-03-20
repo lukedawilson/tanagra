@@ -73,7 +73,7 @@
 
     
 
-    <h3>Modules</h3><ul><li id="tanagra-core-nav"><a href="module-tanagra-core.html">tanagra-core</a><ul class='methods'><li data-type="method" id="tanagra-core-addSerializableClasses-nav"><a href="module-tanagra-core.html#.addSerializableClasses">addSerializableClasses</a></li><li data-type="method" id="tanagra-core-serializable-nav"><a href="module-tanagra-core.html#.serializable">serializable</a></li><li data-type="method" id="tanagra-core-serializableClassMappings-nav"><a href="module-tanagra-core.html#.serializableClassMappings">serializableClassMappings</a></li></ul></li><li id="tanagra-json-nav"><a href="module-tanagra-json.html">tanagra-json</a><ul class='methods'><li data-type="method" id="tanagra-json-decodeEntity-nav"><a href="module-tanagra-json.html#.decodeEntity">decodeEntity</a></li><li data-type="method" id="tanagra-json-encodeEntity-nav"><a href="module-tanagra-json.html#.encodeEntity">encodeEntity</a></li></ul></li><li id="tanagra-protobuf-nav"><a href="module-tanagra-protobuf.html">tanagra-protobuf</a><ul class='methods'><li data-type="method" id="tanagra-protobuf-decodeEntity-nav"><a href="module-tanagra-protobuf.html#.decodeEntity">decodeEntity</a></li><li data-type="method" id="tanagra-protobuf-encodeEntity-nav"><a href="module-tanagra-protobuf.html#.encodeEntity">encodeEntity</a></li><li data-type="method" id="tanagra-protobuf-init-nav"><a href="module-tanagra-protobuf.html#.init">init</a></li></ul></li><li id="tanagra-protobuf-redis-cache-nav"><a href="module-tanagra-protobuf-redis-cache.html">tanagra-protobuf-redis-cache</a><ul class='methods'><li data-type="method" id="tanagra-protobuf-redis-cache-get-nav"><a href="module-tanagra-protobuf-redis-cache.html#.get">get</a></li><li data-type="method" id="tanagra-protobuf-redis-cache-set-nav"><a href="module-tanagra-protobuf-redis-cache.html#.set">set</a></li></ul></li></ul>
+    <h3>Modules</h3><ul><li id="tanagra-core-nav"><a href="module-tanagra-core.html">tanagra-core</a><ul class='methods'><li data-type="method" id="tanagra-core-addSerializableClasses-nav"><a href="module-tanagra-core.html#.addSerializableClasses">addSerializableClasses</a></li><li data-type="method" id="tanagra-core-enableSerialization-nav"><a href="module-tanagra-core.html#.enableSerialization">enableSerialization</a></li><li data-type="method" id="tanagra-core-serializable-nav"><a href="module-tanagra-core.html#.serializable">serializable</a></li><li data-type="method" id="tanagra-core-serializableClassMappings-nav"><a href="module-tanagra-core.html#.serializableClassMappings">serializableClassMappings</a></li></ul></li><li id="tanagra-json-nav"><a href="module-tanagra-json.html">tanagra-json</a><ul class='methods'><li data-type="method" id="tanagra-json-decodeEntity-nav"><a href="module-tanagra-json.html#.decodeEntity">decodeEntity</a></li><li data-type="method" id="tanagra-json-encodeEntity-nav"><a href="module-tanagra-json.html#.encodeEntity">encodeEntity</a></li></ul></li><li id="tanagra-protobuf-nav"><a href="module-tanagra-protobuf.html">tanagra-protobuf</a><ul class='methods'><li data-type="method" id="tanagra-protobuf-decodeEntity-nav"><a href="module-tanagra-protobuf.html#.decodeEntity">decodeEntity</a></li><li data-type="method" id="tanagra-protobuf-encodeEntity-nav"><a href="module-tanagra-protobuf.html#.encodeEntity">encodeEntity</a></li><li data-type="method" id="tanagra-protobuf-init-nav"><a href="module-tanagra-protobuf.html#.init">init</a></li></ul></li><li id="tanagra-protobuf-redis-cache-nav"><a href="module-tanagra-protobuf-redis-cache.html">tanagra-protobuf-redis-cache</a><ul class='methods'><li data-type="method" id="tanagra-protobuf-redis-cache-get-nav"><a href="module-tanagra-protobuf-redis-cache.html#.get">get</a></li><li data-type="method" id="tanagra-protobuf-redis-cache-set-nav"><a href="module-tanagra-protobuf-redis-cache.html#.set">set</a></li></ul></li></ul>
   </nav>
 
   <div id="main">
@@ -124,14 +124,10 @@ features or <em>Babel</em> transpiling.</p>
 <li><a href="module-tanagra-core.html">tanagra-core</a> - common functionality required by the different serialization formats,
 including the function for marking classes as <em>serializable</em></li>
 <li><a href="module-tanagra-json.html">tanagra-json</a> - serializes the data into <code>JSON</code> format</li>
-<li><a href="module-tanagra-protobuf.html">tanagra-protobuf</a> - serializes the data into <code>Google protobuffers</code> format <strong>(experimental)</strong></li>
-<li><a href="module-tanagra-protobuf-redis-cache.html">tanagra-protobuf-redis-cache</a> - a helper library for storing serialized protobufs in <em>redis</em> <strong>(experimental)</strong></li>
 </ul>
 <h2>Installation</h2>
 <pre class="prettyprint source lang-bash"><code>$ npm add --save tanagra-core
 $ npm add --save tanagra-json
-$ npm add --save tanagra-protobuf
-$ npm add --save tanagra-protobuf-redis-cache
 </code></pre>
 <p>Alternatively, to install the packages required for JSON serialization:</p>
 <pre class="prettyprint source lang-bash"><code>$ npm add --save tanagra
@@ -144,7 +140,7 @@ to serialize/deserialize it.</p>
 
 const serializable = require('tanagra-core').serializable
 
-class Foo {
+module.exports = serializable()(class Foo {
   constructor(
     bar,
     baz1,
@@ -161,14 +157,7 @@ class Foo {
       ['b', fooBar2]
     ])
   }
-}
-
-// Mark class `Foo` as serializable and containing sub-types `Bar` and `Baz`
-module.exports = serializable(Foo, [Bar, Baz], [
-  // previous versions of the class
-  [Bar, Baz, FooBar], // this version also references FooBar
-  [FooBarBaz]         // this version references a different type altogether, FooBarBaz
-])
+})
 
 // ------ ------ ------
 
@@ -184,7 +173,7 @@ const decoded = json.decodeEntity(encoded)
 <h3>Typescript</h3>
 <pre class="prettyprint source lang-typescript"><code>// ------ foo.ts ------
 
-import { serializable } from 'tanagra-core'
+import { enableSerialization } from 'tanagra-core'
 
 class Foo {
   constructor(
@@ -205,12 +194,8 @@ class Foo {
   }
 }
 
-// Mark class `Foo` as serializable and containing sub-types `Bar` and `Baz`
-export default serializable(Foo, [Bar, Baz], [
-  // previous versions of the class
-  [Bar, Baz, FooBar], // this version also references FooBar
-  [FooBarBaz]         // this version references a different type altogether, FooBarBaz
-])
+enableSerialization(Foo)
+export default Foo
 
 // ------ ------ ------
 
@@ -230,11 +215,10 @@ If you do pick up an issue, you can <a href="mailto:luke.d.a.wilson@gmail.com">e
 to avoid duplication.</p>
 <h2>Roadmap</h2>
 <ul>
-<li>Support for decorators</li>
 <li>Better handling of dynamic changes to class structure at runtime</li>
-<li>Better support for pre-ES6 data-structures (functions-as-classes)</li>
-<li>Full support for Google protobufs (including caching in Redis)</li>
 <li>Support for client-side Javascript</li>
+<li>Full support for Google protobufs (including caching in Redis)</li>
+<li>Better support for pre-ES6 data-structures (functions-as-classes)</li>
 </ul>
     </article>
   </section>

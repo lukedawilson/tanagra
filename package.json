@@ -27,8 +27,8 @@
   },
   "dependencies": {
     "redis": "^3.0.2",
-    "tanagra-core": "^1.0.0",
-    "tanagra-json": "^1.0.0",
+    "tanagra-core": "^1.0.1",
+    "tanagra-json": "^1.0.1",
     "tanagra-protobuf": "^1.0.0",
     "tanagra-protobuf-redis-cache": "^0.2.1"
   }
