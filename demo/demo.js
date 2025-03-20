@@ -2,10 +2,9 @@ const redis = require('redis')
 
 const { performance } = require('perf_hooks')
 
-const protobuf = require('../tanagra-protobuf/index') // require('tanagra-protobuf')
-const json = require('../tanagra-json/index') // require('tanagra-json')
-const generateTypeMap = require('../tanagra-auto-mapper/index').generateTypeMap
-const redisCache = require('../tanagra-protobuf-redis-cache/index')
+const protobuf = require('tanagra-protobuf')
+const json = require('tanagra-json')
+const redisCache = require('tanagra-protobuf-redis-cache')
 
 const Foo = require('./models/foo')
 const Bar = require('./models/bar')
@@ -66,12 +65,10 @@ async function perfTest() {
     let foo = generateTestFoo()
     const encodedEntity = await profile(async () => await protobuf.encodeEntity(foo), protobufWriteTimes)
     await redisCache.set(redisClient, `foo-${i}`, encodedEntity)
-    await protobuf.init(null)
 
     foo = generateTestFoo()
     const stringifiedEntity = await profile(() => json.encodeEntity(foo), jsonWriteTimes)
     await redisClient.setAsync(`foo-${i}-json`, stringifiedEntity)
-    json.init()
 
     foo = generateTestFoo()
     const control = await profile(() => JSON.stringify(foo), controlWriteTimes)
@@ -81,11 +78,9 @@ async function perfTest() {
   for (let i = 0; i < trials; i++) {
     const tuple = await redisCache.get(redisClient, `foo-${i}`)
     await profile(async () => protobuf.decodeEntity(tuple), protobufReadTimes)
-    await protobuf.init(null)
 
     const string = await redisClient.getAsync(`foo-${i}-json`)
     await profile(() => json.decodeEntity(string), jsonReadTimes)
-    json.init()
 
     const control = await redisClient.getAsync(`foo-${i}-control`)
     await profile(() => JSON.parse(control), controlReadTimes)
@@ -155,9 +150,8 @@ async function functionalTest(fn, title, showInputData) {
   console.log()
 }
 
-protobuf.init(generateTypeMap(module))
-  .then(() => json.init()) // generateTypeMap(module)
-  .then(() => redisCache.init(redisClient))
+redisCache.init(redisClient)
+protobuf.init()
   .then(perfTest)
   .then(() => functionalTest(async (foo) => {
     const encoded = json.encodeEntity(foo)

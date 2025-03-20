@@ -1,9 +1,10 @@
 {
   "name": "tanagra",
-  "version": "0.5.1",
+  "version": "0.7.0",
   "description": "Serialization library for javascript",
   "scripts": {
-    "docs": "find docs/* -not -name CNAME -not -name _config.yml -delete; jsdoc ./* --readme ./landing-page.md -d docs -t ./node_modules/braintree-jsdoc-template -c ./jsdoc.conf.json; mv docs/tanagra/*/* docs/; rm -r docs/tanagra"
+    "docs": "find docs/* -not -name CNAME -not -name _config.yml -delete; jsdoc ./* --readme ./landing-page.md -d docs -t ./node_modules/braintree-jsdoc-template -c ./jsdoc.conf.json; mv docs/tanagra/*/* docs/; rm -r docs/tanagra",
+    "demo": "node ./demo/demo.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,10 @@
     "jsdoc": "^3.6.3"
   },
   "dependencies": {
+    "redis": "^3.0.2",
     "tanagra-core": "^0.5.0",
-    "tanagra-json": "^0.6.0"
+    "tanagra-json": "^0.7.0",
+    "tanagra-protobuf": "^0.7.0",
+    "tanagra-protobuf-redis-cache": "^0.2.1"
   }
 }

@@ -76,18 +76,22 @@ module.exports = serializable(Foo, [Bar, Baz], [
   [FooBarBaz]         // this version references a different type altogether, FooBarBaz
 ])
 
-// ...
+// Encode with json
 
-const json = require('tanagra-json') // alternatively, `require('tanagra-protobuf')`
-json.init()                          // `await json.init()` if you're using `tanagra-protobuf`
-
+const json = require('tanagra-json')
 const foo = new Foo(bar, baz)
 const encoded = json.encodeEntity(foo)
 
-// ...
+// Alternatively, encode with protobufs
 
-const decoded = json.decodeEntity(encoded)
+const protobuf = require('tanagra-protobuf')
+await protobuf.init()
+const foo = new Foo(bar, baz)
+const encoded = protobuf.encodeEntity(foo)
 
+// Decode
+
+const decoded = json.decodeEntity(encoded) // or protobuf.decodeEntity(encoded)
 ```
 
 ## Contributing
