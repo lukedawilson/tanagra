@@ -57,16 +57,8 @@ module.exports = function(clazz, nestedClazzes = [], previousVersions = [], cust
     configurable: true
   })
 
-  const ctorHandler = {
-    construct (target, args) {
-      const instance = new target(...args)
-      instance._serializationKey = serializationKey
-      return instance
-    }
-  }
-
   // add class mappings for deserialization
   addSerializableClasses(clazz)
 
-  return new Proxy(clazz, ctorHandler)
+  return clazz
 }

@@ -74,6 +74,8 @@ function addProtoField(message, name, value, i, type, rule = undefined) {
 function addNormalisedMapsToInstance(instance) {
   if (instance === null || instance === undefined) return
 
+  instance._serializationKey = instance.constructor._serializationKey
+
   const fields = Object.entries(instance)
   for (const field of fields) {
     const name = field[0], value = field[1]

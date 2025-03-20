@@ -16,22 +16,14 @@ describe('#serializable', () => {
     assert.equal(TestClass1.name, clazz.name, 'Decorated class has the wrong constructor name')
   })
 
-  it('should set the static and instance _serializationKey properties by default to the class name', () => {
+  it('should set the static _serializationKey property by default to the class name', () => {
     const clazz = serializable(TestClass1)
-    const instance = new clazz()
-
     assert.equal('TestClass1', clazz._serializationKey, 'Static _serializationKey not set')
-    assert.equal('TestClass1', instance._serializationKey, 'Instance _serializationKey not set')
-    assert.notEqual(-1, Reflect.ownKeys(instance).indexOf('_serializationKey'), 'Instance _serializationKey not a field, so will not be serialized')
   })
 
-  it('should set the static and instance _serializationKey properties to the specified key', () => {
+  it('should set the static _serializationKey property to the specified key', () => {
     const clazz = serializable(TestClass1, undefined, undefined, 'my key')
-    const instance = new clazz()
-
     assert.equal('my key', clazz._serializationKey, 'Static _serializationKey not set')
-    assert.equal('my key', instance._serializationKey, 'Instance _serializationKey not set')
-    assert.notEqual(-1, Reflect.ownKeys(instance).indexOf('_serializationKey'), 'Instance _serializationKey not a field, so will not be serialized')
   })
 
   it('should set the static _fieldTypes property on the class when no previous versions are specified', () => {
