@@ -18,12 +18,31 @@ function denormalizeJsonObject(instance) {
     } else if (kvp.key.indexOf('_date') !== -1) {
       instance[kvp.key.replace('_date', '')] = new Date(kvp.value)
       delete instance[kvp.key]
+    } else if (kvp.key.indexOf('_buffer') !== -1) {
+      instance[kvp.key.replace('_buffer', '')] = Buffer.from(kvp.value.data)
+      delete instance[kvp.key]
+    } else if (kvp.key.indexOf('_uint8array') !== -1) {
+      instance[kvp.key.replace('_uint8array', '')] = objectToUint8Array(kvp.value)
+      delete instance[kvp.key]
     } else if (kvp.value._serializationKey) {
       denormalizeJsonObject(kvp.value)
     } else if (kvp.value.constructor.name === 'Array') {
       kvp.value.forEach(denormalizeJsonObject)
     }
   })
+}
+
+function objectToUint8Array(obj) {
+  const length = Math.max(...Object.keys(obj).map(key => parseInt(key))) + 1;
+  const uint8Array = new Uint8Array(length);
+
+  for (let i = 0; i < length; i++) {
+    if (obj[i] !== undefined) {
+      uint8Array[i] = obj[i];
+    }
+  }
+
+  return uint8Array;
 }
 
 /**

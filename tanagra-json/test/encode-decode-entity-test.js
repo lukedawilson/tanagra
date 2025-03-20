@@ -51,6 +51,13 @@ describe('#encodeEntity, #decodeEntity', () => {
       }
     }
 
+    class ClassWithBuffers {
+      constructor() {
+        this.someBuffer = Buffer.from([0x01, 0x02, 0x03, 0x04])
+        this.someUint8Array = new Uint8Array([0x01, 0x02, 0x03, 0x04])
+      }
+    }
+
     class ClassWithMap {
       constructor() {
         this.someMap = new Map([
@@ -110,6 +117,24 @@ describe('#encodeEntity, #decodeEntity', () => {
       const encoded = encodeEntity(withArray)
       const decoded = decodeEntity(encoded)
       assert.deepStrictEqual([null, 123, 789, 456], decoded.someArray)
+    })
+
+    it('should support buffer', () => {
+      const withBuffer = new ClassWithBuffers()
+      const encoded = encodeEntity(withBuffer)
+      const decoded = decodeEntity(encoded)
+      assert.equal('Buffer', decoded.someBuffer.constructor.name)
+      assert.equal(4, decoded.someBuffer.length)
+      assert.deepStrictEqual([0x01, 0x02, 0x03, 0x04], Array.from(decoded.someBuffer))
+    })
+
+    it('should support Uint8Array', () => {
+      const withUint8Array = new ClassWithBuffers()
+      const encoded = encodeEntity(withUint8Array)
+      const decoded = decodeEntity(encoded)
+      assert.equal('Uint8Array', decoded.someUint8Array.constructor.name)
+      assert.equal(4, decoded.someUint8Array.length)
+      assert.deepStrictEqual([0x01, 0x02, 0x03, 0x04], Array.from(decoded.someUint8Array))
     })
 
     it('should support maps', () => {

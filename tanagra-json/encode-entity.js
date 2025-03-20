@@ -16,6 +16,10 @@ function normalizeJsonObject(instance) {
       array.map(subArray => subArray[1]).forEach(normalizeJsonObject)
     } else if (kvp.value.constructor.name === 'Date') {
       instance[`${kvp.key}_date`] = kvp.value
+    } else if (kvp.value.constructor.name === 'Buffer') {
+      instance[`${kvp.key}_buffer`] = kvp.value
+    } else if (kvp.value.constructor.name === 'Uint8Array') {
+      instance[`${kvp.key}_uint8array`] = kvp.value
     }
   })
 }
