@@ -108,4 +108,3 @@ to avoid duplication.
 - Full support for Google protobufs (including caching in Redis)
 - Support for client-side Javascript
 - Support for ESNext decorators
-- Support for Typescript
