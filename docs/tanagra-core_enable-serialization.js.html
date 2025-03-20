@@ -1,96 +1,47 @@
 
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-color-scheme="auto">
 <head>
-
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>
-      tanagra-core/enable-serialization.js - Documentation
-  </title>
-
-  <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
-  <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-  <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-  
-
-  
-
-  <!-- start Mixpanel -->
-  <script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
-  0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
-  for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
-  mixpanel.init("1919205b2da72e4da3b9b6639b444d59");</script>
-  <!-- end Mixpanel -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Source: tanagra-core/enable-serialization.js | tanagra.js</title>
+    
+    <link rel="icon" title="dummy" href="data:image/x-icon;base64,AA">
+    <script src="scripts/docolatte.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="styles/simplebar.min.css"><link type="text/css" rel="stylesheet" href="styles/hljs/nord.css"><link type="text/css" rel="stylesheet" href="styles/docolatte.min.css">
+    <script>window.$docolatte.config = {"searchLimit":8,"syncHash":"scrollend"}</script>
+    <noscript><style>[data-ready] { visibility: visible !important; }</style></noscript>
+    
 </head>
+<body class="config">
+<div class="site">
 
-<body>
-  <svg style="display: none;">
-    <defs>
-      <symbol id="linkIcon" fill="#706d77" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 0h24v24H0z" fill="none"/>
-          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
-      </symbol>
-    </defs>
-  </svg>
+    <header class="header">
+        <div class="masthead">
+            <a class="link" href="https://www.npmjs.com/package/tanagra"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
+            <a class="title" href="index.html">tanagra.js</a>
+        </div>
+        <div class="topbar">
+            <h1 class="page-title">
+                <a href="#">Source: tanagra-core/enable-serialization.js</a>
+            </h1>
+            <a class="light-switch" title="Switch light/dark mode" href="#"><i class="label auto">
+<svg  class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+	<path d="M 12 3 A 9 9 0 0 0 12 21 Z" stroke="none" fill="currentColor"/>
+	<circle cx="12" cy="12" r="9"/>
+</svg></i><i class="label light"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></i><i class="label dark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></i></a>
+        </div>
+    </header>
 
-  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
-  <label for="nav-trigger" class="navicon-button x">
-    <div class="navicon"></div>
-  </label>
+    <div class="primary">
+        <main class="main">
+            
 
-  <label for="nav-trigger" class="overlay"></label>
 
-  <div class="top-nav-wrapper">
-    <ul>
-      <li >
-        <a href="index.html">
-          
-            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-              <path d="M0 0h24v24H0z" fill="none"/>
-            </svg>
-          
-          
-        </a>
-      </li>
-
-      
-
-    </ul>
-  </div>
-
-  <nav>
-    <h3 class="reference-title">
-      tanagra.js
-    </h3>
 
     
-
-    <h3>Modules</h3><ul><li id="tanagra-core-nav"><a href="module-tanagra-core.html">tanagra-core</a><ul class='methods'><li data-type="method" id="tanagra-core-addSerializableClasses-nav"><a href="module-tanagra-core.html#.addSerializableClasses">addSerializableClasses</a></li><li data-type="method" id="tanagra-core-enableSerialization-nav"><a href="module-tanagra-core.html#.enableSerialization">enableSerialization</a></li><li data-type="method" id="tanagra-core-serializable-nav"><a href="module-tanagra-core.html#.serializable">serializable</a></li><li data-type="method" id="tanagra-core-serializableClassMappings-nav"><a href="module-tanagra-core.html#.serializableClassMappings">serializableClassMappings</a></li></ul></li><li id="tanagra-json-nav"><a href="module-tanagra-json.html">tanagra-json</a><ul class='methods'><li data-type="method" id="tanagra-json-decodeEntity-nav"><a href="module-tanagra-json.html#.decodeEntity">decodeEntity</a></li><li data-type="method" id="tanagra-json-encodeEntity-nav"><a href="module-tanagra-json.html#.encodeEntity">encodeEntity</a></li></ul></li><li id="tanagra-protobuf-nav"><a href="module-tanagra-protobuf.html">tanagra-protobuf</a><ul class='methods'><li data-type="method" id="tanagra-protobuf-decodeEntity-nav"><a href="module-tanagra-protobuf.html#.decodeEntity">decodeEntity</a></li><li data-type="method" id="tanagra-protobuf-encodeEntity-nav"><a href="module-tanagra-protobuf.html#.encodeEntity">encodeEntity</a></li><li data-type="method" id="tanagra-protobuf-init-nav"><a href="module-tanagra-protobuf.html#.init">init</a></li></ul></li><li id="tanagra-protobuf-redis-cache-nav"><a href="module-tanagra-protobuf-redis-cache.html">tanagra-protobuf-redis-cache</a><ul class='methods'><li data-type="method" id="tanagra-protobuf-redis-cache-get-nav"><a href="module-tanagra-protobuf-redis-cache.html#.get">get</a></li><li data-type="method" id="tanagra-protobuf-redis-cache-set-nav"><a href="module-tanagra-protobuf-redis-cache.html#.set">set</a></li></ul></li></ul>
-  </nav>
-
-  <div id="main">
-    
-      <h1 class="page-title">
-        tanagra-core/enable-serialization.js
-      </h1>
-    
-
-    
-      
-
-<section>
-  <article>
-    <pre class="prettyprint source linenums"><code>/**
+<article class="src">
+    <pre class="prettyprint source linenums lang-js"><span class="_char">_</span><code>/**
  * Decorates a class with serialization metadata.
  * Useful when developing in Typescript because of
  * &lt;a href="https://github.com/microsoft/TypeScript/issues/41231">limitations&lt;/a> of the type system.
@@ -114,24 +65,70 @@
  */
 module.exports = require('./decorate-class')()
 </code></pre>
-  </article>
-</section>
-
-    
+</article>
 
 
-  </div>
 
-  <br class="clear">
 
-  <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a>
-  </footer>
 
-  <script src="scripts/linenumber.js"></script>
-  <script src="scripts/pagelocation.js"></script>
+        </main>
+        <footer class="footer">
+            
+            <div class="lines">
+                
+                
+                
+                <p class="generator">
+                    Documentation generated by <a rel="external" href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a><wbr>
+                    using <a rel="external" href="https://github.com/amekusa/docolatte">Docolatte</a> theme
+                    
+                    <wbr>on <time datetime="2025-03-20T21:19:47.262Z">Thu, 20 Mar 2025 21:19:47 GMT</time>
+                    
+                </p>
+                
+            </div>
+            
+            <div class="bottom">
+                <a class="to-top" href="#">
+                    <div class="label">Top<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up icon"><polyline points="18 15 12 9 6 15"></polyline></svg></div>
+                </a>
+            </div>
+        </footer>
+    </div>
 
-  
+    <input id="docolatte-sidebar-toggle" type="checkbox">
+    <label class="overlay" for="docolatte-sidebar-toggle"></label>
+    <label class="menu-button" for="docolatte-sidebar-toggle">
+        <div class="shape">
+            <i class="icon burger">
+                <span class="top"></span>
+                <span class="middle"></span>
+                <span class="bottom"></span>
+            </i>
+        </div>
+    </label>
+
+    <div class="sidebar">
+        <div class="wrap" data-ready="0">
+            
+<div class="search-box">
+	<input class="search" type="text" placeholder="type to search…"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+	<ol class="dropdown"></ol>
+	
+	<div class="hint hidden not-for-mobile">
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> Type <em>any key</em> to focus.
+	</div>
+	
+</div>
+
+            <div class="toc">
+                <nav class="menu"><h3>Modules</h3><ul class="wbr"><li class="has-child"><a href="module-tanagra-core.html">tanagra<wbr>-core</a><ul class="functions has-icons wbr"><li><a href="module-tanagra-core.html#.addSerializableClasses">add<wbr>Serializable<wbr>Classes</a></li><li><a href="module-tanagra-core.html#.enableSerialization">enable<wbr>Serialization</a></li><li><a href="module-tanagra-core.html#.serializable">serializable</a></li><li><a href="module-tanagra-core.html#.serializableClassMappings">serializable<wbr>Class<wbr>Mappings</a></li></ul></li><li class="has-child"><a href="module-tanagra-json.html">tanagra<wbr>-json</a><ul class="functions has-icons wbr"><li><a href="module-tanagra-json.html#.decodeEntity">decode<wbr>Entity</a></li><li><a href="module-tanagra-json.html#.encodeEntity">encode<wbr>Entity</a></li></ul></li></ul></nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="docolatte-search-items" type="application/json">[{"$":["module-tanagra-core.html","tanagra-core"],"a":"tanagra-core","b":"module:tanagra-core","c":"tanagra-core/index.js"},{"$":["module-tanagra-core.html#.addSerializableClasses","module:tanagra-core.addSerializableClasses"],"a":"addSerializableClasses","b":"module:tanagra-core.addSerializableClasses","c":"tanagra-core/add-serializable-classes.js","e":"Adds the prototype of the specified decorated class, and those of all classes referenced by it, to the global cache. This prototype is then retrieved when a serialized object is deserialized."},{"$":["module-tanagra-core.html#.enableSerialization","module:tanagra-core.enableSerialization"],"a":"enableSerialization","b":"module:tanagra-core.enableSerialization","c":"tanagra-core/enable-serialization.js","e":"Decorates a class with serialization metadata. Useful when developing in Typescript because of <a href=\"https://github.com/microsoft/TypeScript/issues/41231\">limitations of the type system."},{"$":["module-tanagra-core.html#.serializable","module:tanagra-core.serializable"],"a":"serializable","b":"module:tanagra-core.serializable","c":"tanagra-core/decorate-class.js","e":"Decorates a class with serialization metadata, and returns the class."},{"$":["module-tanagra-core.html#.serializableClassMappings","module:tanagra-core.serializableClassMappings"],"a":"serializableClassMappings","b":"module:tanagra-core.serializableClassMappings","c":"tanagra-core/serializable-class-mappings.js","e":"Returns an ES6 Map, mapping the _serializationKey of a serialised class to its prototype."},{"$":["module-tanagra-json.html","tanagra-json"],"a":"tanagra-json","b":"module:tanagra-json","c":"tanagra-json/index.js"},{"$":["module-tanagra-json.html#.decodeEntity","module:tanagra-json.decodeEntity"],"a":"decodeEntity","b":"module:tanagra-json.decodeEntity","c":"tanagra-json/decode-entity.js","e":"Deserializes a class instance that was serialized in JSON format."},{"$":["module-tanagra-json.html#.encodeEntity","module:tanagra-json.encodeEntity"],"a":"encodeEntity","b":"module:tanagra-json.encodeEntity","c":"tanagra-json/encode-entity.js","e":"Serializes a decorated class instance as a JSON string."}]</script><script id="docolatte-search-index" type="application/json">{"keys":[{"path":["a"],"id":"a","weight":10,"src":"a"},{"path":["b"],"id":"b","weight":9,"src":"b"},{"path":["c"],"id":"c","weight":6,"src":"c"},{"path":["d"],"id":"d","weight":2,"src":"d"},{"path":["e"],"id":"e","weight":2,"src":"e"}],"records":[{"i":0,"$":{"0":{"v":"tanagra-core","n":1},"1":{"v":"module:tanagra-core","n":1},"2":{"v":"tanagra-core/index.js","n":1}}},{"i":1,"$":{"0":{"v":"addSerializableClasses","n":1},"1":{"v":"module:tanagra-core.addSerializableClasses","n":1},"2":{"v":"tanagra-core/add-serializable-classes.js","n":1},"4":{"v":"Adds the prototype of the specified decorated class, and those of all classes referenced by it, to the global cache. This prototype is then retrieved when a serialized object is deserialized.","n":0.18}}},{"i":2,"$":{"0":{"v":"enableSerialization","n":1},"1":{"v":"module:tanagra-core.enableSerialization","n":1},"2":{"v":"tanagra-core/enable-serialization.js","n":1},"4":{"v":"Decorates a class with serialization metadata. Useful when developing in Typescript because of <a href=\"https://github.com/microsoft/TypeScript/issues/41231\">limitations of the type system.","n":0.229}}},{"i":3,"$":{"0":{"v":"serializable","n":1},"1":{"v":"module:tanagra-core.serializable","n":1},"2":{"v":"tanagra-core/decorate-class.js","n":1},"4":{"v":"Decorates a class with serialization metadata, and returns the class.","n":0.316}}},{"i":4,"$":{"0":{"v":"serializableClassMappings","n":1},"1":{"v":"module:tanagra-core.serializableClassMappings","n":1},"2":{"v":"tanagra-core/serializable-class-mappings.js","n":1},"4":{"v":"Returns an ES6 Map, mapping the _serializationKey of a serialised class to its prototype.","n":0.267}}},{"i":5,"$":{"0":{"v":"tanagra-json","n":1},"1":{"v":"module:tanagra-json","n":1},"2":{"v":"tanagra-json/index.js","n":1}}},{"i":6,"$":{"0":{"v":"decodeEntity","n":1},"1":{"v":"module:tanagra-json.decodeEntity","n":1},"2":{"v":"tanagra-json/decode-entity.js","n":1},"4":{"v":"Deserializes a class instance that was serialized in JSON format.","n":0.316}}},{"i":7,"$":{"0":{"v":"encodeEntity","n":1},"1":{"v":"module:tanagra-json.encodeEntity","n":1},"2":{"v":"tanagra-json/encode-entity.js","n":1},"4":{"v":"Serializes a decorated class instance as a JSON string.","n":0.333}}}]}</script><script id="docolatte-search-options" type="application/json">{"keys":[{"name":"a","weight":10},{"name":"b","weight":9},{"name":"c","weight":6},{"name":"d","weight":2},{"name":"e","weight":2}]}</script>
 
 </body>
 </html>

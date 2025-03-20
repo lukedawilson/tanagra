@@ -1,5 +1,25 @@
 {
+  "source": {
+    "include": ["./"],
+    "includePattern": "\\.js$",
+    "excludePattern": "(node_modules/|docs)"
+  },
+  "opts": {
+    "destination": "./docs",
+    "readme": "./landing-page.md",
+    "recurse": true,
+    "template": "node_modules/docolatte"
+  },
+  "plugins": ["plugins/markdown"],
   "templates": {
-    "referenceTitle": "tanagra.js"
+    "docolatte": {
+      "branding": {
+        "title": "tanagra.js",
+        "link": "https://www.npmjs.com/package/tanagra"
+      },
+      "code": {
+        "theme": "nord"
+      }
+    }
   }
 }

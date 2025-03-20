@@ -1,19 +1,8 @@
-const redis = require('redis')
-
 const { performance } = require('perf_hooks')
-
-const protobuf = require('tanagra-protobuf')
 const json = require('tanagra-json')
-const redisCache = require('tanagra-protobuf-redis-cache')
-
 const Foo = require('./models/foo')
 const Bar = require('./models/bar')
 const Baz = require('./models/baz')
-
-const redisClient = redis.createClient({
-  host: 'localhost',
-  port: 6379
-})
 
 async function profile(fn, array) {
   const start = performance.now()
@@ -54,8 +43,6 @@ function generateTestFoo() {
 async function perfTest() {
   const trials = 10
 
-  const protobufWriteTimes = []
-  const protobufReadTimes = []
   const jsonWriteTimes = []
   const jsonReadTimes = []
   const controlWriteTimes = []
@@ -63,33 +50,16 @@ async function perfTest() {
 
   for (let i = 0; i < trials; i++) {
     let foo = generateTestFoo()
-    const encodedEntity = await profile(async () => await protobuf.encodeEntity(foo), protobufWriteTimes)
-    await redisCache.set(redisClient, `foo-${i}`, encodedEntity)
-
-    foo = generateTestFoo()
     const stringifiedEntity = await profile(() => json.encodeEntity(foo), jsonWriteTimes)
-    await redisClient.setAsync(`foo-${i}-json`, stringifiedEntity)
+    await profile(() => json.decodeEntity(stringifiedEntity), jsonReadTimes)
 
     foo = generateTestFoo()
     const control = await profile(() => JSON.stringify(foo), controlWriteTimes)
-    await redisClient.setAsync(`foo-${i}-control`, control)
-  }
-
-  for (let i = 0; i < trials; i++) {
-    const tuple = await redisCache.get(redisClient, `foo-${i}`)
-    await profile(async () => protobuf.decodeEntity(tuple), protobufReadTimes)
-
-    const string = await redisClient.getAsync(`foo-${i}-json`)
-    await profile(() => json.decodeEntity(string), jsonReadTimes)
-
-    const control = await redisClient.getAsync(`foo-${i}-control`)
     await profile(() => JSON.parse(control), controlReadTimes)
   }
 
   console.log('Performance')
   console.log('===========')
-  showPerfResults('protobuf-write (ms):', protobufWriteTimes)
-  showPerfResults('protobuf-read (ms):', protobufReadTimes)
   showPerfResults('json-write (ms):', jsonWriteTimes)
   showPerfResults('json-read (ms):', jsonReadTimes)
   showPerfResults('control-write (ms):', controlWriteTimes)
@@ -150,18 +120,9 @@ async function functionalTest(fn, title, showInputData) {
   console.log()
 }
 
-redisCache.init(redisClient)
-protobuf.init()
-    // .then(perfTest) // ToDo: fix protobuf library
+perfTest()
   .then(() => functionalTest(async (foo) => {
-    const encoded = json.encodeEntity(foo)
-    await redisClient.setAsync(`foo-json`, encoded)
-    return json.decodeEntity(await redisClient.getAsync(`foo-json`))
+    return json.decodeEntity(json.encodeEntity(foo))
   }, 'json', true))
-  // .then(() => functionalTest(async (foo) => {
-  //   const encodedTuple = protobuf.encodeEntity(foo)
-  //   await redisCache.set(redisClient, 'foo', encodedTuple)
-  //   return protobuf.decodeEntity(await redisCache.get(redisClient, 'foo')) // , Foo
-  // }, 'protobuf', false))
   .catch(console.log)
   .then(() => process.exit())
