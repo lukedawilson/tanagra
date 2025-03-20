@@ -80,11 +80,11 @@ class Foo {
 }
 
 // Mark class `Foo` as serializable and containing sub-types `Bar` and `Baz`
-module.exports = serializable(Foo, [Bar, Baz], [
+module.exports = serializable([Bar, Baz], [
   // previous versions of the class
   [Bar, Baz, FooBar], // this version also references FooBar
   [FooBarBaz]         // this version references a different type altogether, FooBarBaz
-])
+])(Foo)
 
 // ------ ------ ------
 
@@ -125,11 +125,11 @@ class Foo {
 }
 
 // Mark class `Foo` as serializable and containing sub-types `Bar` and `Baz`
-export default serializable(Foo, [Bar, Baz], [
+export default serializable([Bar, Baz], [
   // previous versions of the class
   [Bar, Baz, FooBar], // this version also references FooBar
   [FooBarBaz]         // this version references a different type altogether, FooBarBaz
-])
+])(Foo)
 
 // ------ ------ ------
 
@@ -152,7 +152,6 @@ to avoid duplication.
 
 ## Roadmap
 
-- Support for decorators
 - Better handling of dynamic changes to class structure at runtime
 - Better support for pre-ES6 data-structures (functions-as-classes)
 - Full support for Google protobufs (including caching in Redis)

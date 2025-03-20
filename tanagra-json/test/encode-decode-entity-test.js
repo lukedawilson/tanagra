@@ -96,7 +96,7 @@ describe('#encodeEntity, #decodeEntity', () => {
     })
 
     it('should successfully encode/decode a simple class with serialization metadata', () => {
-      const clazz = serializable(SimpleClass)
+      const clazz = serializable()(SimpleClass)
       const instance = new clazz()
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded)
@@ -163,7 +163,7 @@ describe('#encodeEntity, #decodeEntity', () => {
 
   describe('functions and getters', () => {
     it('should correctly set instance functions and getters', () => {
-      const clazz = serializable(WithFuncsAndGetters)
+      const clazz = serializable()(WithFuncsAndGetters)
       const instance = new clazz()
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded, clazz)
@@ -173,7 +173,7 @@ describe('#encodeEntity, #decodeEntity', () => {
     })
 
     it('should correctly set static functions and getters', () => {
-      const clazz = serializable(WithFuncsAndGetters)
+      const clazz = serializable()(WithFuncsAndGetters)
       const instance = new clazz()
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded, clazz)
@@ -188,30 +188,30 @@ describe('#encodeEntity, #decodeEntity', () => {
       constructor() { this.child1 = new Child1() }
     }
 
-    const Child1 = serializable(class Child1 {
+    const Child1 = serializable()(class Child1 {
       constructor() { this.field = 'child 1' }
       child1Func() { return this.field }
     })
 
-    const Child2 = serializable(class Child2 {
+    const Child2 = serializable()(class Child2 {
       constructor() { this.field = 'child 2' }
       child2Func() { return this.field }
     })
 
-    const Child3 = serializable(class Child3 {
+    const Child3 = serializable()(class Child3 {
       constructor() { this.field = 'child 3' }
       child3Func() { return this.field }
     })
 
-    const Child4 = serializable(class Child4 {
+    const Child4 = serializable()(class Child4 {
       constructor() { this.field = 'child 4' }
       child4Func() { return this.field }
     })
 
-    const SerializableFoo = serializable(Parent, [Child1], [
+    const SerializableFoo = serializable([Child1], [
       [Child2, Child4],
       [Child3, Child4]
-    ])
+    ])(Parent)
 
     it('should support versioning', () => {
       const serializedFooOlder = encodeEntity({ child3: new Child3(), child4: new Child4() })
@@ -230,7 +230,7 @@ describe('#encodeEntity, #decodeEntity', () => {
   })
 
   describe('nesting', () => {
-    const withFuncsAndGetters = serializable(WithFuncsAndGetters)
+    const withFuncsAndGetters = serializable()(WithFuncsAndGetters)
 
     it('should support simple nesting', () => {
       class WithNestedOuter {
@@ -248,8 +248,8 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const withNestedInner = serializable(WithNestedInner, [withFuncsAndGetters])
-      const withNestedOuter = serializable(WithNestedOuter, [withNestedInner])
+      const withNestedInner = serializable([withFuncsAndGetters])(WithNestedInner)
+      const withNestedOuter = serializable([withNestedInner])(WithNestedOuter)
 
       const instance = new withNestedOuter()
       const encoded = encodeEntity(instance)
@@ -277,7 +277,7 @@ describe('#encodeEntity, #decodeEntity', () => {
     })
 
     it('should support arrays of complex types', () => {
-      const simpleClass = serializable(SimpleClass)
+      const simpleClass = serializable()(SimpleClass)
       class ClassWithComplexArray {
         constructor() {
           this.someArray = [
@@ -288,7 +288,7 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const classWithComplexArray = serializable(ClassWithComplexArray, [simpleClass])
+      const classWithComplexArray = serializable([simpleClass])(ClassWithComplexArray)
       const withArray = new classWithComplexArray()
       const encoded = encodeEntity(withArray)
       const decoded = decodeEntity(encoded, classWithComplexArray)
@@ -298,7 +298,7 @@ describe('#encodeEntity, #decodeEntity', () => {
     })
 
     it('should support maps of objects', () => {
-      const simpleClass = serializable(SimpleClass)
+      const simpleClass = serializable()(SimpleClass)
       class ClassWithComplexMap {
         constructor() {
           this.someMap = new Map([
@@ -310,7 +310,7 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const classWithComplexMap = serializable(ClassWithComplexMap, [simpleClass])
+      const classWithComplexMap = serializable([simpleClass])(ClassWithComplexMap)
       const instance = new classWithComplexMap()
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded, classWithComplexMap)
@@ -351,8 +351,8 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const withArrayInner = serializable(WithArrayInner, [withFuncsAndGetters])
-      const withArrayOuter = serializable(WithArrayOuter, [withArrayInner])
+      const withArrayInner = serializable([withFuncsAndGetters])(WithArrayInner)
+      const withArrayOuter = serializable([withArrayInner])(WithArrayOuter)
 
       const instance = new withArrayOuter()
       const encoded = encodeEntity(instance)
@@ -416,9 +416,9 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const withArrayInnerInner = serializable(WithArrayInnerInner, [withFuncsAndGetters])
-      const withArrayInner = serializable(WithArrayInner, [withArrayInnerInner])
-      const withArrayOuter = serializable(WithArrayOuter, [withArrayInner])
+      const withArrayInnerInner = serializable([withFuncsAndGetters])(WithArrayInnerInner)
+      const withArrayInner = serializable([withArrayInnerInner])(WithArrayInner)
+      const withArrayOuter = serializable([withArrayInner])(WithArrayOuter)
 
       const instance = new withArrayOuter()
       const encoded = encodeEntity(instance)
@@ -447,7 +447,7 @@ describe('#encodeEntity, #decodeEntity', () => {
     })
 
     it('should support maps of complex types', () => {
-      const simpleClass = serializable(SimpleClass)
+      const simpleClass = serializable()(SimpleClass)
       class ClassWithComplexMap {
         constructor() {
           this.someMap = new Map([
@@ -458,7 +458,7 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const classWithComplexMap = serializable(ClassWithComplexMap, [simpleClass])
+      const classWithComplexMap = serializable([simpleClass])(ClassWithComplexMap)
       const instance = new classWithComplexMap()
       const encoded = encodeEntity(instance)
       const decoded = decodeEntity(encoded, classWithComplexMap)
@@ -494,8 +494,8 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const withMapInner = serializable(WithMapInner, [withFuncsAndGetters])
-      const withMapOuter = serializable(WithMapOuter, [withMapInner])
+      const withMapInner = serializable([withFuncsAndGetters])(WithMapInner)
+      const withMapOuter = serializable([withMapInner])(WithMapOuter)
 
       const instance = new withMapOuter()
       const encoded = encodeEntity(instance)
@@ -573,13 +573,13 @@ describe('#encodeEntity, #decodeEntity', () => {
         }
       }
 
-      const withFuncsAndGetters = serializable(WithFuncsAndGetters)
-      const withNested2 = serializable(WithNested2, [withFuncsAndGetters])
-      const withNested1 = serializable(WithNested1, [withNested2])
-      const withArrayNesting = serializable(WithArrayNesting, [withNested1])
-      const withNested4 = serializable(WithNested4, [withNested2])
-      const withMapNesting = serializable(WithMapNesting, [withNested4])
-      const withNested3 = serializable(WithNested3, [withArrayNesting, withMapNesting])
+      const withFuncsAndGetters = serializable()(WithFuncsAndGetters)
+      const withNested2 = serializable([withFuncsAndGetters])(WithNested2)
+      const withNested1 = serializable([withNested2])(WithNested1)
+      const withArrayNesting = serializable([withNested1])(WithArrayNesting)
+      const withNested4 = serializable([withNested2])(WithNested4)
+      const withMapNesting = serializable([withNested4])(WithMapNesting)
+      const withNested3 = serializable([withArrayNesting, withMapNesting])(WithNested3)
 
       const instance = new withNested3()
       const encoded = encodeEntity(instance)
