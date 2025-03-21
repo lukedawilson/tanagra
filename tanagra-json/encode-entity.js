@@ -32,10 +32,20 @@ function normalizeJsonObject(instance) {
  * @param instance A decorated class instance.
  *
  * @returns String JSON encoding of the instance.
- * @example
- * const json = require('tanagra-json')
- * const foo = new SomeDecoratedClass()
- * const serialized = json.encodeEntity(foo)
+ *
+ * @example <caption>Javascript</caption>
+ *
+ * const encodeEntity = require('tanagra-json').encodeEntity
+ *
+ * const foo = new Foo()
+ * const serialized = encodeEntity(foo)
+ *
+ * @example <caption>Typescript</caption>
+ *
+ * import { encodeEntity } from 'tanagra-json'
+ *
+ * const foo: Foo = new Foo()
+ * const serialized: string = encodeEntity(foo)
  */
 module.exports = function(instance) {
   normalizeJsonObject(instance)

@@ -5,20 +5,30 @@
     "excludePattern": "(node_modules/|docs)"
   },
   "opts": {
+    "package": "./package.json",
     "destination": "./docs",
     "readme": "./landing-page.md",
     "recurse": true,
     "template": "node_modules/docolatte"
   },
-  "plugins": ["plugins/markdown"],
+  "plugins": ["plugins/markdown", "node_modules/jsdoc-escape-at"],
   "templates": {
     "docolatte": {
       "branding": {
         "title": "tanagra.js",
-        "link": "https://www.npmjs.com/package/tanagra"
+        "link": "/"
       },
       "code": {
         "theme": "nord"
+      },
+      "meta": {
+        "title": "tanagra.js",
+        "description": "A simple, lightweight node.js serialization library.",
+        "keywords": "serializor, serialization, javascript, typescript, node.js, redis"
+      },
+      "footer": {
+        "copyright": "&copy; 2025 Luke Wilson",
+        "license": "Licensed under the MIT License"
       }
     }
   }

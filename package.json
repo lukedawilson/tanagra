@@ -1,9 +1,9 @@
 {
-  "name": "tanagra",
-  "version": "0.8.0",
+  "name": "tanagra.js",
+  "version": "1.0.6",
   "description": "Serialization library for javascript",
   "scripts": {
-    "docs": "find docs/* -not -name CNAME -not -name _config.yml -delete && jsdoc -c ./jsdoc.conf.json",
+    "docs": "find docs/* -not -name CNAME -not -name _config.yml -delete && jsdoc -c ./jsdoc.conf.json && cp -r ./docs/$npm_package_name/$npm_package_version/* ./docs/ && rm -r ./docs/$npm_package_name/",
     "demo": "node ./demo/demo.js"
   },
   "repository": {
@@ -23,10 +23,11 @@
   "homepage": "https://lukedawilson.github.io/tanagra",
   "devDependencies": {
     "docolatte": "^4.5.1",
-    "jsdoc": "^3.6.3"
+    "jsdoc": "^3.6.3",
+    "jsdoc-escape-at": "^1.0.1"
   },
   "dependencies": {
-    "tanagra-core": "^1.0.1",
-    "tanagra-json": "^1.0.1"
+    "tanagra-core": "^1.0.5",
+    "tanagra-json": "^1.0.5"
   }
 }

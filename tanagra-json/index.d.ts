@@ -9,7 +9,7 @@ declare module 'tanagra-json' {
    * @returns String JSON encoding of the instance.
    * @example
    * import { encodeEntity } from 'tanagra-json'
-   * const foo = new SomeDecoratedClass()
+   * const foo = new Foo()
    * const serialized = json.encodeEntity(foo)
    */
   export function encodeEntity<TEntity>(instance: TEntity): string;

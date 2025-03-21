@@ -19,7 +19,7 @@ Both vanilla JS and Typescript are supported.
 
 The project website and API documentation can be found [here](http://tanagrajs.net).
 
-The npm packages can be found [here](https://www.npmjs.com/package/tanagra).
+The npm packages can be found [here](https://www.npmjs.com/package/tanagra.js).
 
 ## Project structure
 
@@ -32,14 +32,8 @@ The project is divided into a number of modules:
 ## Installation
 
 ```bash
-$ npm add --save tanagra-core
-$ npm add --save tanagra-json
-```
-
-Alternatively, to install the packages required for JSON serialization:
-
-```bash
-$ npm add --save tanagra
+$ npm i tanagra-core
+$ npm i tanagra-json
 ```
 
 ## Basic usage
@@ -50,7 +44,9 @@ to serialize/deserialize it.
 ### Vanilla JS
 
 ```javascript
-// ------ foo.js ------
+////////////
+// foo.js //
+////////////
 
 const serializable = require('tanagra-core').serializable
 
@@ -73,14 +69,18 @@ module.exports = serializable()(class Foo {
   }
 })
 
-// ------ ------ ------
+///////////////////
+// serialization //
+///////////////////
 
 const json = require('tanagra-json')
 
 const foo = new Foo(bar, baz)
 const encoded = json.encodeEntity(foo)
 
-// ------ ------ ------
+/////////////////////
+// deserialization //
+/////////////////////
 
 const decoded = json.decodeEntity(encoded)
 ```
@@ -88,11 +88,14 @@ const decoded = json.decodeEntity(encoded)
 ### Typescript
 
 ```typescript
-// ------ foo.ts ------
+////////////
+// foo.js //
+////////////
 
-import { enableSerialization } from 'tanagra-core'
+import { serializable } from 'tanagra-core'
 
-class Foo {
+@serializable()
+export default class Foo {
   constructor(
     bar: Bar,
     baz1: Baz,
@@ -111,17 +114,18 @@ class Foo {
   }
 }
 
-enableSerialization(Foo)
-export default Foo
-
-// ------ ------ ------
+///////////////////
+// serialization //
+///////////////////
 
 import { encodeEntity } from 'tanagra-json'
 
 const foo = new Foo(bar, baz)
 const encoded = encodeEntity(foo)
 
-// ------ ------ ------
+/////////////////////
+// deserialization //
+/////////////////////
 
 const decoded = decodeEntity<Foo>(encoded)
 ```
@@ -135,7 +139,7 @@ to avoid duplication.
 
 ## Roadmap
 
-- Better handling of dynamic changes to class structure at runtime
 - Support for client-side Javascript
 - Full support for Google protobufs (including caching in Redis)
+- Better handling of dynamic changes to class structure at runtime
 - Better support for pre-ES6 data-structures (functions-as-classes)

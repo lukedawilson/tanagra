@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Module: tanagra-core | tanagra.js</title>
-    
+    <meta name="description" content="A simple, lightweight node.js serialization library."><meta name="keywords" content="serializor, serialization, javascript, typescript, node.js, redis">
     <link rel="icon" title="dummy" href="data:image/x-icon;base64,AA">
     <script src="scripts/docolatte.min.js"></script>
     <link type="text/css" rel="stylesheet" href="styles/simplebar.min.css"><link type="text/css" rel="stylesheet" href="styles/hljs/nord.css"><link type="text/css" rel="stylesheet" href="styles/docolatte.min.css">
@@ -17,7 +17,7 @@
 
     <header class="header">
         <div class="masthead">
-            <a class="link" href="https://www.npmjs.com/package/tanagra"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
+            <a class="link" href="/"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
             <a class="title" href="index.html">tanagra.js</a>
         </div>
         <div class="topbar">
@@ -77,207 +77,6 @@
     
 
     
-    <h4 class="name" id=".addSerializableClasses"><span class="attributes"><span class="attribute">static</span></span>addSerializableClasses<span class="signature">(clazz)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Adds the prototype of the specified decorated class, and those of all classes referenced by it, to the global cache.
-This prototype is then retrieved when a serialized object is deserialized.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<div class="table-wrap">
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name">
-                    <code>clazz</code>
-                </td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            <td class="description last"><p>Decorated class to add to cache.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</div>
-
-
-
-
-
-
-<dl class="details">
-<dt class="tag-source">Source:</dt>
-<dd class="tag-source">
-    <a href="tanagra-core_add-serializable-classes.js.html">tanagra-core/add-serializable-classes.js</a>, <a href="tanagra-core_add-serializable-classes.js.html#line3">line 3</a>
-</dd>
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-
-    <pre class="prettyprint lang-js"><code>const serializable = require('tanagra-core').serializable
-
-const SerializableFoo = serializable(class Foo {
-   constructor(bar) {
-     this.bar = bar
-   }
-}, [Bar])
-
-const SerializableBar = serializable(class Bar {
-   constructor(baz) {
-     this.baz = baz
-   }
-}, [Baz])
-
-const SerializableBaz = serializable(class Baz {
-   constructor(string) {
-     this.string = string
-   }
-})
-
-addSerializableClasses(SerializableFoo) // adds SerializableFoo, SerializableBar and SerializableBaz</code></pre>
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".enableSerialization"><span class="attributes"><span class="attribute">static</span></span>enableSerialization<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Decorates a class with serialization metadata.
-Useful when developing in Typescript because of
-<a href="https://github.com/microsoft/TypeScript/issues/41231">limitations</a> of the type system.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-<dt class="tag-source">Source:</dt>
-<dd class="tag-source">
-    <a href="tanagra-core_enable-serialization.js.html">tanagra-core/enable-serialization.js</a>, <a href="tanagra-core_enable-serialization.js.html#line1">line 1</a>
-</dd>
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-
-    <pre class="prettyprint lang-js has-caption"><code>import { enableSerialization } from 'tanagra-core'
-
-class Foo {
-  constructor(bar: number, baz: Baz) {
-    this.bar = bar // primitive
-    this.baz = baz // serializable object
-  }
-}
-
-enableSerialization(Foo)
-export default Foo</code><div class="code-caption hljs">Typescript</div></pre>
-
-
-
-
-        
-            
-
-    
-
-    
     <h4 class="name" id=".serializable"><span class="attributes"><span class="attribute">static</span></span>serializable<span class="signature">(customSerializationKey)</span><span class="type-signature"></span></h4>
     
 
@@ -286,7 +85,7 @@ export default Foo</code><div class="code-caption hljs">Typescript</div></pre>
 
 
 <div class="description">
-    <p>Decorates a class with serialization metadata, and returns the class.</p>
+    <p>Decorates a class with serialization metadata.</p>
 </div>
 
 
@@ -349,7 +148,7 @@ be overridden by setting this parameter.</p></td>
 <dl class="details">
 <dt class="tag-source">Source:</dt>
 <dd class="tag-source">
-    <a href="tanagra-core_decorate-class.js.html">tanagra-core/decorate-class.js</a>, <a href="tanagra-core_decorate-class.js.html#line3">line 3</a>
+    <a href="tanagra-core_decorate-class.js.html">tanagra-core/decorate-class.js</a>, <a href="tanagra-core_decorate-class.js.html#line9">line 9</a>
 </dd>
 </dl>
 
@@ -371,17 +170,30 @@ be overridden by setting this parameter.</p></td>
 
 
 
-    <h5>Example</h5>
+    <h5>Examples</h5>
     
 
-    <pre class="prettyprint lang-js"><code>const serializable = require('tanagra-core').serializable
+    <pre class="prettyprint lang-js has-caption"><code>const serializable = require('tanagra-core').serializable
 
 module.exports = serializable()(class Foo {
   constructor(barNumber, bazObject) {
     this.barNumber = barNumber // primitive
     this.bazObject = bazObject // serializable object
   }
-})</code></pre>
+})</code><div class="code-caption hljs">Javascript</div></pre>
+
+    <pre class="prettyprint lang-js has-caption"><code>import { serializable } from 'tanagra-core'
+
+@serializable()
+export default class Foo {
+  private bar: number
+  private baz: Baz
+
+  constructor(bar: number, baz: Baz) {
+    this.bar = bar // primitive
+    this.baz = baz // serializable object
+  }
+}</code><div class="code-caption hljs">Typescript</div></pre>
 
 
 
@@ -400,7 +212,8 @@ module.exports = serializable()(class Foo {
 
 
 <div class="description">
-    <p>Returns an ES6 Map, mapping the _serializationKey of a serialised class to its prototype.</p>
+    <p>Returns an ES6 Map, mapping the _serializationKey of a serialised class to its prototype.
+Needed if extending tanagra with custom serializers.</p>
 </div>
 
 
@@ -440,11 +253,17 @@ module.exports = serializable()(class Foo {
 
 
 
-    <h5>Example</h5>
+    <h5>Examples</h5>
     
 
-    <pre class="prettyprint lang-js"><code>const serializableClassMappings = require('tanagra-core').serializableClassMappings
-serializableClassMappings.get().set(Foo._serializationKey, Foo.prototype)</code></pre>
+    <pre class="prettyprint lang-js has-caption"><code>const serializableClassMappings = require('tanagra-core').serializableClassMappings.get
+
+const prototype = serializableClassMappings.get(instance._serializationKey)</code><div class="code-caption hljs">Javascript</div></pre>
+
+    <pre class="prettyprint lang-js has-caption"><code>import { serializableClassMappings } from 'tanagra-core'
+
+const prototypes = serializableClassMappings.get
+const prototype = prototypes.get(instance._serializationKey)</code><div class="code-caption hljs">Typescript</div></pre>
 
 
 
@@ -466,13 +285,17 @@ serializableClassMappings.get().set(Foo._serializationKey, Foo.prototype)</code>
             
             <div class="lines">
                 
+                <p class="copyright">&copy; 2025 Luke Wilson</p>
+                
+                
+                <p class="license">Licensed under the MIT License</p>
                 
                 
                 <p class="generator">
                     Documentation generated by <a rel="external" href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a><wbr>
                     using <a rel="external" href="https://github.com/amekusa/docolatte">Docolatte</a> theme
                     
-                    <wbr>on <time datetime="2025-03-20T21:19:47.265Z">Thu, 20 Mar 2025 21:19:47 GMT</time>
+                    <wbr>on <time datetime="2025-03-21T14:30:22.337Z">Fri, 21 Mar 2025 14:30:22 GMT</time>
                     
                 </p>
                 
@@ -512,13 +335,13 @@ serializableClassMappings.get().set(Foo._serializationKey, Foo.prototype)</code>
 </div>
 
             <div class="toc">
-                <nav class="menu"><h3>Modules</h3><ul class="wbr"><li class="has-child"><a href="module-tanagra-core.html">tanagra<wbr>-core</a><ul class="functions has-icons wbr"><li><a href="module-tanagra-core.html#.addSerializableClasses">add<wbr>Serializable<wbr>Classes</a></li><li><a href="module-tanagra-core.html#.enableSerialization">enable<wbr>Serialization</a></li><li><a href="module-tanagra-core.html#.serializable">serializable</a></li><li><a href="module-tanagra-core.html#.serializableClassMappings">serializable<wbr>Class<wbr>Mappings</a></li></ul></li><li class="has-child"><a href="module-tanagra-json.html">tanagra<wbr>-json</a><ul class="functions has-icons wbr"><li><a href="module-tanagra-json.html#.decodeEntity">decode<wbr>Entity</a></li><li><a href="module-tanagra-json.html#.encodeEntity">encode<wbr>Entity</a></li></ul></li></ul></nav>
+                <nav class="menu"><h3>Modules</h3><ul class="wbr"><li class="has-child"><a href="module-tanagra-core.html">tanagra<wbr>-core</a><ul class="functions has-icons wbr"><li><a href="module-tanagra-core.html#.serializable">serializable</a></li><li><a href="module-tanagra-core.html#.serializableClassMappings">serializable<wbr>Class<wbr>Mappings</a></li></ul></li><li class="has-child"><a href="module-tanagra-json.html">tanagra<wbr>-json</a><ul class="functions has-icons wbr"><li><a href="module-tanagra-json.html#.decodeEntity">decode<wbr>Entity</a></li><li><a href="module-tanagra-json.html#.encodeEntity">encode<wbr>Entity</a></li></ul></li></ul></nav>
             </div>
         </div>
     </div>
 </div>
 
-<script id="docolatte-search-items" type="application/json">[{"$":["module-tanagra-core.html","tanagra-core"],"a":"tanagra-core","b":"module:tanagra-core","c":"tanagra-core/index.js"},{"$":["module-tanagra-core.html#.addSerializableClasses","module:tanagra-core.addSerializableClasses"],"a":"addSerializableClasses","b":"module:tanagra-core.addSerializableClasses","c":"tanagra-core/add-serializable-classes.js","e":"Adds the prototype of the specified decorated class, and those of all classes referenced by it, to the global cache. This prototype is then retrieved when a serialized object is deserialized."},{"$":["module-tanagra-core.html#.enableSerialization","module:tanagra-core.enableSerialization"],"a":"enableSerialization","b":"module:tanagra-core.enableSerialization","c":"tanagra-core/enable-serialization.js","e":"Decorates a class with serialization metadata. Useful when developing in Typescript because of <a href=\"https://github.com/microsoft/TypeScript/issues/41231\">limitations of the type system."},{"$":["module-tanagra-core.html#.serializable","module:tanagra-core.serializable"],"a":"serializable","b":"module:tanagra-core.serializable","c":"tanagra-core/decorate-class.js","e":"Decorates a class with serialization metadata, and returns the class."},{"$":["module-tanagra-core.html#.serializableClassMappings","module:tanagra-core.serializableClassMappings"],"a":"serializableClassMappings","b":"module:tanagra-core.serializableClassMappings","c":"tanagra-core/serializable-class-mappings.js","e":"Returns an ES6 Map, mapping the _serializationKey of a serialised class to its prototype."},{"$":["module-tanagra-json.html","tanagra-json"],"a":"tanagra-json","b":"module:tanagra-json","c":"tanagra-json/index.js"},{"$":["module-tanagra-json.html#.decodeEntity","module:tanagra-json.decodeEntity"],"a":"decodeEntity","b":"module:tanagra-json.decodeEntity","c":"tanagra-json/decode-entity.js","e":"Deserializes a class instance that was serialized in JSON format."},{"$":["module-tanagra-json.html#.encodeEntity","module:tanagra-json.encodeEntity"],"a":"encodeEntity","b":"module:tanagra-json.encodeEntity","c":"tanagra-json/encode-entity.js","e":"Serializes a decorated class instance as a JSON string."}]</script><script id="docolatte-search-index" type="application/json">{"keys":[{"path":["a"],"id":"a","weight":10,"src":"a"},{"path":["b"],"id":"b","weight":9,"src":"b"},{"path":["c"],"id":"c","weight":6,"src":"c"},{"path":["d"],"id":"d","weight":2,"src":"d"},{"path":["e"],"id":"e","weight":2,"src":"e"}],"records":[{"i":0,"$":{"0":{"v":"tanagra-core","n":1},"1":{"v":"module:tanagra-core","n":1},"2":{"v":"tanagra-core/index.js","n":1}}},{"i":1,"$":{"0":{"v":"addSerializableClasses","n":1},"1":{"v":"module:tanagra-core.addSerializableClasses","n":1},"2":{"v":"tanagra-core/add-serializable-classes.js","n":1},"4":{"v":"Adds the prototype of the specified decorated class, and those of all classes referenced by it, to the global cache. This prototype is then retrieved when a serialized object is deserialized.","n":0.18}}},{"i":2,"$":{"0":{"v":"enableSerialization","n":1},"1":{"v":"module:tanagra-core.enableSerialization","n":1},"2":{"v":"tanagra-core/enable-serialization.js","n":1},"4":{"v":"Decorates a class with serialization metadata. Useful when developing in Typescript because of <a href=\"https://github.com/microsoft/TypeScript/issues/41231\">limitations of the type system.","n":0.229}}},{"i":3,"$":{"0":{"v":"serializable","n":1},"1":{"v":"module:tanagra-core.serializable","n":1},"2":{"v":"tanagra-core/decorate-class.js","n":1},"4":{"v":"Decorates a class with serialization metadata, and returns the class.","n":0.316}}},{"i":4,"$":{"0":{"v":"serializableClassMappings","n":1},"1":{"v":"module:tanagra-core.serializableClassMappings","n":1},"2":{"v":"tanagra-core/serializable-class-mappings.js","n":1},"4":{"v":"Returns an ES6 Map, mapping the _serializationKey of a serialised class to its prototype.","n":0.267}}},{"i":5,"$":{"0":{"v":"tanagra-json","n":1},"1":{"v":"module:tanagra-json","n":1},"2":{"v":"tanagra-json/index.js","n":1}}},{"i":6,"$":{"0":{"v":"decodeEntity","n":1},"1":{"v":"module:tanagra-json.decodeEntity","n":1},"2":{"v":"tanagra-json/decode-entity.js","n":1},"4":{"v":"Deserializes a class instance that was serialized in JSON format.","n":0.316}}},{"i":7,"$":{"0":{"v":"encodeEntity","n":1},"1":{"v":"module:tanagra-json.encodeEntity","n":1},"2":{"v":"tanagra-json/encode-entity.js","n":1},"4":{"v":"Serializes a decorated class instance as a JSON string.","n":0.333}}}]}</script><script id="docolatte-search-options" type="application/json">{"keys":[{"name":"a","weight":10},{"name":"b","weight":9},{"name":"c","weight":6},{"name":"d","weight":2},{"name":"e","weight":2}]}</script>
+<script id="docolatte-search-items" type="application/json">[{"$":["module-tanagra-core.html","tanagra-core"],"a":"tanagra-core","b":"module:tanagra-core","c":"tanagra-core/index.js"},{"$":["module-tanagra-core.html#.serializable","module:tanagra-core.serializable"],"a":"serializable","b":"module:tanagra-core.serializable","c":"tanagra-core/decorate-class.js","e":"Decorates a class with serialization metadata."},{"$":["module-tanagra-core.html#.serializableClassMappings","module:tanagra-core.serializableClassMappings"],"a":"serializableClassMappings","b":"module:tanagra-core.serializableClassMappings","c":"tanagra-core/serializable-class-mappings.js","e":"Returns an ES6 Map, mapping the _serializationKey of a serialised class to its prototype. Needed if extending tanagra with custom serializers."},{"$":["module-tanagra-json.html","tanagra-json"],"a":"tanagra-json","b":"module:tanagra-json","c":"tanagra-json/index.js"},{"$":["module-tanagra-json.html#.decodeEntity","module:tanagra-json.decodeEntity"],"a":"decodeEntity","b":"module:tanagra-json.decodeEntity","c":"tanagra-json/decode-entity.js","e":"Deserializes a class instance that was serialized in JSON format."},{"$":["module-tanagra-json.html#.encodeEntity","module:tanagra-json.encodeEntity"],"a":"encodeEntity","b":"module:tanagra-json.encodeEntity","c":"tanagra-json/encode-entity.js","e":"Serializes a decorated class instance as a JSON string."}]</script><script id="docolatte-search-index" type="application/json">{"keys":[{"path":["a"],"id":"a","weight":10,"src":"a"},{"path":["b"],"id":"b","weight":9,"src":"b"},{"path":["c"],"id":"c","weight":6,"src":"c"},{"path":["d"],"id":"d","weight":2,"src":"d"},{"path":["e"],"id":"e","weight":2,"src":"e"}],"records":[{"i":0,"$":{"0":{"v":"tanagra-core","n":1},"1":{"v":"module:tanagra-core","n":1},"2":{"v":"tanagra-core/index.js","n":1}}},{"i":1,"$":{"0":{"v":"serializable","n":1},"1":{"v":"module:tanagra-core.serializable","n":1},"2":{"v":"tanagra-core/decorate-class.js","n":1},"4":{"v":"Decorates a class with serialization metadata.","n":0.408}}},{"i":2,"$":{"0":{"v":"serializableClassMappings","n":1},"1":{"v":"module:tanagra-core.serializableClassMappings","n":1},"2":{"v":"tanagra-core/serializable-class-mappings.js","n":1},"4":{"v":"Returns an ES6 Map, mapping the _serializationKey of a serialised class to its prototype. Needed if extending tanagra with custom serializers.","n":0.218}}},{"i":3,"$":{"0":{"v":"tanagra-json","n":1},"1":{"v":"module:tanagra-json","n":1},"2":{"v":"tanagra-json/index.js","n":1}}},{"i":4,"$":{"0":{"v":"decodeEntity","n":1},"1":{"v":"module:tanagra-json.decodeEntity","n":1},"2":{"v":"tanagra-json/decode-entity.js","n":1},"4":{"v":"Deserializes a class instance that was serialized in JSON format.","n":0.316}}},{"i":5,"$":{"0":{"v":"encodeEntity","n":1},"1":{"v":"module:tanagra-json.encodeEntity","n":1},"2":{"v":"tanagra-json/encode-entity.js","n":1},"4":{"v":"Serializes a decorated class instance as a JSON string.","n":0.333}}}]}</script><script id="docolatte-search-options" type="application/json">{"keys":[{"name":"a","weight":10},{"name":"b","weight":9},{"name":"c","weight":6},{"name":"d","weight":2},{"name":"e","weight":2}]}</script>
 
 </body>
 </html>

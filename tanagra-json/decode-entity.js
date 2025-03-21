@@ -53,9 +53,18 @@ function objectToUint8Array(obj) {
  * @param encoded Serialized instance, with class metadata.
  *
  * @returns Object Deserialized instance of specified type.
- * @example
- * const json = require('tanagra-json')
- * const foo = json.decodeEntity(someSerializedJsonString)
+ *
+ * @example <caption>Javascript</caption>
+ *
+ * const decodeEntity = require('tanagra-json').decodeEntity
+ *
+ * const foo = decodeEntity(someSerializedJsonString)
+ *
+ * @example <caption>Typescript</caption>
+ *
+ * import { decodeEntity } from 'tanagra-json'
+ *
+ * const foo: Foo = decodeEntity<Foo>(someSerializedJsonString)
  */
 module.exports = function(encoded) {
   const decoded = JSON.parse(encoded)
