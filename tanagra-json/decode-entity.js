@@ -12,26 +12,34 @@ function denormalizeJsonObject(instance) {
     }
   }
 
-  Object.entries(instance).map(entry => ({ key: entry[0], value: entry[1] })).filter(kvp => kvp.value).forEach(kvp => {
-    if (kvp.key.indexOf('_map') !== -1) {
-      instance[kvp.key.replace('_map', '')] = new Map(kvp.value)
+  const entries = Object.entries(instance)
+    .map(entry => ({ key: entry[0], value: entry[1] }))
+    .filter(kvp => kvp.value)
+
+  for (const kvp of entries) {
+    if (kvp.key.endsWith('$Map')) {
+      instance[stripSuffix(kvp.key, '$Map')] = new Map(kvp.value)
       instance[kvp.key].map(kvp => kvp[1]).forEach(denormalizeJsonObject)
       delete instance[kvp.key]
-    } else if (kvp.key.indexOf('_date') !== -1) {
-      instance[kvp.key.replace('_date', '')] = new Date(kvp.value)
+    } else if (kvp.key.endsWith('$Date')) {
+      instance[stripSuffix(kvp.key, '$Date')] = new Date(kvp.value)
       delete instance[kvp.key]
-    } else if (kvp.key.indexOf('_buffer') !== -1) {
-      instance[kvp.key.replace('_buffer', '')] = Buffer.from(kvp.value.data)
+    } else if (kvp.key.endsWith('$Buffer') ) {
+      instance[stripSuffix(kvp.key, '$Buffer')] = Buffer.from(kvp.value.data)
       delete instance[kvp.key]
-    } else if (kvp.key.indexOf('_uint8array') !== -1) {
-      instance[kvp.key.replace('_uint8array', '')] = objectToUint8Array(kvp.value)
+    } else if (kvp.key.endsWith('$Uint8Array')) {
+      instance[stripSuffix(kvp.key, '$Uint8Array')] = objectToUint8Array(kvp.value)
       delete instance[kvp.key]
     } else if (kvp.value._serializationKey) {
       denormalizeJsonObject(kvp.value)
     } else if (kvp.value.constructor.name === 'Array') {
       kvp.value.forEach(denormalizeJsonObject)
     }
-  })
+  }
+}
+
+function stripSuffix(str, suffix) {
+  return str.slice(0, str.length - suffix.length);
 }
 
 function objectToUint8Array(obj) {

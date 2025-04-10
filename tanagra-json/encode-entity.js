@@ -18,13 +18,11 @@ function decorate(instance) {
       decorated[kvp.key] = decorate(kvp.value)
     } else if (kvp.value.constructor.name === 'Map') {
       const array = [...kvp.value]
-      decorated[`${kvp.key}_map`] = array.map(kvp => [kvp[0], decorate(kvp[1])])
-    } else if (kvp.value.constructor.name === 'Date') {
-      decorated[`${kvp.key}_date`] = kvp.value
-    } else if (kvp.value.constructor.name === 'Buffer') {
-      decorated[`${kvp.key}_buffer`] = kvp.value
-    } else if (kvp.value.constructor.name === 'Uint8Array') {
-      decorated[`${kvp.key}_uint8array`] = kvp.value
+      decorated[`${kvp.key}$${kvp.value.constructor.name}`] = array.map(kvp => [kvp[0], decorate(kvp[1])])
+    } else if (kvp.value.constructor.name === 'Date' ||
+               kvp.value.constructor.name === 'Buffer' ||
+               kvp.value.constructor.name === 'Uint8Array') {
+      decorated[`${kvp.key}$${kvp.value.constructor.name}`] = kvp.value
     } else {
       decorated[kvp.key] = kvp.value
     }
