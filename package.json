@@ -1,6 +1,6 @@
 {
   "name": "tanagra.js",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Serialization library for javascript",
   "scripts": {
     "docs": "find docs/* -not -name CNAME -not -name _config.yml -delete && jsdoc -c ./jsdoc.conf.json && cp -r ./docs/$npm_package_name/$npm_package_version/* ./docs/ && rm -r ./docs/$npm_package_name/",
